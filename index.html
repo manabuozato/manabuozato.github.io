@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Index</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      padding: 2rem;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: #888;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 0.8rem;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: box-shadow 0.2s;
+      border: 1px solid #e0e0e0;
+    }
+    .card:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .card-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    .card-desc {
+      font-size: 0.85rem;
+      color: #666;
+    }
+    .card-date {
+      font-size: 0.75rem;
+      color: #aaa;
+      margin-top: 0.3rem;
+    }
+    .empty {
+      color: #aaa;
+      font-style: italic;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Index</h1>
+  <p class="subtitle">A loosely maintained collection of things that may or may not work.</p>
+
+  <!-- ページを追加するときはここにカードを追加 -->
+
+  <a class="card" href="./hello/">
+    <div class="card-title">Hello World</div>
+    <div class="card-desc">GitHub Pages動作確認用のテストページ</div>
+    <div class="card-date">2026-02-22</div>
+  </a>
+
+  <!--
+  テンプレート：新しいページを追加するときはこれをコピー
+
+  <a class="card" href="./フォルダ名/">
+    <div class="card-title">ページタイトル</div>
+    <div class="card-desc">簡単な説明</div>
+    <div class="card-date">YYYY-MM-DD</div>
+  </a>
+  -->
+
+</body>
+</html>
