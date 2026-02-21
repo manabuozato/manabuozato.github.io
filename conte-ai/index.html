@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>コント制作におけるAI介入の可能性</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&display=swap');
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Noto Sans JP', 'Helvetica Neue', Arial, sans-serif;
+    background: #f9f7f3;
+    color: #1a3d24;
+    padding: 24px 20px;
+    min-width: 1400px;
+  }
+  
+  h1 {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+    color: #1a3d24;
+    margin-bottom: 2px;
+  }
+  h1 .en {
+    display: block;
+    font-size: 11px;
+    font-weight: 300;
+    color: #5a8a6a;
+    margin-top: 2px;
+  }
+  
+  /* ===== フロー ===== */
+  .flow-band {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 16px auto 12px;
+    padding: 10px 20px;
+    background: rgba(200, 220, 200, 0.15);
+    border-radius: 4px;
+    max-width: 1360px;
+  }
+  .flow-node {
+    text-align: center;
+    padding: 4px 12px;
+    border-bottom: 2px solid #2d5a3d;
+  }
+  .flow-node .ja { font-size: 13px; font-weight: 500; color: #2d5a3d; }
+  .flow-node .en { font-size: 8px; color: #5a8a6a; }
+  .flow-arrow {
+    color: #2d5a3d;
+    font-size: 16px;
+    line-height: 1;
+    margin: 0 2px;
+  }
+  .flow-meta {
+    font-size: 8px;
+    color: #5a8a6a;
+    text-align: center;
+    margin-top: -6px;
+    margin-bottom: 8px;
+  }
+  
+  /* ===== 凡例 ===== */
+  .legend {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    margin: 0 auto 10px;
+    font-size: 10px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 1px solid rgba(45, 90, 61, 0.2);
+  }
+  .legend-swatch.a { background: #a3c9a8; }
+  .legend-swatch.b { background: #c5dbc8; }
+  .legend-swatch.c { background: #e8f0e8; }
+  .legend-label { font-weight: 500; color: #2d5a3d; }
+  .legend-desc { color: #5a8a6a; font-size: 9px; }
+  
+  /* ===== マトリクス ===== */
+  .matrix-wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+    overflow-x: auto;
+  }
+  
+  table.matrix {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+  
+  table.matrix th {
+    font-size: 1.25em;
+    font-weight: 500;
+    color: #2d5a3d;
+    padding: 6px 4px;
+    text-align: center;
+    border-bottom: 1px solid #c5dbc8;
+    vertical-align: bottom;
+  }
+  table.matrix th .en {
+    display: block;
+    font-size: 0.7em;
+    font-weight: 300;
+    color: #8aaa8a;
+  }
+  table.matrix th.row-header {
+    text-align: right;
+    padding-right: 10px;
+    width: 90px;
+    border-bottom: none;
+    border-right: 1px solid #c5dbc8;
+  }
+  
+  table.matrix td {
+    vertical-align: top;
+    padding: 5px 4px;
+    border-bottom: 1px solid rgba(197, 219, 200, 0.4);
+    border-right: 1px solid rgba(197, 219, 200, 0.25);
+    min-height: 40px;
+    position: relative;
+  }
+  
+  /* ===== 要素ピル ===== */
+  .item {
+    position: relative;
+    display: inline-block;
+    padding: 0.25em 0.7em;
+    margin: 0.15em 0;
+    border-radius: 10px;
+    font-size: 1em;
+    font-weight: 400;
+    cursor: default;
+    transition: all 0.15s ease;
+    line-height: 1.5;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .item:hover {
+    filter: brightness(0.92);
+  }
+  
+  .item.a {
+    background: rgba(163, 201, 168, 0.55);
+    color: #1a3d24;
+    border: 1px solid rgba(163, 201, 168, 0.3);
+  }
+  .item.a:hover { background: rgba(163, 201, 168, 0.8); }
+  
+  .item.b {
+    background: rgba(197, 219, 200, 0.45);
+    color: #2d5a3d;
+    border: 1px solid rgba(197, 219, 200, 0.3);
+  }
+  .item.b:hover { background: rgba(197, 219, 200, 0.75); }
+  
+  .item.c {
+    background: rgba(232, 240, 232, 0.5);
+    color: #4a7a5a;
+    border: 1px solid rgba(232, 240, 232, 0.4);
+  }
+  .item.c:hover { background: rgba(232, 240, 232, 0.85); }
+  
+  /* ===== ツールチップ ===== */
+  .tooltip {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    background: #fcfbf8;
+    border: 1px solid #a3c9a8;
+    border-radius: 6px;
+    padding: 12px 14px;
+    max-width: 340px;
+    min-width: 240px;
+    box-shadow: 0 4px 20px rgba(45, 90, 61, 0.12);
+    pointer-events: none;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+  .tooltip.show { display: block; }
+  
+  .tooltip .tt-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(197, 219, 200, 0.5);
+  }
+  .tooltip .tt-badge {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 500;
+  }
+  .tooltip .tt-badge.a { background: #a3c9a8; color: #1a3d24; }
+  .tooltip .tt-badge.b { background: #c5dbc8; color: #2d5a3d; }
+  .tooltip .tt-badge.c { background: #e8f0e8; color: #4a7a5a; }
+  
+  .tooltip .tt-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: #1a3d24;
+  }
+  .tooltip .tt-type {
+    font-size: 9px;
+    color: #8aaa8a;
+    margin-bottom: 4px;
+  }
+  .tooltip .tt-what,
+  .tooltip .tt-how,
+  .tooltip .tt-why {
+    font-size: 10.5px;
+    color: #3a5a3a;
+    margin-bottom: 4px;
+  }
+  .tooltip .tt-label {
+    font-size: 9px;
+    font-weight: 500;
+    color: #5a8a6a;
+    margin-top: 4px;
+  }
+  
+  .size-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 8px;
+    padding: 2px 8px;
+    background: rgba(200, 220, 200, 0.15);
+    border-radius: 12px;
+  }
+  
+  .note {
+    text-align: center;
+    font-size: 9px;
+    color: #8aaa8a;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<h1>
+  コント制作におけるAI介入の可能性
+  <span class="en">Mapping AI Intervention Possibilities in Comedy Skit Production</span>
+</h1>
+
+<div class="flow-band">
+  <div class="flow-node"><span class="ja">着想</span><span class="en">Conception</span></div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-node"><span class="ja">台本制作</span><span class="en">Scriptwriting</span></div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-node"><span class="ja">稽古</span><span class="en">Rehearsal</span></div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-node"><span class="ja">初披露</span><span class="en">First Show</span></div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-node"><span class="ja">再演・調整</span><span class="en">Refinement</span></div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-node"><span class="ja">完成</span><span class="en">Completion</span></div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-node"><span class="ja">定番化・熟成</span><span class="en">Maturation</span></div>
+</div>
+
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-swatch a"></div><span class="legend-label">A 創作直接型</span><span class="legend-desc">採用すれば作品が変わる</span></div>
+  <div class="legend-item"><div class="legend-swatch b"></div><span class="legend-label">B 創作支援型</span><span class="legend-desc">判断材料を提供する</span></div>
+  <div class="legend-item"><div class="legend-swatch c"></div><span class="legend-label">C 周辺業務型</span><span class="legend-desc">中身に関与せず効率化</span></div>
+  <span style="color:#8aaa8a; font-size:9px;">（各要素にカーソルを合わせると詳細表示）</span>
+  <span class="size-control">
+    <label style="color:#8aaa8a; font-size:9px;">文字サイズ</label>
+    <input type="range" id="fontSlider" min="60" max="160" value="100" style="width:80px; vertical-align:middle; accent-color:#5a8a6a;">
+    <span id="fontValue" style="color:#8aaa8a; font-size:9px;">100%</span>
+  </span>
+</div>
+
+<div class="matrix-wrap">
+<table class="matrix">
+<thead>
+<tr>
+  <th class="row-header"></th>
+  <th>着想<span class="en">Conception</span></th>
+  <th>台本制作<span class="en">Scriptwriting</span></th>
+  <th>稽古<span class="en">Rehearsal</span></th>
+  <th>初披露<span class="en">First Show</span></th>
+  <th>再演・調整<span class="en">Refinement</span></th>
+  <th>完成<span class="en">Completion</span></th>
+  <th>定番化・熟成<span class="en">Maturation</span></th>
+</tr>
+</thead>
+<tbody id="matrixBody">
+</tbody>
+</table>
+</div>
+
+<div class="note">※ 72要素を7フェーズ×9介入タイプのマトリクスに配置。A/B/C分類は色で表現。</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+const data = {
+  "生成\nGeneration": {
+    "着想": [
+      {n:"「もしも」設定の大量生成", c:"a", w:"「もしも○○が××だったら」という仮定の設定を大量に自動生成する", h:"着想の初期段階で、発想の幅を広げるために使う。生成された中からピンと来るものを選ぶ", r:"生成された設定がそのままネタの骨格になりうる"},
+      {n:"キャラ設定生成", c:"a", w:"コントに登場するキャラクターの性格・職業・口癖・関係性などを自動生成する", h:"キャラが決まらないときに候補を出してもらう。既存キャラの変奏を探る", r:"キャラがコントの中身を規定する"},
+      {n:"概念の強制組み合わせ", c:"a", w:"無関係な概念（例：「葬式」×「ASMR」）をランダムに組み合わせて提示する", h:"発想が行き詰まったときに、強制的に異質な組み合わせから着想を得る", r:"組み合わせ結果がネタの核になりうる"},
+    ],
+    "台本制作": [
+      {n:"プロット案生成", c:"a", w:"設定・キャラを入力すると、起承転結のプロット案を複数パターン生成する", h:"台本の骨格を考える段階で、構成の候補を出してもらう", r:"台本の骨格そのもの"},
+      {n:"ボケ・ツッコミのバリエーション", c:"a", w:"特定のシーンに対して、ボケとツッコミの言い回し・パターンを大量に生成する", h:"「ここのボケ、もっと他にないか」というときに候補を出してもらう", r:"コントの核であるボケ・ツッコミを直接作る"},
+      {n:"オチのパターン出し", c:"a", w:"コントの構成を入力すると、複数のオチの候補を生成する", h:"オチが決まらないときに、パターンを見比べて選ぶ", r:"オチは作品の核心"},
+    ],
+    "稽古": [
+      {n:"アドリブの台本反映案生成", c:"a", w:"稽古中に出たアドリブ・変更点を検出し、台本に反映する修正案を自動生成する", h:"稽古で「こっちのほうがいい」と変えた部分を、台本に即座に反映する", r:"稽古での発見を台本に反映＝中身を変える"},
+    ],
+    "初披露": [
+      {n:"振り返りレポート自動生成", c:"c", w:"記録データをもとに、ウケたポイント・スベったポイント等のレポートを自動生成する", h:"公演直後に客観的な振り返り資料を得る", r:"レポートを作るだけ。中身の判断は人間"},
+    ],
+    "再演・調整": [
+      {n:"台本修正案の提案", c:"a", w:"スベったポイントの台本修正案を複数パターン生成する", h:"「ここのボケをこう変えてはどうか」という具体的な修正候補", r:"台本の中身を直接変える"},
+    ],
+    "完成": [
+      {n:"営業用紹介文・あらすじ生成", c:"c", w:"完成したネタの紹介文・あらすじを自動生成する", h:"営業・オーディション・フライヤー用の文面作成", r:"中身と無関係"},
+    ],
+    "定番化・熟成": [
+      {n:"派生ネタ・続編提案", c:"a", w:"既存の定番ネタから、キャラ・設定を活かした派生ネタや続編を提案する", h:"人気キャラの別シチュエーション展開など", r:"新しい作品の中身を作る"},
+      {n:"尺違いバージョン生成", c:"a", w:"5分版のネタを3分版・8分版に再構成する案を生成する", h:"テレビ用の短縮版、単独ライブ用のロング版の制作", r:"構成を変える＝中身が変わる"},
+    ],
+  },
+  "収集・整理\nCollection": {
+    "着想": [
+      {n:"時事・トレンド収集", c:"c", w:"ニュース・SNSトレンド・流行語などを自動収集し、一覧にまとめる", h:"「今何が話題か」を効率的に把握する", r:"素材を集めるだけ"},
+      {n:"「あるある」収集・分類", c:"b", w:"SNS・掲示板・日常会話から「あるある」ネタを収集し、ジャンル別に分類する", h:"「あるある」系コントの素材探しに。分類を見て方向性を決める", r:"分類された「あるある」がネタの方向性判断に影響する"},
+    ],
+    "台本制作": [
+      {n:"類似コント・漫才の収集・比較リスト", c:"b", w:"似た設定・テーマの既存コント・漫才を検索し、一覧で比較できるようにする", h:"差別化ポイントを見つけるための材料", r:"差別化の判断材料"},
+    ],
+    "稽古": [
+      {n:"稽古映像ハイライト自動抽出", c:"c", w:"稽古の録画から、動きの変化・笑い・やり直しなどのハイライトを自動抽出する", h:"長い稽古映像を全部見直す手間を省く", r:"映像を整理するだけ"},
+    ],
+    "再演・調整": [
+      {n:"SNS反応の収集", c:"c", w:"公演についてのSNSの感想・言及を自動収集する", h:"観客がどう感じたかを把握する", r:"集めるだけ"},
+    ],
+    "完成": [
+      {n:"完成版の全記録アーカイブ", c:"c", w:"完成した台本・映像・反応データを一括で保存・管理する", h:"「完成形」の公式記録を残す", r:"保存するだけ"},
+    ],
+    "定番化・熟成": [
+      {n:"レパートリー管理", c:"c", w:"持ちネタの一覧・尺・最終演技日・累計演技回数等を管理する", h:"「今何本持っているか」「最近やっていないネタ」を把握する", r:"管理するだけ"},
+      {n:"過去公演アーカイブ", c:"c", w:"過去の全公演記録を整理・保存し、検索可能にする", h:"過去の映像・データを後から参照できるようにする", r:"保存するだけ"},
+      {n:"タグ付け・検索", c:"c", w:"公演記録にテーマ・会場・客層・ウケ度等のタグを付け、検索できるようにする", h:"「20代女性向けにウケたネタ」等の条件検索", r:"整理するだけ"},
+    ],
+  },
+  "分析・診断\nAnalysis": {
+    "着想": [
+      {n:"過去の自分のネタ傾向分析", c:"b", w:"これまで作ったネタのテーマ・構造・キャラ傾向をデータ化し、偏りを可視化する", h:"「自分は学校ネタばかり」等の気づきを得る", r:"「次に何を作るか」の判断材料"},
+    ],
+    "台本制作": [
+      {n:"構成の弱点診断", c:"b", w:"台本の構成（導入・展開・オチの配分、テンポ、情報量）を分析し、弱点を指摘する", h:"「中盤が長い」「オチが唐突」等の客観的フィードバック", r:"「どこを直すか」の判断材料"},
+      {n:"類似ネタとの差別化チェック", c:"b", w:"書いた台本が既存の有名ネタと構造的に似ていないかを分析する", h:"「このまま行くか、変えるか」の判断に使う", r:"「このまま行くか」の判断材料"},
+    ],
+    "稽古": [
+      {n:"間・テンポの数値化", c:"b", w:"セリフ間のポーズ時間を音声解析で計測し、数値化・可視化する", h:"「ここの間が0.5秒長い」等を客観的に把握する", r:"演技の判断材料"},
+      {n:"動き・表情分析", c:"b", w:"映像から演者の動き・表情の変化を検出し、タイミングや強度を分析する", h:"「ここで動きが小さい」「表情の変化が遅い」等のフィードバック", r:"演技の判断材料"},
+      {n:"声のトーン・抑揚分析", c:"b", w:"音声から声の大きさ・高さ・速さ・抑揚パターンを分析する", h:"「ここのツッコミ、もっと声を張ったほうがいいか」の判断に使う", r:"演技の判断材料"},
+    ],
+    "初披露": [
+      {n:"狙い通りvs想定外のギャップ分析", c:"b", w:"台本上の「笑わせたいポイント」と実際の笑いの発生箇所を比較し、ギャップを可視化する", h:"「狙ったところでウケた」「意図しないところでウケた」を明確にする", r:"「次にどう直すか」の判断材料"},
+    ],
+    "再演・調整": [
+      {n:"修正の効果測定", c:"b", w:"台本を修正した箇所の反応が実際に変わったかを測定する", h:"「変えたのに反応が同じ」「変えたら逆に悪化」を検出する", r:"「修正が効いたか」の判断材料"},
+    ],
+    "完成": [
+      {n:"完成度スコアリング", c:"b", w:"構成の整合性・テンポ・尺バランスなどの観点で完成度をスコア化する", h:"「本当にこれで完成と言えるか」の客観的チェック", r:"「本当に完成か」の判断材料"},
+      {n:"オリジナリティ比較", c:"b", w:"完成した作品と既存作品群を比較し、オリジナリティの度合いを評価する", h:"「他にない作品か」の確認", r:"完成判断の材料"},
+    ],
+    "定番化・熟成": [
+      {n:"ネタの「鮮度」診断", c:"b", w:"同じネタの反応の推移を追跡し、ウケの減衰傾向を検出する", h:"「そろそろ飽きられてきた」のサインを早期に発見する", r:"「まだやるか」の判断材料"},
+      {n:"ウケ減衰カーブ分析", c:"b", w:"ネタの初演から現在までの反応の推移をカーブとして可視化する", h:"減衰スピードや反転ポイントを分析する", r:"「まだやるか」の判断材料"},
+    ],
+  },
+  "予測\nPrediction": {
+    "台本制作": [
+      {n:"尺・テンポのシミュレーション", c:"b", w:"台本のセリフ量・間の指定から、実際の上演時間を推定する", h:"「4分に収まるか」の確認。テンポ感の事前チェック", r:"尺感の判断材料"},
+    ],
+    "稽古": [
+      {n:"笑い発生予測", c:"b", w:"台本と演技データから、観客が笑う確率が高いポイントを予測する", h:"「ここはウケるはず」「ここは弱い」を事前に把握する", r:"「ここはウケるか」の判断材料"},
+      {n:"擬似観客シミュレーション", c:"b", w:"仮想的な観客の反応をシミュレーションし、笑い・沈黙のパターンを推定する", h:"「こういう客層ならこうなる」をイメージする", r:"演技の調整判断に使う"},
+      {n:"間の微調整シミュレーション", c:"b", w:"「ここの間を0.3秒縮めたらどうなるか」をシミュレーションで試す", h:"実際に何度も演じなくても、間の変更効果を推定できる", r:"「この間で良いか」の判断材料"},
+    ],
+    "初披露": [
+      {n:"客層に基づく事前ウケ予測", c:"b", w:"会場・イベント・時間帯から客層を推定し、ネタごとのウケ度を予測する", h:"「この客層にはこのネタが合う」のセットリスト判断に使う", r:"演目選び・演技調整の判断材料"},
+    ],
+    "再演・調整": [
+      {n:"修正後の反応変化シミュレーション", c:"b", w:"「ここをこう修正したら反応がどう変わるか」を事前にシミュレーションする", h:"修正を入れる前に効果を推定する", r:"「この修正で良いか」の判断材料"},
+    ],
+    "完成": [
+      {n:"観客層ごとのウケ予測", c:"b", w:"完成した作品が、異なる観客層でどうウケるかを予測する", h:"「若者向けライブではウケるが、テレビ向きではない」等の判断", r:"演目選びの判断材料"},
+    ],
+    "定番化・熟成": [
+      {n:"季節・時事との相性予測", c:"b", w:"「クリスマスネタは12月にやると効く」等、季節・時事と演目の相性を予測する", h:"セットリストの時期別最適化", r:"演目選びの判断材料"},
+    ],
+  },
+  "記録・計測\nRecording": {
+    "初披露": [
+      {n:"笑い声リアルタイム解析", c:"b", w:"会場の音声をリアルタイムで解析し、笑いの発生・強度・持続時間を記録する", h:"本番中の笑いを時系列データとして残す", r:"リアルタイムで可視化されれば判断材料に"},
+      {n:"客席表情分析", c:"b", w:"客席のカメラ映像から、観客の表情変化を検出する", h:"笑い声では捉えられない「静かに楽しんでいる」反応も把握", r:"振り返りの判断材料。プライバシー面の課題あり"},
+      {n:"笑いタイミング自動記録", c:"b", w:"笑いが起きた時刻と台本上の該当箇所を自動で対応づけて記録する", h:"台本のどのセリフ・どの動きでウケたかを正確に把握する", r:"振り返りの判断材料"},
+      {n:"ウケ/スベりヒートマップ", c:"b", w:"台本の時系列に沿って、笑いの強度をヒートマップとして可視化する", h:"一目で「どこがウケてどこがスベったか」がわかる", r:"振り返りの判断材料"},
+    ],
+  },
+  "比較・検証\nComparison": {
+    "着想": [
+      {n:"既出ネタとの類似度チェック", c:"b", w:"思いついたアイデアが既存の有名ネタと似ていないかを検索・比較する", h:"「このアイデアで行くか」を判断する段階で被りリスクを確認", r:"「このアイデアで行くか」の判断材料"},
+    ],
+    "台本制作": [
+      {n:"複数台本案の構成比較", c:"b", w:"A案・B案など複数の台本の起承転結バランスを可視化して比較する", h:"どちらの台本が良いかを客観的に見比べる", r:"どちらの台本が良いかの判断材料"},
+    ],
+    "稽古": [
+      {n:"テイク間の比較", c:"b", w:"同じシーンの複数テイクを並べて、間・テンポ・声量の違いを可視化する", h:"「3回目のテイクのほうが間が良かった」を数値で確認する", r:"どのテイクが良かったかの判断材料"},
+    ],
+    "再演・調整": [
+      {n:"複数回公演の反応比較", c:"b", w:"同じネタの複数回公演の反応データを並べて比較する", h:"「この会場ではウケたのに、あの会場ではダメだった」の原因探索", r:"改善の判断材料"},
+      {n:"修正前後の効果検証", c:"b", w:"修正前と修正後の公演データを比較し、変更の効果を検証する", h:"PDCAサイクルの「Check」を客観的に行う", r:"改善の判断材料"},
+    ],
+    "定番化・熟成": [
+      {n:"観客属性別反応傾向", c:"b", w:"同じネタでも客層によって反応がどう違うかを比較する", h:"「学生向けと社会人向けで演じ方を変えるべきか」の判断", r:"演じ方の調整判断材料"},
+      {n:"スタイル変化の経年分析", c:"b", w:"年単位で自分の演技スタイルの変化を分析する", h:"自分の成長・変化を客観的に知る", r:"自分の変化を知る判断材料"},
+    ],
+  },
+  "提案・推薦\nSuggestion": {
+    "着想": [
+      {n:"次に合うテーマ推薦", c:"a", w:"芸人の過去作品・得意分野・最近の傾向から、次に取り組むべきテーマを推薦する", h:"何を作るか迷っているときに方向性の候補を提示", r:"推薦されたテーマを採用すれば中身が変わる"},
+      {n:"未開拓の切り口提案", c:"a", w:"よくあるテーマに対して、まだ誰もやっていない切り口・視点を提案する", h:"ありがちなテーマを新鮮にするための視点を得る", r:"切り口を採用すれば中身が変わる"},
+    ],
+    "台本制作": [
+      {n:"構成に基づくオチのパターン提案", c:"a", w:"台本の構成を分析した上で、「この流れなら、こういうオチが効く」と提案する", h:"構成との整合性が高いオチを探すときに使う", r:"オチを採用すれば中身が変わる"},
+    ],
+    "稽古": [
+      {n:"「ここの間を0.3秒」等の改善提案", c:"a", w:"分析結果に基づいて、間・テンポ・声量の具体的な変更を提案する", h:"「このボケの後、0.3秒長く間を取ると効果的」等の具体指示", r:"演技を直接変える提案"},
+    ],
+    "初披露": [
+      {n:"公演直後の修正優先順位提案", c:"a", w:"記録データを分析し、「まずここを直すべき」という優先順位を提案する", h:"公演直後の記憶が新しいうちに修正の方向性を整理", r:"「ここを直せ」は中身に踏み込む提案"},
+    ],
+    "再演・調整": [
+      {n:"ボケ強化案提示", c:"a", w:"弱かったボケに対して、強化する方向の代替案を提示する", h:"「このボケ、もっとこうしたら強くなる」という具体提案", r:"ボケの中身を変える提案"},
+    ],
+    "完成": [
+      {n:"最適な披露順・セットリスト提案", c:"b", w:"単独ライブ等で、複数ネタの披露順を観客体験の観点から提案する", h:"「掴みにはこのネタ、トリにはこのネタ」という構成の最適化", r:"セットリストは中身ではなく順番の話"},
+    ],
+    "定番化・熟成": [
+      {n:"時事アップデート提案", c:"a", w:"定番ネタの中の時事ネタ部分を、最新の話題に差し替える提案をする", h:"「ここのフレーズ、今ならこっちに変えたほうが効く」", r:"ネタの中身を更新する提案"},
+    ],
+  },
+  "対話・壁打ち\nDialogue": {
+    "着想": [
+      {n:"雑談的ブレスト相手", c:"a", w:"「こういうの面白くない？」「○○ってあるじゃん」といった雑談にAIが応答する", h:"楽屋での雑談のように、思いつきを投げかけて反応を見る。ピン芸人に特に有用", r:"対話の中からネタが生まれる"},
+    ],
+    "台本制作": [
+      {n:"壁打ち相手としての対話", c:"a", w:"台本の方向性・構成・セリフについてAIと対話しながら考える", h:"「この展開どう思う？」「もっと面白くならない？」とやりとりする", r:"対話の中から構成・セリフが生まれる"},
+    ],
+    "稽古": [
+      {n:"相方代わりの読み合わせ", c:"a", w:"AIが相方の役を演じ、セリフのタイミング・掛け合いを練習する", h:"相方が不在のときの稽古。タイミングの確認", r:"演技の相手＝中身に直接関与"},
+    ],
+    "再演・調整": [
+      {n:"「なぜウケなかったか」ディスカッション", c:"a", w:"スベった原因について、AIと対話しながら仮説を立て、検証する", h:"「構成の問題か、演技の問題か、客層の問題か」を切り分ける", r:"対話の中から修正方針が生まれる"},
+    ],
+    "定番化・熟成": [
+      {n:"定番ネタのアップデートについて壁打ち", c:"a", w:"定番ネタをこの先どう手入れ・展開するかについてAIと対話する", h:"「このネタ最近ウケが落ちてきたけどどうする？」「このキャラを別ネタに使えないか？」", r:"対話からアップデートの方向性が生まれる"},
+    ],
+  },
+  "代行・自動化\nAutomation": {
+    "着想": [
+      {n:"アイデアメモの自動整理・タグ付け", c:"c", w:"散らばったアイデアメモを自動でタグ付け・分類し、検索可能にする", h:"スマホのメモ帳に溜まった断片的なアイデアを後から探せるようにする", r:"メモを整理するだけ"},
+    ],
+    "台本制作": [
+      {n:"読み上げ音声生成", c:"b", w:"台本のセリフをAI音声で読み上げ、音として確認できるようにする", h:"目で読むだけではわからないテンポ・リズム・尺感を耳で確認する", r:"音声で聞くことで台本の良し悪しを判断する材料"},
+    ],
+    "稽古": [
+      {n:"自動録画", c:"c", w:"稽古の開始・終了を検出して自動で録画を開始・停止する", h:"録画ボタンを押し忘れない。稽古に集中できる", r:"撮るだけ"},
+      {n:"タイムスタンプ付きメモ", c:"c", w:"稽古中のメモに自動でタイムスタンプを付与する", h:"後から映像の該当箇所にすぐ飛べる", r:"記録するだけ"},
+    ],
+    "完成": [
+      {n:"字幕・翻訳・配信用編集の自動化", c:"c", w:"完成した映像に字幕を付けたり、他言語に翻訳したり、配信用にフォーマットを変換する", h:"YouTube・配信用のポストプロダクション", r:"中身と無関係"},
+    ],
+    "定番化・熟成": [
+      {n:"ダッシュボード自動生成", c:"c", w:"公演データを自動集計し、グラフ・ランキング等のダッシュボードを生成する", h:"マネージャー・事務所への報告資料。自分の活動の俯瞰", r:"可視化するだけ"},
+    ],
+  },
+};
+
+const phases = ["着想","台本制作","稽古","初披露","再演・調整","完成","定番化・熟成"];
+const types = Object.keys(data);
+const classMap = {a: "A 創作直接型", b: "B 創作支援型", c: "C 周辺業務型"};
+
+const tbody = document.getElementById("matrixBody");
+const tooltip = document.getElementById("tooltip");
+
+types.forEach(type => {
+  const tr = document.createElement("tr");
+  
+  // Row header
+  const th = document.createElement("th");
+  th.className = "row-header";
+  const [ja, en] = type.split("\n");
+  th.innerHTML = ja + '<span class="en">' + en + '</span>';
+  tr.appendChild(th);
+  
+  phases.forEach(phase => {
+    const td = document.createElement("td");
+    const items = data[type][phase] || [];
+    
+    items.forEach(item => {
+      const el = document.createElement("div");
+      el.className = "item " + item.c;
+      el.textContent = item.n;
+      el.dataset.name = item.n;
+      el.dataset.cls = item.c;
+      el.dataset.what = item.w;
+      el.dataset.how = item.h;
+      el.dataset.why = item.r;
+      el.dataset.type = ja;
+      el.dataset.phase = phase;
+      td.appendChild(el);
+    });
+    
+    tr.appendChild(td);
+  });
+  
+  tbody.appendChild(tr);
+});
+
+// Tooltip
+let activeItem = null;
+
+document.addEventListener("mouseover", e => {
+  const item = e.target.closest(".item");
+  if (!item) return;
+  activeItem = item;
+  
+  const cls = item.dataset.cls;
+  tooltip.innerHTML = `
+    <div class="tt-header">
+      <span class="tt-badge ${cls}">${classMap[cls]}</span>
+    </div>
+    <div class="tt-name">${item.dataset.name}</div>
+    <div class="tt-type">${item.dataset.phase} ／ ${item.dataset.type}</div>
+    <div class="tt-label">何をするか</div>
+    <div class="tt-what">${item.dataset.what}</div>
+    <div class="tt-label">どう使うか</div>
+    <div class="tt-how">${item.dataset.how}</div>
+    <div class="tt-label">なぜこの分類か</div>
+    <div class="tt-why">${item.dataset.why}</div>
+  `;
+  tooltip.classList.add("show");
+});
+
+document.addEventListener("mousemove", e => {
+  if (!tooltip.classList.contains("show")) return;
+  let x = e.clientX + 14;
+  let y = e.clientY + 14;
+  const tw = tooltip.offsetWidth;
+  const th = tooltip.offsetHeight;
+  if (x + tw > window.innerWidth - 10) x = e.clientX - tw - 10;
+  if (y + th > window.innerHeight - 10) y = e.clientY - th - 10;
+  tooltip.style.left = x + "px";
+  tooltip.style.top = y + "px";
+});
+
+document.addEventListener("mouseout", e => {
+  const item = e.target.closest(".item");
+  if (item === activeItem) {
+    tooltip.classList.remove("show");
+    activeItem = null;
+  }
+});
+
+// Font size control
+const fontSlider = document.getElementById("fontSlider");
+const fontValue = document.getElementById("fontValue");
+const matrixWrap = document.querySelector(".matrix-wrap");
+const baseFontSize = 7; // base px
+
+function applyFontSize() {
+  const pct = fontSlider.value;
+  fontValue.textContent = pct + "%";
+  matrixWrap.style.fontSize = (baseFontSize * pct / 100) + "px";
+}
+applyFontSize();
+fontSlider.addEventListener("input", applyFontSize);
+</script>
+
+<div style="text-align:center; margin: 24px 0;"><a href="../" style="color:#5a8a6a; font-size:13px;">← Back</a></div>
+
+</body>
+</html>
