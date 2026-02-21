@@ -1,0 +1,1 @@
+# manabuozato.github.io
