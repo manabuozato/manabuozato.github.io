@@ -6,110 +6,6 @@
 <title>Japan Chef-in-Residence — 2026年4月</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Noto+Sans+JP:wght@200;300;400;500&family=Noto+Serif+JP:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
-/* ===== AUTH GATE ===== */
-.auth-gate {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: #1a1714;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: opacity 0.6s ease, visibility 0.6s ease;
-}
-
-.auth-gate.hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.auth-box {
-  text-align: center;
-  color: #f7f4ef;
-  max-width: 320px;
-  padding: 2rem;
-}
-
-.auth-box .auth-label {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  opacity: 0.35;
-  margin-bottom: 2rem;
-}
-
-.auth-box .auth-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.6rem;
-  font-weight: 300;
-  margin-bottom: 2.5rem;
-  opacity: 0.7;
-}
-
-.auth-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-}
-
-.auth-fields input {
-  background: transparent;
-  border: 1px solid rgba(247,244,239,0.15);
-  color: #f7f4ef;
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 300;
-  padding: 0.7rem 1rem;
-  border-radius: 2px;
-  outline: none;
-  text-align: center;
-  letter-spacing: 0.05em;
-  transition: border-color 0.3s;
-}
-
-.auth-fields input::placeholder {
-  color: rgba(247,244,239,0.25);
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-}
-
-.auth-fields input:focus {
-  border-color: rgba(247,244,239,0.4);
-}
-
-.auth-enter {
-  background: transparent;
-  border: 1px solid rgba(247,244,239,0.2);
-  color: rgba(247,244,239,0.5);
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  padding: 0.6rem 2rem;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: all 0.3s;
-}
-
-.auth-enter:hover {
-  border-color: rgba(247,244,239,0.5);
-  color: rgba(247,244,239,0.8);
-}
-
-.auth-error {
-  color: #8e4a3a;
-  font-size: 0.75rem;
-  margin-top: 1rem;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.auth-error.show { opacity: 1; }
-
-.main-content { display: none; }
-.main-content.unlocked { display: block; }
 
 :root {
   --ink: #1a1714;
@@ -307,33 +203,59 @@ body {
   line-height: 1.8;
 }
 
-/* ===== LOCATION HERO IMAGE ===== */
+/* ===== LOCATION GALLERY ===== */
 /*
  * 画像ファイルは ./images/ フォルダに配置してください
- *   温泉津: ./images/yunotsu.jpg
- *   備後:   ./images/bingo.jpg
- *   日置:   ./images/hioki.jpg
- * 推奨サイズ: 横1200px以上、横長（16:9 または 3:1 など）
+ * 推奨サイズ: 横1200px以上、横長（3:2〜16:9）
  */
-.location-hero {
-  display: block;
+.location-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-bottom: 2rem;
+}
+
+/* 最初の画像は2列フル幅 */
+@media (max-width: 640px) {
+  .location-gallery {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.location-gallery-img {
   width: 100%;
-  height: 280px;
+  height: 200px;
   object-fit: cover;
   object-position: center;
   border-radius: 2px;
-  margin-bottom: 2rem;
   filter: grayscale(10%) contrast(1.03);
-  opacity: 0.92;
+  opacity: 0.9;
   transition: opacity 0.4s ease;
+  display: block;
 }
 
-.location-hero:hover {
-  opacity: 1;
+.location-gallery img:first-child {
+  grid-column: 1 / -1;
+  height: 280px;
+  width: 100%;
+}
+
+.location-gallery-img:hover { opacity: 1; }
+
+/* スクロールヒント */
+.gallery-hint {
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  text-align: right;
+  margin-top: -1.6rem;
+  margin-bottom: 1.8rem;
+  opacity: 0.5;
 }
 
 @media (max-width: 640px) {
-  .location-hero { height: 200px; }
+  .location-gallery-img { height: 190px; width: 80%; }
+  .location-gallery-img:first-child { width: 88%; }
 }
 
 /* ===== LOCATION CARDS ===== */
@@ -780,23 +702,6 @@ body {
 </head>
 <body>
 
-<!-- AUTH GATE -->
-<div class="auth-gate" id="authGate">
-  <div class="auth-box">
-    <div class="auth-label">Private Document</div>
-    <div class="auth-title">Japan, <em>à la carte</em></div>
-    <div class="auth-fields">
-      <input type="text" id="authId" placeholder="ID" autocomplete="off" />
-      <input type="password" id="authPass" placeholder="Password" autocomplete="off" />
-    </div>
-    <button class="auth-enter" onclick="tryAuth()">Enter</button>
-    <div class="auth-error" id="authError">ID またはパスワードが違います</div>
-  </div>
-</div>
-
-<!-- MAIN CONTENT -->
-<div class="main-content" id="mainContent">
-
 <!-- COVER -->
 <section class="cover">
   <div class="cover-ornament">☰</div>
@@ -825,12 +730,12 @@ body {
 <div class="location reveal">
   <div class="location-card">
     <div class="location-number">— 01</div>
-    <img
-      class="location-hero"
-      src="./images/yunotsu.jpg"
-      alt="温泉津の海岸と町並み"
-      loading="lazy"
-    >
+    <div class="location-gallery" id="gallery-yunotsu">
+      <img class="location-gallery-img" src="./images/watowa_slider1.jpg" alt="温泉津 WATOWA" loading="lazy">
+      <img class="location-gallery-img" src="./images/watowa_kitchen.png" alt="WATOWAキッチン" loading="lazy">
+      <img class="location-gallery-img" src="./images/watowa_slider2.jpg" alt="温泉津の風景" loading="lazy">
+      <img class="location-gallery-img" src="./images/watowa_slider3.jpg" alt="温泉津 港" loading="lazy">
+    </div>
     <h3>温泉津、島根県 <span class="en">Yunotsu, Shimane</span></h3>
     <span class="location-sea sea-japan">日本海</span>
     <a class="map-link" href="https://maps.google.com/maps?q=温泉津,島根県" target="_blank" rel="noopener">Google Maps</a>
@@ -838,7 +743,7 @@ body {
 
     <div class="cire-note">
       <div class="cire-note-label">CIREにとっての意味</div>
-      <p>WATOWAは夏のレジデンシーの最有力候補地です。4月に創設者の大海昌子さんや地域との関係を築くことが、夏の実現可能性を大きく左右します。Jasonが初の外国人シェフとなることは、「世界中からシェフを」という大海さんの当初ビジョンと合致します。</p>
+      <p>WATOWAは夏・秋のレジデンシーの最有力候補地です。4月に創設者の大海昌子さんや地域との関係を築くことが、夏・秋の実現可能性を大きく左右します。Jasonが初の外国人シェフとなることは、「世界中からシェフを」という大海さんの当初ビジョンと合致します。</p>
     </div>
 
     <div class="expand-section">
@@ -846,7 +751,7 @@ body {
         <span class="arrow">▶</span> WATOWAと温泉津について
       </button>
       <div class="expand-content">
-        <p>WATOWA（わとわ、「人と人がつながる輪」）は2021年5月に創設。1週間〜1ヶ月単位でシェフを受け入れ、キッチン・宿泊（¥1,000/泊）・車（¥400/日）・光熱費を提供。シェフは売上の15%を施設利用料として支払い、残りを手取りとします。中東料理、中華、メキシカン、イタリアン、フレンチなど多様なシェフが滞在し、複数回リピートする人も多数。一人のシェフは温泉津に移住してクラフトビールとハンバーガーの店を開きました。</p>
+        <p>WATOWA（わとわ、「人と人がつながる輪」）は2021年5月に創設。1週間〜1ヶ月単位でシェフを受け入れ、中東料理、中華、メキシカン、イタリアン、フレンチなど多様なシェフが滞在し、複数回リピートする人も多数。一人のシェフは温泉津に移住してクラフトビールとハンバーガーの店を開きました。</p>
         <p>温泉津は人口3,800人未満の町。ユネスコ世界遺産「石見銀山」の構成資産で、16〜17世紀に世界の銀の約3分の1を積み出した港町です。町の区画は1692年の地図とほぼ同一——330年間ほとんど変わっていません。コンビニなし。1,300年の歴史ある2つの公衆浴場（薬師湯・元湯）が町の中心。毎週土曜夜に石見神楽が奉納されます。</p>
       </div>
     </div>
@@ -908,7 +813,7 @@ body {
           </div>
           <div class="meta-item">
             <label>宿泊</label>
-            <span>WATOWAドミトリー ¥1,000/泊</span>
+            <span>WATOWAにはドミトリーから一棟貸しまで。また、上部に記載の他郷阿部家もおすすめ。</span>
           </div>
           <div class="meta-item">
             <label>桜</label>
@@ -924,12 +829,12 @@ body {
 <div class="location reveal">
   <div class="location-card">
     <div class="location-number">— 02</div>
-    <img
-      class="location-hero"
-      src="./images/tai_sashimi.jpg"
-      alt="瀬戸内・桜鯛の刺し"
-      loading="lazy"
-    >
+    <div class="location-gallery">
+      <img class="location-gallery-img" src="./images/tai_sashimi.jpg"         alt="瀬戸内・桜鯛の刺し"         loading="lazy">
+      <img class="location-gallery-img" src="./images/tomonoura_joyato.jpg"    alt="鞆の浦・常夜燈と港"         loading="lazy">
+      <img class="location-gallery-img" src="./images/tomonoura_harbor.jpg"    alt="鞆の浦・町並み"             loading="lazy">
+      <img class="location-gallery-img" src="./images/seto_inland_sea.jpg"     alt="瀬戸内海のビーチと島"       loading="lazy">
+    </div>
     <h3>備後/福山、広島県 <span class="en">Bingo / Fukuyama</span></h3>
     <span class="location-sea sea-seto">瀬戸内海</span>
     <a class="map-link" href="https://maps.google.com/maps?q=福山市,広島県" target="_blank" rel="noopener">Google Maps</a>
@@ -1009,7 +914,7 @@ body {
           </div>
           <div class="meta-item">
             <label>キッチン</label>
-            <span>Little Setouchi（営業許可付きシェアキッチン）</span>
+            <span>Little Setouchi（営業許可付きシェアキッチン）、&Q（デザートピザとシングルオリジンコーヒーのカフェギャラリー）</span>
           </div>
           <div class="meta-item">
             <label>桜</label>
@@ -1025,12 +930,11 @@ body {
 <div class="location reveal">
   <div class="location-card">
     <div class="location-number">— 03</div>
-    <img
-      class="location-hero"
-      src="./images/sakurajima_sunset.jpg"
-      alt="桜島の噴煙と鹿児島の夕景"
-      loading="lazy"
-    >
+    <div class="location-gallery" id="gallery-hioki">
+      <img class="location-gallery-img" src="./images/sakurajima_sunset.jpg"       alt="桜島・噴煙と鹿児島の夕景"   loading="lazy">
+      <img class="location-gallery-img" src="./images/sakurajima_buried_torii.jpg" alt="桜島・埋没鳥居"             loading="lazy">
+      <img class="location-gallery-img" src="./images/kanosuke_distillery.jpg"     alt="嘉之助蒸留所のポットスチル" loading="lazy">
+    </div>
     <h3>日置、鹿児島県 <span class="en">Hioki, Kagoshima</span></h3>
     <span class="location-sea sea-china">東シナ海</span>
     <a class="map-link" href="https://maps.google.com/maps?q=日置市,鹿児島県" target="_blank" rel="noopener">Google Maps</a>
@@ -1120,7 +1024,13 @@ body {
 <div class="menu-b-card reveal">
   <div class="menu-b-inner">
     <h3>青柳 — 鯛料理</h3>
-    <p>CIREとつながりのある料理人の店。目の前で鯛をさばく実演を見ながら食事ができます。料理人同士の対話の場として、東京滞在中にぜひ。CIREメンバーが同行します。</p>
+    <div class="location-gallery" id="gallery-aoyagi">
+      <img class="location-gallery-img" src="./images/aoyagi_exterior.jpg" alt="青柳 麻布台 外観" loading="lazy">
+      <img class="location-gallery-img" src="./images/aoyagi_dish.jpg" alt="青柳 料理" loading="lazy">
+      <img class="location-gallery-img" src="./images/aoyagi_chef.jpg" alt="青柳 小山裕久" loading="lazy">
+    </div>
+    <p>「鯛の小山」と称されるほど鯛料理に定評のある、明治43年（1910年）創業の日本料理店。料理人・<strong>小山裕久</strong>氏は徳島出身。大阪の老舗料亭「吉兆」で修業後、1990年代にパリのプラザアテネ・リッツで日本料理の祭典を催し、フランス農事功労賞オフィシエを受勲（日本料理人として唯一）。全席個室のみ、徳島・鳴門産の天然鯛を毎日直送。名物「鯛のへぎ造り」は包丁使いで素材の持ち味を引き出す、氏の真骨頂。4月は桜鯛のシーズン。CIREメンバーが同行し、料理人同士の対話の場をセッティングします。</p>
+    <a class="map-link" href="https://aoyagi-group.jp/aoyagi" target="_blank" rel="noopener" style="display:inline-block;margin-top:0.5rem;margin-bottom:0;font-size:0.65rem;letter-spacing:0.15em;padding:0.25rem 0.75rem;border-radius:2px;background:rgba(0,0,0,0.03);color:var(--muted);text-decoration:none;">🌐 公式サイト</a>
   </div>
 </div>
 
@@ -1139,36 +1049,42 @@ body {
     <div class="region">長崎県 — 東シナ海</div>
     <p>152の島々。椿油で延ばす1,000年の歴史のうどん。「幻の和牛」五島牛。椿のクラフトジン。隠れキリシタンの世界遺産。4月はアオリイカの最盛期。</p>
     <a class="map-link" href="https://maps.google.com/maps?q=五島列島,長崎県" target="_blank" rel="noopener">Google Maps</a>
+    <a class="map-link" href="https://www.serendiphotelgoto.com/" target="_blank" rel="noopener" style="margin-left:0.25rem;">🌐 Serendip Hotel Goto</a>
   </div>
   <div class="menu-c-item">
     <h4>南相馬</h4>
     <div class="region">福島県 — 太平洋</div>
     <p>原発から20km。2011年以降、ゼロから食のシステムを再建。菜の花・ヒマワリで土壌修復。現代日本で最も力強い「食のレジリエンス」の物語。</p>
     <a class="map-link" href="https://maps.google.com/maps?q=南相馬市,福島県" target="_blank" rel="noopener">Google Maps</a>
+    <a class="map-link" href="https://windandsoil.jp/inspiration-kitchen/" target="_blank" rel="noopener" style="margin-left:0.25rem;">🌐 Inspiration Kitchen</a>
   </div>
   <div class="menu-c-item">
     <h4>飛騨/高山</h4>
     <div class="region">岐阜県 — 山岳</div>
     <p>冬は-20°C。朴葉味噌、漬物ステーキ、1,300年の鵜飼漁、A5飛騨牛。保存食と発酵の極致。</p>
     <a class="map-link" href="https://maps.google.com/maps?q=高山市,岐阜県" target="_blank" rel="noopener">Google Maps</a>
+    <a class="map-link" href="https://www.instagram.com/doyana_hida_edohouse/" target="_blank" rel="noopener" style="margin-left:0.25rem;">🌐 食堂喫茶どやな</a>
   </div>
   <div class="menu-c-item">
     <h4>神山</h4>
     <div class="region">徳島県 — 太平洋</div>
     <p>Food Hub Projectが2016年からCIRを運営。NYのシェフが1年滞在した実績あり。日本のすだちの24%を生産。既存の国際CIRモデルとして最も参考になる場所。</p>
     <a class="map-link" href="https://maps.google.com/maps?q=神山町,徳島県" target="_blank" rel="noopener">Google Maps</a>
+    <a class="map-link" href="https://week.kamiyama.jp/" target="_blank" rel="noopener" style="margin-left:0.25rem;">🌐 Week神山</a>
   </div>
   <div class="menu-c-item">
-    <h4>秋津</h4>
-    <div class="region">広島県 — 瀬戸内海</div>
-    <p>400年以上の牡蠣養殖。珍しい女性杜氏が海産物に合う吟醸酒を醸す。レモン生産量日本一。歩ける距離にテロワールが完結する場所。</p>
-    <a class="map-link" href="https://maps.google.com/maps?q=安芸津町,東広島市,広島県" target="_blank" rel="noopener">Google Maps</a>
+    <h4>氷見</h4>
+    <div class="region">富山県 — 日本海（富山湾）</div>
+    <p>能登半島のつけ根、富山湾に面した漁師町。寒ブリ日本一の漁場。海辺の宿兼ギャラリー「HOUSEHOLD」がシェフ・イン・レジデンスを実施した実績あり。立山連峰を望む海越しの絶景。</p>
+    <a class="map-link" href="https://maps.google.com/maps?q=氷見市,富山県" target="_blank" rel="noopener">Google Maps</a>
+    <a class="map-link" href="https://household-bldg.com/" target="_blank" rel="noopener" style="margin-left:0.25rem;">🌐 HOUSEHOLD</a>
   </div>
   <div class="menu-c-item">
-    <h4>京丹後</h4>
-    <div class="region">京都府 — 日本海</div>
-    <p>寺ではない京都。5隻だけが獲る間人ガニ。2024年「美食の街」全国5都市に選出。へしこ。京都市内から90分。</p>
-    <a class="map-link" href="https://maps.google.com/maps?q=京丹後市,京都府" target="_blank" rel="noopener">Google Maps</a>
+    <h4>安芸</h4>
+    <div class="region">高知県 — 太平洋</div>
+    <p>三菱創業者・岩崎弥太郎の生家や武家屋敷が残る高知東部の城下町。古民家ゲストハウス「東風ノ家」を拠点に、釜揚げしらす、柚子、冬春ナスなど太平洋の食材と出会える。旅人と地元民の交流拠点。</p>
+    <a class="map-link" href="https://maps.google.com/maps?q=安芸市,高知県" target="_blank" rel="noopener">Google Maps</a>
+    <a class="map-link" href="https://kochinoya.com/" target="_blank" rel="noopener" style="margin-left:0.25rem;">🌐 東風ノ家</a>
   </div>
 </div>
 
@@ -1184,7 +1100,7 @@ body {
   </div>
 
   <div class="visa-block">
-    <h3>夏のレジデンシー——調整中</h3>
+    <h3>夏・秋のレジデンシー——調整中</h3>
     <p>シェフ用の技能ビザには、10年以上の料理経験、外国料理専門レストランを運営するスポンサー組織、雇用契約が必要で、取得に2〜6ヶ月かかります。</p>
     <p>CIREがスポンサーになれるかどうか、現在調査を進めています。正直に言って、ハードルは高いです。詳細は直接お話しします。</p>
   </div>
@@ -1218,36 +1134,8 @@ body {
   <div class="footer-name">CIRE — 日本シェフ・イン・レジデンス応援協会</div>
 </footer>
 
-<!-- /MAIN CONTENT -->
-</div>
 
 <script>
-function tryAuth() {
-  const id = document.getElementById('authId').value;
-  const pass = document.getElementById('authPass').value;
-  if (id === 'cire' && pass === '0214') {
-    document.getElementById('authGate').classList.add('hidden');
-    document.getElementById('mainContent').classList.add('unlocked');
-    sessionStorage.setItem('cire_auth', '1');
-  } else {
-    document.getElementById('authError').classList.add('show');
-    setTimeout(() => document.getElementById('authError').classList.remove('show'), 2000);
-  }
-}
-
-// Enter key support
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && !document.getElementById('authGate').classList.contains('hidden')) {
-    tryAuth();
-  }
-});
-
-// Session persistence
-if (sessionStorage.getItem('cire_auth') === '1') {
-  document.getElementById('authGate').classList.add('hidden');
-  document.getElementById('mainContent').classList.add('unlocked');
-}
-
 function toggle(btn) {
   const section = btn.parentElement;
   section.classList.toggle('open');
