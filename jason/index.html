@@ -442,11 +442,19 @@ body {
 }
 
 .ingredient-item .jp {
-  font-family: var(--ff-display-jp);
   font-size: 0.78rem;
   color: var(--muted);
   margin-left: 0.25rem;
+}
+.ingredient-item .romaji {
+  font-size: 0.75rem;
+  color: var(--muted);
   font-style: italic;
+}
+.ingredient-item .kanji {
+  font-family: var(--ff-display-jp);
+  font-size: 0.78rem;
+  color: var(--muted);
 }
 
 .nearby-item {
@@ -789,16 +797,16 @@ body {
       <div class="expand-content">
         <p>April is peak season — sea and mountain harvests overlap simultaneously. This convergence is rare even within Japan.</p>
         <div class="ingredients-grid">
-          <div class="ingredient-item">Blackthroat seaperch <span class="jp">ノドグロ</span></div>
-          <div class="ingredient-item">Rock oysters <span class="jp">岩牡蠣</span></div>
-          <div class="ingredient-item">Horse mackerel <span class="jp">どんちっちアジ</span></div>
-          <div class="ingredient-item">Spanish mackerel <span class="jp">サワラ</span></div>
-          <div class="ingredient-item">Cherry blossom bream <span class="jp">桜鯛</span></div>
-          <div class="ingredient-item">Bamboo shoots <span class="jp">筍</span></div>
-          <div class="ingredient-item">Bracken fiddleheads <span class="jp">ワラビ</span></div>
-          <div class="ingredient-item">Angelica tree buds <span class="jp">タラの芽</span></div>
-          <div class="ingredient-item">Red snow crab <span class="jp">紅ズワイガニ</span></div>
-          <div class="ingredient-item">Dried flat seaweed <span class="jp">板わかめ</span></div>
+          <div class="ingredient-item">Blackthroat seaperch <span class="jp"><span class="romaji">nodoguro</span> <span class="kanji">ノドグロ</span></span></div>
+          <div class="ingredient-item">Rock oysters <span class="jp"><span class="romaji">iwa-gaki</span> <span class="kanji">岩牡蠣</span></span></div>
+          <div class="ingredient-item">Horse mackerel <span class="jp"><span class="romaji">donchicchi aji</span> <span class="kanji">どんちっちアジ</span></span></div>
+          <div class="ingredient-item">Spanish mackerel <span class="jp"><span class="romaji">sawara</span> <span class="kanji">サワラ</span></span></div>
+          <div class="ingredient-item">Cherry blossom bream <span class="jp"><span class="romaji">sakura-dai</span> <span class="kanji">桜鯛</span></span></div>
+          <div class="ingredient-item">Bamboo shoots <span class="jp"><span class="romaji">takenoko</span> <span class="kanji">筍</span></span></div>
+          <div class="ingredient-item">Bracken fiddleheads <span class="jp"><span class="romaji">warabi</span> <span class="kanji">ワラビ</span></span></div>
+          <div class="ingredient-item">Angelica tree buds <span class="jp"><span class="romaji">tara no me</span> <span class="kanji">タラの芽</span></span></div>
+          <div class="ingredient-item">Red snow crab <span class="jp"><span class="romaji">beni-zuwaigani</span> <span class="kanji">紅ズワイガニ</span></span></div>
+          <div class="ingredient-item">Dried flat seaweed <span class="jp"><span class="romaji">ita-wakame</span> <span class="kanji">板わかめ</span></span></div>
         </div>
       </div>
     </div>
@@ -886,14 +894,14 @@ body {
       </button>
       <div class="expand-content">
         <div class="ingredients-grid">
-          <div class="ingredient-item">Spanish mackerel <span class="jp">サワラ</span></div>
-          <div class="ingredient-item">Cherry blossom bream <span class="jp">桜鯛</span></div>
-          <div class="ingredient-item">Rockfish <span class="jp">メバル</span></div>
-          <div class="ingredient-item">Mantis shrimp <span class="jp">シャコ</span></div>
-          <div class="ingredient-item">Conger eel <span class="jp">穴子</span></div>
-          <div class="ingredient-item">Clams <span class="jp">アサリ</span></div>
-          <div class="ingredient-item">Hiroshima oysters <span class="jp">広島牡蠣</span></div>
-          <div class="ingredient-item">Setoda lemons <span class="jp">瀬戸田レモン</span></div>
+          <div class="ingredient-item">Spanish mackerel <span class="jp"><span class="romaji">sawara</span> <span class="kanji">サワラ</span></span></div>
+          <div class="ingredient-item">Cherry blossom bream <span class="jp"><span class="romaji">sakura-dai</span> <span class="kanji">桜鯛</span></span></div>
+          <div class="ingredient-item">Rockfish <span class="jp"><span class="romaji">mebaru</span> <span class="kanji">メバル</span></span></div>
+          <div class="ingredient-item">Mantis shrimp <span class="jp"><span class="romaji">shako</span> <span class="kanji">シャコ</span></span></div>
+          <div class="ingredient-item">Conger eel <span class="jp"><span class="romaji">anago</span> <span class="kanji">穴子</span></span></div>
+          <div class="ingredient-item">Clams <span class="jp"><span class="romaji">asari</span> <span class="kanji">アサリ</span></span></div>
+          <div class="ingredient-item">Hiroshima oysters <span class="jp"><span class="romaji">hiroshima-gaki</span> <span class="kanji">広島牡蠣</span></span></div>
+          <div class="ingredient-item">Setoda lemons <span class="jp"><span class="romaji">setoda lemon</span> <span class="kanji">瀬戸田レモン</span></span></div>
         </div>
         <p>Hiroshima Prefecture produces 60% of Japan's oysters — more than the entire annual output of the United States.</p>
       </div>
@@ -986,14 +994,14 @@ body {
       </button>
       <div class="expand-content">
         <div class="ingredients-grid">
-          <div class="ingredient-item">Kurobuta pork <span class="jp">黒豚</span></div>
-          <div class="ingredient-item">Kagoshima wagyu <span class="jp">黒牛</span></div>
-          <div class="ingredient-item">Silver-stripe herring <span class="jp">きびなご</span></div>
-          <div class="ingredient-item">Chicken sashimi <span class="jp">鶏刺し</span></div>
-          <div class="ingredient-item">First bonito of the season <span class="jp">初鰹</span></div>
-          <div class="ingredient-item">Imo shochu <span class="jp">芋焼酎</span></div>
-          <div class="ingredient-item">Tsukihigai scallop ※ off-season <span class="jp">月日貝</span></div>
-          <div class="ingredient-item">First-flush green tea <span class="jp">新茶</span></div>
+          <div class="ingredient-item">Kurobuta pork <span class="jp"><span class="romaji">kurobuta</span> <span class="kanji">黒豚</span></span></div>
+          <div class="ingredient-item">Kagoshima wagyu <span class="jp"><span class="romaji">kuro-ushi</span> <span class="kanji">黒牛</span></span></div>
+          <div class="ingredient-item">Silver-stripe herring <span class="jp"><span class="romaji">kibinago</span> <span class="kanji">きびなご</span></span></div>
+          <div class="ingredient-item">Chicken sashimi <span class="jp"><span class="romaji">tori-sashi</span> <span class="kanji">鶏刺し</span></span></div>
+          <div class="ingredient-item">First bonito of the season <span class="jp"><span class="romaji">hatsu-gatsuo</span> <span class="kanji">初鰹</span></span></div>
+          <div class="ingredient-item">Imo shochu <span class="jp"><span class="romaji">imo-shōchū</span> <span class="kanji">芋焼酎</span></span></div>
+          <div class="ingredient-item">Tsukihigai scallop ※ off-season <span class="jp"><span class="romaji">tsukihi-gai</span> <span class="kanji">月日貝</span></span></div>
+          <div class="ingredient-item">First-flush green tea <span class="jp"><span class="romaji">shincha</span> <span class="kanji">新茶</span></span></div>
         </div>
         <p>Kanosuke Distillery (in Hioki) is a craft whisky distillery with English tours. The prefecture has over 100 shochu distilleries producing around 2,000 varieties.</p>
       </div>
