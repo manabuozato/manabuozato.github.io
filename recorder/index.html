@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Podcast Recorder</title>
+  <style>
+    :root {
+      --bg: #fafafa;
+      --fg: #222;
+      --muted: #777;
+      --accent: #c0392b;
+      --border: #ddd;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+    h1 { font-size: 22px; margin: 0 0 24px; }
+    h2 { font-size: 16px; margin: 24px 0 8px; color: var(--muted); }
+    .panel {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 16px 0;
+    }
+    button {
+      font-size: 16px;
+      padding: 10px 20px;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 4px;
+    }
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    input[type="text"] {
+      font-size: 16px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      width: 100%;
+      margin: 4px 0;
+    }
+    #timer {
+      font-size: 48px;
+      font-family: "SF Mono", Menlo, monospace;
+      text-align: center;
+      margin: 20px 0;
+      letter-spacing: 2px;
+    }
+    #timer.recording { color: var(--accent); }
+    #status {
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      min-height: 20px;
+    }
+    #meter {
+      width: 100%;
+      height: 8px;
+      background: #eee;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+    #meter-bar {
+      height: 100%;
+      width: 0%;
+      background: #2ecc71;
+      transition: width 0.05s linear;
+    }
+    .hidden { display: none; }
+    .setup-warning {
+      background: #fff3cd;
+      border: 1px solid #ffe69c;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      margin: 12px 0;
+    }
+    .share-url {
+      background: #f4f4f4;
+      padding: 10px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 12px;
+      word-break: break-all;
+      margin: 8px 0;
+    }
+    a.download-link {
+      display: inline-block;
+      color: var(--accent);
+      margin: 4px 0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Podcast Recorder</h1>
+
+<!-- ========== 設定が未完了の場合の警告 ========== -->
+<div id="setup-warning" class="setup-warning hidden">
+  <strong>初回セットアップが必要です</strong>
+  <div id="setup-warning-detail"></div>
+</div>
+
+<!-- ========== ホスト: ログイン画面 ========== -->
+<div id="host-login" class="panel hidden">
+  <h2>ホストモード</h2>
+  <p>収録を始めるには Google にログインしてください。自分の Google Drive に録音が保存されます。</p>
+  <button class="primary" id="btn-login">Google でログイン</button>
+</div>
+
+<!-- ========== ホスト: セッション作成画面 ========== -->
+<div id="host-session" class="panel hidden">
+  <h2>セッション開始</h2>
+  <p>エピソードIDを入れて「セッション開始」を押すと、ゲスト用URLが発行されます。</p>
+  <input type="text" id="session-id" placeholder="例: ep05" maxlength="32">
+  <button class="primary" id="btn-start-session">セッション開始</button>
+  <div id="guest-url-area" class="hidden">
+    <h2>ゲスト用URL（このリンクを送る）</h2>
+    <div class="share-url" id="guest-url"></div>
+    <button id="btn-copy-guest-url">コピー</button>
+  </div>
+</div>
+
+<!-- ========== 録音画面（ホスト/ゲスト共通） ========== -->
+<div id="recorder" class="panel hidden">
+  <h2 id="recorder-label">録音</h2>
+  <div id="timer">00:00</div>
+  <div id="meter"><div id="meter-bar"></div></div>
+  <div id="status">待機中</div>
+  <div style="text-align:center; margin-top:16px;">
+    <button class="primary" id="btn-record">録音開始</button>
+    <button id="btn-stop" disabled>録音停止</button>
+  </div>
+  <div id="downloads"></div>
+</div>
+
+<script>
+/* ============================================================
+   設定
+   ============================================================ */
+const CONFIG = {
+  // Google Cloud Console で作成した OAuth クライアントID
+  // https://console.cloud.google.com/apis/credentials
+  CLIENT_ID: '573788046467-23h9pal8hvocnre6ur1rlbhb0q911hh6.apps.googleusercontent.com',
+
+  // Google Drive のフォルダID（録音ファイルの保存先）
+  // フォルダのURLの末尾が ID
+  // 例: https://drive.google.com/drive/folders/ABC123DEF456 → ABC123DEF456
+  DRIVE_FOLDER_ID: '1cVKy4OGbYd4xyg5FE6axj9vcvSgmcCSE',
+
+  // 録音設定
+  SAMPLE_RATE: 48000,
+  CHANNEL_COUNT: 1,
+  BITRATE: 256000
+};
+
+/* ============================================================
+   URL パラメータの解析
+   ============================================================ */
+const params = new URLSearchParams(location.search);
+const role = params.get('role');  // 'host' or 'guest'
+const sessionId = params.get('session');
+const uploadUrl = params.get('upload');
+
+/* ============================================================
+   状態
+   ============================================================ */
+let accessToken = null;
+let recorder = null;
+let chunks = [];
+let startTime = 0;
+let timerInterval = null;
+let audioContext = null;
+let analyser = null;
+let meterInterval = null;
+
+const $ = id => document.getElementById(id);
+
+/* ============================================================
+   画面切り替え
+   ============================================================ */
+function showPanel(panelId) {
+  ['host-login', 'host-session', 'recorder'].forEach(id => {
+    $(id).classList.toggle('hidden', id !== panelId);
+  });
+}
+
+/* ============================================================
+   設定チェック
+   ============================================================ */
+function checkSetup() {
+  const problems = [];
+  if (CONFIG.CLIENT_ID.startsWith('YOUR_')) {
+    problems.push('CLIENT_ID が未設定です（index.html の CONFIG を編集してください）');
+  }
+  if (CONFIG.DRIVE_FOLDER_ID.startsWith('YOUR_')) {
+    problems.push('DRIVE_FOLDER_ID が未設定です');
+  }
+  if (problems.length > 0) {
+    $('setup-warning').classList.remove('hidden');
+    $('setup-warning-detail').innerHTML = problems.map(p => `<div>・ ${p}</div>`).join('');
+    return false;
+  }
+  return true;
+}
+
+/* ============================================================
+   Google OAuth（Google Identity Services）
+   ============================================================ */
+function initGoogleAuth() {
+  if (!window.google || !google.accounts) {
+    // GIS がまだロードされていない。少し待って再試行
+    setTimeout(initGoogleAuth, 200);
+    return;
+  }
+  window.tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CONFIG.CLIENT_ID,
+    scope: 'https://www.googleapis.com/auth/drive.file',
+    callback: (response) => {
+      if (response.error) {
+        alert('ログイン失敗: ' + response.error);
+        return;
+      }
+      accessToken = response.access_token;
+      localStorage.setItem('podcast_token', accessToken);
+      localStorage.setItem('podcast_token_expires', Date.now() + (response.expires_in * 1000));
+      showPanel('host-session');
+    }
+  });
+}
+
+function loginWithGoogle() {
+  if (!window.tokenClient) {
+    alert('Google認証の初期化中です。数秒待って再度お試しください。');
+    return;
+  }
+  tokenClient.requestAccessToken({ prompt: 'consent' });
+}
+
+function tryRestoreToken() {
+  const token = localStorage.getItem('podcast_token');
+  const expires = parseInt(localStorage.getItem('podcast_token_expires') || '0');
+  if (token && expires > Date.now() + 60000) {
+    accessToken = token;
+    return true;
+  }
+  return false;
+}
+
+/* ============================================================
+   Resumable Upload URL を発行（ホストが自分のDriveに対して）
+   ============================================================ */
+async function createResumableUploadUrl(filename) {
+  const metadata = {
+    name: filename,
+    parents: [CONFIG.DRIVE_FOLDER_ID],
+    mimeType: 'audio/webm'
+  };
+
+  const res = await fetch(
+    'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable',
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json; charset=UTF-8',
+        'X-Upload-Content-Type': 'audio/webm'
+      },
+      body: JSON.stringify(metadata)
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error('Drive API エラー: ' + res.status + ' ' + await res.text());
+  }
+
+  return res.headers.get('Location');
+}
+
+/* ============================================================
+   セッション開始（ホスト操作）
+   ============================================================ */
+async function startSession() {
+  const id = $('session-id').value.trim();
+  if (!id) {
+    alert('エピソードIDを入れてください');
+    return;
+  }
+  if (!/^[a-zA-Z0-9_-]+$/.test(id)) {
+    alert('エピソードIDは半角英数とハイフン・アンダーバーのみ使えます');
+    return;
+  }
+
+  $('btn-start-session').disabled = true;
+  $('status').textContent = 'ゲスト用URLを発行中...';
+
+  try {
+    const guestUploadUrl = await createResumableUploadUrl(`${id}_guest.webm`);
+    const hostUploadUrl = await createResumableUploadUrl(`${id}_host.webm`);
+
+    const guestPageUrl = `${location.origin}${location.pathname}?role=guest&session=${id}&upload=${encodeURIComponent(guestUploadUrl)}`;
+    $('guest-url').textContent = guestPageUrl;
+    $('guest-url-area').classList.remove('hidden');
+
+    // ホスト自身の録音も同じ Resumable URL 方式に揃える
+    window.hostUploadUrl = hostUploadUrl;
+    window.currentSessionId = id;
+
+    $('recorder-label').textContent = `ホストの録音 (${id})`;
+    $('recorder').classList.remove('hidden');
+  } catch (err) {
+    alert('セッション開始に失敗: ' + err.message);
+    $('btn-start-session').disabled = false;
+  }
+}
+
+function copyGuestUrl() {
+  const url = $('guest-url').textContent;
+  navigator.clipboard.writeText(url).then(() => {
+    $('btn-copy-guest-url').textContent = 'コピーしました';
+    setTimeout(() => { $('btn-copy-guest-url').textContent = 'コピー'; }, 2000);
+  });
+}
+
+/* ============================================================
+   録音（ホスト/ゲスト共通）
+   ============================================================ */
+async function startRecording() {
+  const stream = await navigator.mediaDevices.getUserMedia({
+    audio: {
+      sampleRate: CONFIG.SAMPLE_RATE,
+      channelCount: CONFIG.CHANNEL_COUNT,
+      echoCancellation: false,
+      noiseSuppression: false,
+      autoGainControl: false
+    }
+  });
+
+  // マイクレベルメーター用
+  audioContext = new AudioContext();
+  const source = audioContext.createMediaStreamSource(stream);
+  analyser = audioContext.createAnalyser();
+  analyser.fftSize = 256;
+  source.connect(analyser);
+
+  const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+    ? 'audio/webm;codecs=opus'
+    : MediaRecorder.isTypeSupported('audio/mp4')
+      ? 'audio/mp4'
+      : 'audio/webm';
+
+  recorder = new MediaRecorder(stream, {
+    mimeType,
+    audioBitsPerSecond: CONFIG.BITRATE
+  });
+
+  chunks = [];
+  recorder.ondataavailable = e => {
+    if (e.data && e.data.size > 0) chunks.push(e.data);
+  };
+  recorder.onstop = async () => {
+    await handleRecordingStop();
+    stream.getTracks().forEach(t => t.stop());
+    if (audioContext) {
+      audioContext.close();
+      audioContext = null;
+    }
+    clearInterval(meterInterval);
+    $('meter-bar').style.width = '0%';
+  };
+
+  recorder.start(1000);
+  startTime = Date.now();
+  $('timer').classList.add('recording');
+  timerInterval = setInterval(updateTimer, 500);
+  meterInterval = setInterval(updateMeter, 50);
+
+  $('btn-record').disabled = true;
+  $('btn-stop').disabled = false;
+  $('status').textContent = '録音中（他のタブに切り替えても継続します）';
+}
+
+function stopRecording() {
+  if (!recorder || recorder.state === 'inactive') return;
+  recorder.stop();
+  clearInterval(timerInterval);
+  $('timer').classList.remove('recording');
+  $('btn-record').disabled = true;
+  $('btn-stop').disabled = true;
+  $('status').textContent = 'アップロード中...';
+}
+
+async function handleRecordingStop() {
+  const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
+  const ext = (recorder.mimeType || '').includes('mp4') ? 'mp4' : 'webm';
+
+  // ローカルダウンロードリンクを先に用意（保険）
+  const localUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = localUrl;
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  a.download = `${sessionId || window.currentSessionId || 'recording'}-${role || 'host'}-${timestamp}.${ext}`;
+  a.className = 'download-link';
+  a.textContent = 'バックアップ: ローカルにダウンロード';
+  $('downloads').appendChild(a);
+
+  // アップロード先を決定
+  let targetUrl = null;
+  if (role === 'guest' && uploadUrl) {
+    targetUrl = uploadUrl;
+  } else if (window.hostUploadUrl) {
+    targetUrl = window.hostUploadUrl;
+  }
+
+  if (!targetUrl) {
+    $('status').textContent = '停止。ダウンロードリンクからローカル保存してください';
+    return;
+  }
+
+  try {
+    const putRes = await fetch(targetUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': blob.type },
+      body: blob
+    });
+    if (!putRes.ok) {
+      throw new Error('アップロード失敗: ' + putRes.status);
+    }
+    $('status').textContent = 'アップロード完了。このタブを閉じてOK';
+  } catch (err) {
+    $('status').textContent = 'アップロード失敗: ' + err.message + ' / ローカル保存を使ってください';
+  }
+}
+
+/* ============================================================
+   タイマー・メーター
+   ============================================================ */
+function updateTimer() {
+  const sec = Math.floor((Date.now() - startTime) / 1000);
+  const m = String(Math.floor(sec / 60)).padStart(2, '0');
+  const s = String(sec % 60).padStart(2, '0');
+  $('timer').textContent = `${m}:${s}`;
+}
+
+function updateMeter() {
+  if (!analyser) return;
+  const data = new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteTimeDomainData(data);
+  let peak = 0;
+  for (let i = 0; i < data.length; i++) {
+    const v = Math.abs(data[i] - 128) / 128;
+    if (v > peak) peak = v;
+  }
+  $('meter-bar').style.width = (peak * 100) + '%';
+}
+
+/* ============================================================
+   初期化
+   ============================================================ */
+function init() {
+  // イベントバインド
+  $('btn-login').addEventListener('click', loginWithGoogle);
+  $('btn-start-session').addEventListener('click', startSession);
+  $('btn-copy-guest-url').addEventListener('click', copyGuestUrl);
+  $('btn-record').addEventListener('click', startRecording);
+  $('btn-stop').addEventListener('click', stopRecording);
+
+  if (role === 'guest' && uploadUrl) {
+    // ゲストは設定チェック不要、即座に録音画面
+    $('recorder-label').textContent = `ゲストの録音 (${sessionId || '?'})`;
+    $('recorder').classList.remove('hidden');
+    return;
+  }
+
+  // ホスト側
+  if (!checkSetup()) {
+    // 設定未完了でもログイン画面は出しておく（警告付き）
+  }
+  initGoogleAuth();
+
+  if (tryRestoreToken()) {
+    showPanel('host-session');
+  } else {
+    showPanel('host-login');
+  }
+}
+
+/* ============================================================
+   起動
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+</body>
+</html>
