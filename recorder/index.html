@@ -364,6 +364,7 @@ async function restoreSession(session) {
         await idbDeleteSession(session.sessionKey);
         $('status').textContent = '再アップロード完了。IndexedDBから削除しました';
         btn.remove();
+        delBtn.remove();
       } catch (err) {
         btn.disabled = false;
         $('status').textContent = '再アップロード失敗: ' + err.message;
