@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-04-21T03:11:00+09:00",
+  "current": {
+    "sg": null,
+    "fs": null,
+    "ff": null,
+    "gi": null,
+    "rv": null
+  },
+  "next": {
+    "sg": "sg001",
+    "fs": "fs001",
+    "ff": "ff001",
+    "gi": "gi001",
+    "rv": "rv001"
+  }
+}
