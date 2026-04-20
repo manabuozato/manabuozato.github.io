@@ -131,8 +131,22 @@
 <!-- ========== ホスト: セッション作成画面 ========== -->
 <div id="host-session" class="panel hidden">
   <h2>セッション開始</h2>
-  <p>エピソードIDを入れて「セッション開始」を押すと、ゲスト用URLが発行されます。</p>
-  <input type="text" id="session-id" placeholder="例: ep05" maxlength="32">
+
+  <label for="prefix-select" style="display:block; font-size:13px; color:var(--muted); margin-top:8px;">番組を選ぶ</label>
+  <select id="prefix-select" style="font-size:16px; padding:8px 12px; border:1px solid var(--border); border-radius:6px; width:100%; margin:4px 0;">
+    <option value="">選択してください</option>
+    <option value="sg">sg（作業日誌）</option>
+    <option value="fs">fs（付箋地獄）</option>
+    <option value="ff">ff（夫婦）</option>
+    <option value="gi">gi（ゲストインタビュー）</option>
+    <option value="rv">rv（リバース）</option>
+  </select>
+
+  <div id="suggest-area" style="font-size:13px; color:var(--muted); min-height:20px; margin:6px 0;"></div>
+
+  <label for="session-id" style="display:block; font-size:13px; color:var(--muted); margin-top:8px;">エピソードID（手動編集OK）</label>
+  <input type="text" id="session-id" placeholder="例: sg013" maxlength="32">
+
   <button class="primary" id="btn-start-session">セッション開始</button>
   <div id="guest-url-area" class="hidden">
     <h2>ゲスト用URL（このリンクを送る）</h2>
@@ -195,6 +209,62 @@ let analyser = null;
 let meterInterval = null;
 
 const $ = id => document.getElementById(id);
+
+/* ============================================================
+   次の session_id を Notion 経由で取得して提案する
+   （Notion直叩きはCORSで不可のため、Mac mini pipeline が吐いた
+     next-session-ids.json を静的ファイルとして読む）
+   ============================================================ */
+let nextIdsCache = null;
+
+async function loadNextSessionIds() {
+  try {
+    // キャッシュ無効化のためのクエリ（GitHub Pages のCDN越し対策）
+    const res = await fetch('./next-session-ids.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    nextIdsCache = await res.json();
+  } catch (err) {
+    console.warn('next-session-ids.json の取得に失敗:', err);
+    nextIdsCache = null;
+  }
+}
+
+function updateSuggestion() {
+  const prefix = $('prefix-select').value;
+  const suggestEl = $('suggest-area');
+  const input = $('session-id');
+
+  if (!prefix) {
+    suggestEl.textContent = '';
+    return;
+  }
+
+  if (!nextIdsCache || !nextIdsCache.next) {
+    suggestEl.textContent = '自動提案は使えません。手動で入力してください';
+    return;
+  }
+
+  const suggested = nextIdsCache.next[prefix];
+  const current = nextIdsCache.current && nextIdsCache.current[prefix];
+  const generated = nextIdsCache.generated_at || '';
+
+  if (!suggested) {
+    suggestEl.textContent = 'この番組は提案データが見つかりません';
+    return;
+  }
+
+  // 入力欄が空 or 以前の提案のままなら、自動で上書き
+  const prev = input.dataset.autoSuggested || '';
+  if (!input.value || input.value === prev) {
+    input.value = suggested;
+    input.dataset.autoSuggested = suggested;
+  }
+
+  const currentLabel = current ? `最新: ${current}` : '最新: なし';
+  suggestEl.innerHTML =
+    `<span>${currentLabel} / 次の候補: <strong style="color:var(--fg)">${suggested}</strong></span>` +
+    `<br><span style="font-size:11px;">データ生成: ${generated}</span>`;
+}
 
 /* ============================================================
    画面切り替え
@@ -484,6 +554,7 @@ function init() {
   $('btn-copy-guest-url').addEventListener('click', copyGuestUrl);
   $('btn-record').addEventListener('click', startRecording);
   $('btn-stop').addEventListener('click', stopRecording);
+  $('prefix-select').addEventListener('change', updateSuggestion);
 
   if (role === 'guest' && uploadUrl) {
     // ゲストは設定チェック不要、即座に録音画面
@@ -497,6 +568,9 @@ function init() {
     // 設定未完了でもログイン画面は出しておく（警告付き）
   }
   initGoogleAuth();
+
+  // 次の session_id 候補を先読み（非同期）
+  loadNextSessionIds();
 
   if (tryRestoreToken()) {
     showPanel('host-session');
