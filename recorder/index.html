@@ -189,6 +189,201 @@ const CONFIG = {
 };
 
 /* ============================================================
+   IndexedDB（録音中chunkの永続化）
+   目的: ブラウザクラッシュ時にchunkを失わない
+   構成:
+     sessions: sessionKey をキーにメタ情報を保存
+     chunks:   [sessionKey, index] をキーにBlobを逐次保存
+   ============================================================ */
+const IDB_NAME = 'podcast-recorder';
+const IDB_VERSION = 1;
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(IDB_NAME, IDB_VERSION);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains('sessions')) {
+        db.createObjectStore('sessions', { keyPath: 'sessionKey' });
+      }
+      if (!db.objectStoreNames.contains('chunks')) {
+        const store = db.createObjectStore('chunks', { keyPath: ['sessionKey', 'index'] });
+        store.createIndex('bySessionKey', 'sessionKey');
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function idbPutSession(session) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('sessions', 'readwrite');
+    tx.objectStore('sessions').put(session);
+    tx.oncomplete = () => { db.close(); resolve(); };
+    tx.onerror = () => { db.close(); reject(tx.error); };
+  });
+}
+
+async function idbPutChunk(sessionKey, index, blob) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('chunks', 'readwrite');
+    tx.objectStore('chunks').put({ sessionKey, index, blob, timestamp: Date.now() });
+    tx.oncomplete = () => { db.close(); resolve(); };
+    tx.onerror = () => { db.close(); reject(tx.error); };
+  });
+}
+
+async function idbGetAllSessions() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('sessions', 'readonly');
+    const req = tx.objectStore('sessions').getAll();
+    req.onsuccess = () => { db.close(); resolve(req.result); };
+    req.onerror = () => { db.close(); reject(req.error); };
+  });
+}
+
+async function idbGetChunks(sessionKey) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('chunks', 'readonly');
+    const idx = tx.objectStore('chunks').index('bySessionKey');
+    const req = idx.getAll(IDBKeyRange.only(sessionKey));
+    req.onsuccess = () => {
+      db.close();
+      resolve(req.result.sort((a, b) => a.index - b.index));
+    };
+    req.onerror = () => { db.close(); reject(req.error); };
+  });
+}
+
+async function idbDeleteSession(sessionKey) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(['sessions', 'chunks'], 'readwrite');
+    tx.objectStore('sessions').delete(sessionKey);
+    const idx = tx.objectStore('chunks').index('bySessionKey');
+    const req = idx.openCursor(IDBKeyRange.only(sessionKey));
+    req.onsuccess = (e) => {
+      const cursor = e.target.result;
+      if (cursor) { cursor.delete(); cursor.continue(); }
+    };
+    tx.oncomplete = () => { db.close(); resolve(); };
+    tx.onerror = () => { db.close(); reject(tx.error); };
+  });
+}
+
+// 容量超過時: 現在のセッションを除き、最古の未完了セッションを1つ削除
+async function pruneOldestSession() {
+  const sessions = await idbGetAllSessions();
+  const candidates = sessions.filter(s => s.sessionKey !== window.currentSessionKey);
+  if (candidates.length === 0) {
+    console.warn('容量不足ですが削除可能なセッションがありません');
+    $('status').textContent = '容量不足: 古い復元データを手動で破棄してください';
+    return false;
+  }
+  candidates.sort((a, b) => a.startTime - b.startTime);
+  await idbDeleteSession(candidates[0].sessionKey);
+  console.warn('容量確保のため削除:', candidates[0].sessionKey);
+  return true;
+}
+
+// 起動時に未完了セッションを検出して復元ダイアログを出す
+async function checkForUnfinishedRecordings() {
+  let sessions = [];
+  try {
+    sessions = await idbGetAllSessions();
+  } catch (err) {
+    console.warn('IndexedDB読み出し失敗:', err);
+    return;
+  }
+  const pending = sessions.filter(s => s.status !== 'uploaded');
+  if (pending.length === 0) return;
+  pending.sort((a, b) => b.startTime - a.startTime);
+  const target = pending[0];
+  const ts = new Date(target.startTime).toLocaleString('ja-JP');
+  const sizeNote = pending.length > 1 ? `（他に${pending.length - 1}件の未完了あり）` : '';
+  const msg =
+    `前回の録音が未完了のまま残っています${sizeNote}\n\n` +
+    `セッション: ${target.sessionId}\n` +
+    `ロール: ${target.role}\n` +
+    `開始: ${ts}\n\n` +
+    `復元しますか？（キャンセルすると残したまま通常画面に進みます）`;
+  if (!confirm(msg)) return;
+  await restoreSession(target);
+}
+
+async function restoreSession(session) {
+  let chunkRows = [];
+  try {
+    chunkRows = await idbGetChunks(session.sessionKey);
+  } catch (err) {
+    alert('chunk読み出し失敗: ' + err.message);
+    return;
+  }
+  if (chunkRows.length === 0) {
+    alert('保存されたchunkがありません');
+    await idbDeleteSession(session.sessionKey);
+    return;
+  }
+  const blob = new Blob(chunkRows.map(c => c.blob), {
+    type: session.mimeType || 'audio/webm'
+  });
+  const ext = (session.mimeType || '').includes('mp4') ? 'mp4' : 'webm';
+
+  $('recorder').classList.remove('hidden');
+  $('recorder-label').textContent = `復元: ${session.sessionId} (${session.role})`;
+  $('status').textContent = `${chunkRows.length}個のchunkを復元しました（${(blob.size / 1024 / 1024).toFixed(1)} MB）`;
+
+  const localUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = localUrl;
+  a.download = `${session.sessionId}-${session.role}-restored.${ext}`;
+  a.className = 'download-link';
+  a.textContent = '復元データをダウンロード';
+  $('downloads').appendChild(a);
+  $('downloads').appendChild(document.createElement('br'));
+
+  if (session.uploadUrl) {
+    const btn = document.createElement('button');
+    btn.textContent = 'Driveに再アップロード';
+    btn.className = 'primary';
+    btn.onclick = async () => {
+      btn.disabled = true;
+      $('status').textContent = '再アップロード中...';
+      try {
+        const res = await fetch(session.uploadUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': blob.type },
+          body: blob
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        await idbDeleteSession(session.sessionKey);
+        $('status').textContent = '再アップロード完了。IndexedDBから削除しました';
+        btn.remove();
+      } catch (err) {
+        btn.disabled = false;
+        $('status').textContent = '再アップロード失敗: ' + err.message;
+      }
+    };
+    $('downloads').appendChild(btn);
+  }
+
+  const delBtn = document.createElement('button');
+  delBtn.textContent = '復元データを破棄';
+  delBtn.onclick = async () => {
+    if (!confirm('IndexedDBから削除します。よろしいですか？')) return;
+    await idbDeleteSession(session.sessionKey);
+    delBtn.disabled = true;
+    $('status').textContent = '破棄しました';
+  };
+  $('downloads').appendChild(delBtn);
+}
+
+/* ============================================================
    URL パラメータの解析
    ============================================================ */
 const params = new URLSearchParams(location.search);
@@ -202,6 +397,7 @@ const uploadUrl = params.get('upload');
 let accessToken = null;
 let recorder = null;
 let chunks = [];
+let chunkIndex = 0;
 let startTime = 0;
 let timerInterval = null;
 let audioContext = null;
@@ -445,8 +641,48 @@ async function startRecording() {
   });
 
   chunks = [];
-  recorder.ondataavailable = e => {
-    if (e.data && e.data.size > 0) chunks.push(e.data);
+  chunkIndex = 0;
+
+  // IndexedDBに保存するためのセッションキーを発行
+  const currentId = window.currentSessionId || sessionId || 'unknown';
+  const sessionRole = role || 'host';
+  const sessionKey = `${currentId}__${sessionRole}__${Date.now()}`;
+  window.currentSessionKey = sessionKey;
+
+  const uploadUrlForSession =
+    (sessionRole === 'guest' ? uploadUrl : window.hostUploadUrl) || null;
+
+  try {
+    await idbPutSession({
+      sessionKey,
+      sessionId: currentId,
+      role: sessionRole,
+      startTime: Date.now(),
+      mimeType,
+      uploadUrl: uploadUrlForSession,
+      status: 'recording'
+    });
+  } catch (err) {
+    console.warn('sessionメタ情報の書き込みに失敗:', err);
+  }
+
+  recorder.ondataavailable = async e => {
+    if (!e.data || e.data.size === 0) return;
+    chunks.push(e.data);
+    const myIndex = chunkIndex++;
+    try {
+      await idbPutChunk(sessionKey, myIndex, e.data);
+    } catch (err) {
+      if (err && err.name === 'QuotaExceededError') {
+        const pruned = await pruneOldestSession();
+        if (pruned) {
+          try { await idbPutChunk(sessionKey, myIndex, e.data); }
+          catch (err2) { console.warn('IDB再書き込み失敗:', err2); }
+        }
+      } else {
+        console.warn('IDB書き込み失敗:', err);
+      }
+    }
   };
   recorder.onstop = async () => {
     await handleRecordingStop();
@@ -517,8 +753,18 @@ async function handleRecordingStop() {
       throw new Error('アップロード失敗: ' + putRes.status);
     }
     $('status').textContent = 'アップロード完了。このタブを閉じてOK';
+    // 成功したのでIndexedDBからこのセッションを削除
+    if (window.currentSessionKey) {
+      try {
+        await idbDeleteSession(window.currentSessionKey);
+        window.currentSessionKey = null;
+      } catch (err) {
+        console.warn('IDB削除失敗:', err);
+      }
+    }
   } catch (err) {
     $('status').textContent = 'アップロード失敗: ' + err.message + ' / ローカル保存を使ってください';
+    // 失敗時はIDBに残す（次回起動時に復元できるように）
   }
 }
 
@@ -555,6 +801,9 @@ function init() {
   $('btn-record').addEventListener('click', startRecording);
   $('btn-stop').addEventListener('click', stopRecording);
   $('prefix-select').addEventListener('change', updateSuggestion);
+
+  // 起動時に未完了の録音があるかチェック（非同期、ブロックしない）
+  checkForUnfinishedRecordings().catch(err => console.warn('復元チェック失敗:', err));
 
   if (role === 'guest' && uploadUrl) {
     // ゲストは設定チェック不要、即座に録音画面
