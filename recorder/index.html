@@ -155,6 +155,13 @@
   </div>
 </div>
 
+<!-- ========== 今日のテーマ（?t= から読む） ========== -->
+<div id="themes-panel" class="panel hidden" style="background:#fffdf5;">
+  <h2 style="color:var(--fg); margin-top:0;">🎙 今日のテーマ</h2>
+  <div id="themes-date" style="font-size:12px; color:var(--muted);"></div>
+  <div id="themes-list" style="margin-top:8px;"></div>
+</div>
+
 <!-- ========== 録音画面（ホスト/ゲスト共通） ========== -->
 <div id="recorder" class="panel hidden">
   <h2 id="recorder-label">録音</h2>
@@ -166,6 +173,15 @@
     <button id="btn-stop" disabled>録音停止</button>
   </div>
   <div id="downloads"></div>
+</div>
+
+<!-- ========== 収録後: どれを喋った？ ========== -->
+<div id="spoken-panel" class="panel hidden">
+  <h2>どれを喋った？</h2>
+  <p style="font-size:13px; color:var(--muted);">チェックを入れて送信すると、Drive に {id}_spoken.json が作られ、Mac mini の pipeline がこれを読んで consumed / presented を確定する。迷ったら「部分的に触れた」にする。</p>
+  <div id="spoken-list"></div>
+  <button class="primary" id="btn-submit-spoken">送信</button>
+  <div id="spoken-status" style="font-size:13px; color:var(--muted); margin-top:8px;"></div>
 </div>
 
 <script>
@@ -391,6 +407,139 @@ const params = new URLSearchParams(location.search);
 const role = params.get('role');  // 'host' or 'guest'
 const sessionId = params.get('session');
 const uploadUrl = params.get('upload');
+
+/* ============================================================
+   今日のテーマ（?t=<base64url>）
+   Mac mini の theme_daily.sh が生成した today.json をエンコードしたもの
+   ============================================================ */
+let todaysThemes = null;  // {date, main, sub, subsub}
+
+function decodeThemesParam() {
+  const t = params.get('t');
+  if (!t) return null;
+  try {
+    // base64url → base64
+    let b = t.replace(/-/g, '+').replace(/_/g, '/');
+    while (b.length % 4) b += '=';
+    const bytes = Uint8Array.from(atob(b), c => c.charCodeAt(0));
+    const json = new TextDecoder('utf-8').decode(bytes);
+    return JSON.parse(json);
+  } catch (err) {
+    console.warn('テーマの解析失敗:', err);
+    return null;
+  }
+}
+
+function renderThemes() {
+  if (!todaysThemes) return;
+  $('themes-date').textContent = todaysThemes.date + ' 分';
+  const list = $('themes-list');
+  list.innerHTML = '';
+  const slots = [
+    ['Main',    todaysThemes.main],
+    ['Sub',     todaysThemes.sub],
+    ['Sub-sub', todaysThemes.subsub]
+  ];
+  for (const [label, t] of slots) {
+    if (!t) continue;
+    const div = document.createElement('div');
+    div.style.margin = '10px 0';
+    div.innerHTML =
+      `<div style="font-size:11px; color:var(--muted);">[${label}]</div>` +
+      `<div style="font-size:15px; font-weight:500;">${escapeHtml(t.text)}</div>` +
+      `<div style="font-size:11px; color:var(--muted);">${escapeHtml(t.parent)} / ${escapeHtml(t.tier)} / id=${escapeHtml(t.id)}</div>`;
+    list.appendChild(div);
+  }
+  $('themes-panel').classList.remove('hidden');
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderSpokenForm() {
+  if (!todaysThemes) return;
+  const list = $('spoken-list');
+  list.innerHTML = '';
+  const slots = [
+    ['main',    'Main',    todaysThemes.main],
+    ['sub',     'Sub',     todaysThemes.sub],
+    ['subsub',  'Sub-sub', todaysThemes.subsub]
+  ];
+  for (const [key, label, t] of slots) {
+    if (!t) continue;
+    const wrap = document.createElement('div');
+    wrap.style.margin = '14px 0';
+    wrap.style.paddingBottom = '10px';
+    wrap.style.borderBottom = '1px solid var(--border)';
+    wrap.innerHTML =
+      `<div style="font-size:11px; color:var(--muted);">[${label}] ${escapeHtml(t.id)}</div>` +
+      `<div style="font-size:14px; margin:4px 0;">${escapeHtml(t.text)}</div>` +
+      `<label style="display:inline-block; margin-right:12px;"><input type="radio" name="spoken-${key}" value="spoken" checked> 喋った</label>` +
+      `<label style="display:inline-block; margin-right:12px;"><input type="radio" name="spoken-${key}" value="partial"> 部分的</label>` +
+      `<label style="display:inline-block; margin-right:12px;"><input type="radio" name="spoken-${key}" value="skipped"> 触れず</label>` +
+      `<label style="display:inline-block;"><input type="radio" name="spoken-${key}" value="retracted"> 撤回</label>`;
+    list.appendChild(wrap);
+  }
+}
+
+async function submitSpoken() {
+  if (!todaysThemes) return;
+  const currentId = window.currentSessionId || sessionId;
+  if (!currentId) {
+    $('spoken-status').textContent = 'エピソードID不明。送信できない';
+    return;
+  }
+  const result = {};
+  for (const key of ['main', 'sub', 'subsub']) {
+    const t = todaysThemes[key];
+    if (!t) continue;
+    const sel = document.querySelector(`input[name="spoken-${key}"]:checked`);
+    result[key] = { id: t.id, status: sel ? sel.value : 'skipped' };
+  }
+  const payload = {
+    session_id: currentId,
+    date: todaysThemes.date,
+    submitted_at: new Date().toISOString(),
+    themes: result
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+
+  try {
+    $('btn-submit-spoken').disabled = true;
+    $('spoken-status').textContent = '送信中...';
+    const url = await createResumableJsonUploadUrl(`${currentId}_spoken.json`);
+    const res = await fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: blob });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    $('spoken-status').textContent = '送信完了。pipeline が拾う。';
+  } catch (err) {
+    $('btn-submit-spoken').disabled = false;
+    $('spoken-status').textContent = '送信失敗: ' + err.message;
+  }
+}
+
+async function createResumableJsonUploadUrl(filename) {
+  const metadata = {
+    name: filename,
+    parents: [CONFIG.DRIVE_FOLDER_ID],
+    mimeType: 'application/json'
+  };
+  const res = await fetch(
+    'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable',
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json; charset=UTF-8',
+        'X-Upload-Content-Type': 'application/json'
+      },
+      body: JSON.stringify(metadata)
+    }
+  );
+  if (!res.ok) throw new Error('Drive API エラー: ' + res.status + ' ' + await res.text());
+  return res.headers.get('Location');
+}
 
 /* ============================================================
    状態
@@ -754,6 +903,11 @@ async function handleRecordingStop() {
       throw new Error('アップロード失敗: ' + putRes.status);
     }
     $('status').textContent = 'アップロード完了。このタブを閉じてOK';
+    // ホスト側でテーマがあれば、どれを喋ったかのフォームを出す
+    if (role !== 'guest' && todaysThemes) {
+      renderSpokenForm();
+      $('spoken-panel').classList.remove('hidden');
+    }
     // 成功したのでIndexedDBからこのセッションを削除
     if (window.currentSessionKey) {
       try {
@@ -801,7 +955,14 @@ function init() {
   $('btn-copy-guest-url').addEventListener('click', copyGuestUrl);
   $('btn-record').addEventListener('click', startRecording);
   $('btn-stop').addEventListener('click', stopRecording);
+  $('btn-submit-spoken').addEventListener('click', submitSpoken);
   $('prefix-select').addEventListener('change', updateSuggestion);
+
+  // 今日のテーマを ?t= から読み込んで表示（ホスト側のみ）
+  todaysThemes = decodeThemesParam();
+  if (todaysThemes && role !== 'guest') {
+    renderThemes();
+  }
 
   // 起動時に未完了の録音があるかチェック（非同期、ブロックしない）
   checkForUnfinishedRecordings().catch(err => console.warn('復元チェック失敗:', err));
