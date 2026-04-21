@@ -381,6 +381,10 @@ async function restoreSession(session) {
         $('status').textContent = '再アップロード完了。IndexedDBから削除しました';
         btn.remove();
         delBtn.remove();
+        if (session.role !== 'guest' && todaysThemes) {
+          renderSpokenForm();
+          $('spoken-panel').classList.remove('hidden');
+        }
       } catch (err) {
         btn.disabled = false;
         $('status').textContent = '再アップロード失敗: ' + err.message;
