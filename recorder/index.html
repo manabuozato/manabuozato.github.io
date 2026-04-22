@@ -794,7 +794,7 @@ async function startRecording() {
     }
   });
 
-  // マイクレベルメーター用。AudioContext のサンプルレートを stream と揃える
+  // AudioContext のサンプルレートを stream と揃える
   // （ズレると暗黙リサンプリングが入り、CPU 負荷と glitch 要因になりうる）
   audioContext = new AudioContext({ sampleRate: CONFIG.SAMPLE_RATE });
   const source = audioContext.createMediaStreamSource(stream);
@@ -802,13 +802,24 @@ async function startRecording() {
   analyser.fftSize = 256;
   source.connect(analyser);
 
+  // getUserMedia の channelCount=1 はブラウザに無視されることがある
+  // （MacBook 内蔵マイクや一部 USB マイクは stereo を返す）。
+  // MediaStreamDestination を explicit mono にして明示ダウンミックスした
+  // stream を MediaRecorder に渡す。ffmpeg 側での stereo→mono 変換が不要になる。
+  const monoDestination = audioContext.createMediaStreamDestination();
+  monoDestination.channelCount = 1;
+  monoDestination.channelCountMode = 'explicit';
+  monoDestination.channelInterpretation = 'speakers';
+  source.connect(monoDestination);
+  const recordStream = monoDestination.stream;
+
   const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
     ? 'audio/webm;codecs=opus'
     : MediaRecorder.isTypeSupported('audio/mp4')
       ? 'audio/mp4'
       : 'audio/webm';
 
-  recorder = new MediaRecorder(stream, {
+  recorder = new MediaRecorder(recordStream, {
     mimeType,
     audioBitsPerSecond: CONFIG.BITRATE
   });
