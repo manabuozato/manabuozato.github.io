@@ -147,6 +147,13 @@
   <label for="session-id" style="display:block; font-size:13px; color:var(--muted); margin-top:8px;">エピソードID（手動編集OK）</label>
   <input type="text" id="session-id" placeholder="例: sg013" maxlength="32">
 
+  <label style="display:block; font-size:13px; color:var(--muted); margin-top:10px;">
+    <input type="checkbox" id="in-person-mode"> 対面収録（MV7iの2ch入力をL=ホスト/R=ゲストで自動分離）
+  </label>
+  <div id="in-person-hint" style="font-size:12px; color:var(--muted); margin-top:4px; display:none;">
+    MOTIV Mix で音声出力モード＝マルチトラックにしてください。Zoom は不要です。
+  </div>
+
   <button class="primary" id="btn-start-session">セッション開始</button>
   <div id="guest-url-area" class="hidden">
     <h2>ゲスト用URL（このリンクを送る）</h2>
@@ -165,6 +172,19 @@
 <!-- ========== 録音画面（ホスト/ゲスト共通） ========== -->
 <div id="recorder" class="panel hidden">
   <h2 id="recorder-label">録音</h2>
+
+  <div id="device-selector-area" style="margin: 0 0 14px;">
+    <label for="mic-select" style="display:block; font-size:13px; color:var(--muted); margin-bottom:4px;">
+      入力デバイス
+    </label>
+    <select id="mic-select" style="font-size:14px; padding:6px 10px; border:1px solid var(--border); border-radius:6px; width:100%;">
+      <option value="">（読み込み中…）</option>
+    </select>
+    <div id="mic-hint" style="font-size:11px; color:var(--muted); margin-top:4px;">
+      macOS のサウンド入力と Chrome のサイト別マイク権限が同じデバイスか確認してから録音開始
+    </div>
+  </div>
+
   <div id="timer">00:00</div>
   <div id="meter"><div id="meter-bar"></div></div>
   <div id="status">待機中</div>
@@ -756,16 +776,25 @@ async function startSession() {
     const guestUploadUrl = await createResumableUploadUrl(`${id}_guest.webm`);
     const hostUploadUrl = await createResumableUploadUrl(`${id}_host.webm`);
 
-    const guestPageUrl = `${location.origin}${location.pathname}?role=guest&session=${id}&upload=${encodeURIComponent(guestUploadUrl)}`;
-    $('guest-url').textContent = guestPageUrl;
-    $('guest-url-area').classList.remove('hidden');
+    // 対面モード判定。対面時はゲストURL共有不要、ホスト1台でL/R分離録音
+    window.inPersonMode = $('in-person-mode').checked;
+
+    if (!window.inPersonMode) {
+      const guestPageUrl = `${location.origin}${location.pathname}?role=guest&session=${id}&upload=${encodeURIComponent(guestUploadUrl)}`;
+      $('guest-url').textContent = guestPageUrl;
+      $('guest-url-area').classList.remove('hidden');
+    }
 
     // ホスト自身の録音も同じ Resumable URL 方式に揃える
     window.hostUploadUrl = hostUploadUrl;
+    window.guestUploadUrl = guestUploadUrl; // 対面モードでL=host/R=guestに分けてアップする
     window.currentSessionId = id;
 
-    $('recorder-label').textContent = `ホストの録音 (${id})`;
+    $('recorder-label').textContent = window.inPersonMode
+      ? `対面収録 (${id}) / L=ホスト R=ゲスト`
+      : `ホストの録音 (${id})`;
     $('recorder').classList.remove('hidden');
+    populateMicList().catch(err => console.warn('デバイス一覧取得失敗:', err));
   } catch (err) {
     alert('セッション開始に失敗: ' + err.message);
     $('btn-start-session').disabled = false;
@@ -784,15 +813,21 @@ function copyGuestUrl() {
    録音（ホスト/ゲスト共通）
    ============================================================ */
 async function startRecording() {
+  // 対面モードは別関数で処理（2ch取得→L/R分離→並行MediaRecorder 2本）
+  if (window.inPersonMode) {
+    return await startInPersonRecording();
+  }
+
   const stream = await navigator.mediaDevices.getUserMedia({
-    audio: {
-      sampleRate: CONFIG.SAMPLE_RATE,
-      channelCount: CONFIG.CHANNEL_COUNT,
-      echoCancellation: false,
-      noiseSuppression: false,
-      autoGainControl: false
-    }
+    audio: buildAudioConstraints(CONFIG.CHANNEL_COUNT)
   });
+
+  // どのデバイスで録れているかログに残す（無音事故の事後検証用）
+  try {
+    const track = stream.getAudioTracks()[0];
+    const s = track.getSettings();
+    console.log('[recorder] input device:', track.label || '(no label)', 'deviceId:', s.deviceId, 'channelCount:', s.channelCount);
+  } catch (e) { /* ignore */ }
 
   // AudioContext のサンプルレートを stream と揃える
   // （ズレると暗黙リサンプリングが入り、CPU 負荷と glitch 要因になりうる）
@@ -902,6 +937,9 @@ async function startRecording() {
 }
 
 function stopRecording() {
+  if (window.inPersonMode) {
+    return stopInPersonRecording();
+  }
   if (!recorder || recorder.state === 'inactive') return;
   recorder.stop();
   clearInterval(timerInterval);
@@ -909,6 +947,182 @@ function stopRecording() {
   $('btn-record').disabled = true;
   $('btn-stop').disabled = true;
   $('status').textContent = 'アップロード中...';
+}
+
+/* ============================================================
+   対面収録: MV7i の 2ch をL=host / R=guest に分離して並行録音
+   ============================================================ */
+let inPersonRecorders = null; // { host: MediaRecorder, guest: MediaRecorder, chunksHost, chunksGuest, stream, ctx }
+
+async function startInPersonRecording() {
+  // 2ch を要求。MOTIV Mix でマルチトラックになっていれば L=mic / R=external で返る想定
+  const stream = await navigator.mediaDevices.getUserMedia({
+    audio: buildAudioConstraints(2)
+  });
+
+  try {
+    const track = stream.getAudioTracks()[0];
+    const s = track.getSettings();
+    console.log('[recorder/in-person] input device:', track.label || '(no label)', 'deviceId:', s.deviceId, 'channelCount:', s.channelCount);
+  } catch (e) { /* ignore */ }
+
+  audioContext = new AudioContext({ sampleRate: CONFIG.SAMPLE_RATE });
+  const source = audioContext.createMediaStreamSource(stream);
+
+  // メーターは混合音をそのまま監視（L/R 両方の気配が見える）
+  analyser = audioContext.createAnalyser();
+  analyser.fftSize = 256;
+  source.connect(analyser);
+
+  // ChannelSplitter で 2ch を分離し、各 ch を独立した mono MediaStream にする
+  const splitter = audioContext.createChannelSplitter(2);
+  source.connect(splitter);
+
+  function makeMonoDest(channelIndex) {
+    const dest = audioContext.createMediaStreamDestination();
+    dest.channelCount = 1;
+    dest.channelCountMode = 'explicit';
+    dest.channelInterpretation = 'speakers';
+    // splitter の特定出力だけを dest の入力0に繋ぐ
+    splitter.connect(dest, channelIndex, 0);
+    return dest;
+  }
+  const hostDest = makeMonoDest(0);   // L → host
+  const guestDest = makeMonoDest(1);  // R → guest
+
+  const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+    ? 'audio/webm;codecs=opus'
+    : MediaRecorder.isTypeSupported('audio/mp4')
+      ? 'audio/mp4'
+      : 'audio/webm';
+
+  const recHost = new MediaRecorder(hostDest.stream, { mimeType, audioBitsPerSecond: CONFIG.BITRATE });
+  const recGuest = new MediaRecorder(guestDest.stream, { mimeType, audioBitsPerSecond: CONFIG.BITRATE });
+
+  const chunksHost = [];
+  const chunksGuest = [];
+  const currentId = window.currentSessionId || 'unknown';
+
+  // IDB 記録。対面は2つの role を別 sessionKey で保存
+  const keyHost = `${currentId}__host__${Date.now()}`;
+  const keyGuest = `${currentId}__guest__${Date.now() + 1}`;
+  try {
+    await idbPutSession({ sessionKey: keyHost, sessionId: currentId, role: 'host',
+      startTime: Date.now(), mimeType, uploadUrl: window.hostUploadUrl, status: 'recording' });
+    await idbPutSession({ sessionKey: keyGuest, sessionId: currentId, role: 'guest',
+      startTime: Date.now(), mimeType, uploadUrl: window.guestUploadUrl, status: 'recording' });
+  } catch (err) {
+    console.warn('in-person sessionメタ書き込み失敗:', err);
+  }
+
+  let hostIdx = 0, guestIdx = 0;
+  recHost.ondataavailable = async e => {
+    if (!e.data || e.data.size === 0) return;
+    chunksHost.push(e.data);
+    try { await idbPutChunk(keyHost, hostIdx++, e.data); } catch (err) { console.warn('host IDB書き込み失敗:', err); }
+  };
+  recGuest.ondataavailable = async e => {
+    if (!e.data || e.data.size === 0) return;
+    chunksGuest.push(e.data);
+    try { await idbPutChunk(keyGuest, guestIdx++, e.data); } catch (err) { console.warn('guest IDB書き込み失敗:', err); }
+  };
+
+  // 片方だけ onstop で走らせると他方を待てないので両方の停止を待つ Promise を組む
+  const hostStopped = new Promise(r => { recHost.onstop = r; });
+  const guestStopped = new Promise(r => { recGuest.onstop = r; });
+
+  // 録音開始
+  recHost.start();
+  recGuest.start();
+
+  // 30秒ごとに requestData（WebM の境界click回避、IDB への逐次保存）
+  flushInterval = setInterval(() => {
+    try {
+      if (recHost.state === 'recording') recHost.requestData();
+      if (recGuest.state === 'recording') recGuest.requestData();
+    } catch (e) { console.warn('requestData失敗:', e); }
+  }, 30000);
+
+  inPersonRecorders = {
+    recHost, recGuest, chunksHost, chunksGuest,
+    keyHost, keyGuest, mimeType, stream,
+    hostStopped, guestStopped
+  };
+
+  startTime = Date.now();
+  $('timer').classList.add('recording');
+  timerInterval = setInterval(updateTimer, 500);
+  meterInterval = setInterval(updateMeter, 50);
+
+  $('btn-record').disabled = true;
+  $('btn-stop').disabled = false;
+  $('status').textContent = '対面録音中（L=ホスト / R=ゲスト）';
+}
+
+async function stopInPersonRecording() {
+  if (!inPersonRecorders) return;
+  const { recHost, recGuest, hostStopped, guestStopped } = inPersonRecorders;
+  if (flushInterval) { clearInterval(flushInterval); flushInterval = null; }
+
+  try { if (recHost.state !== 'inactive') recHost.stop(); } catch (e) {}
+  try { if (recGuest.state !== 'inactive') recGuest.stop(); } catch (e) {}
+
+  clearInterval(timerInterval);
+  $('timer').classList.remove('recording');
+  $('btn-record').disabled = true;
+  $('btn-stop').disabled = true;
+  $('status').textContent = '停止処理中...';
+
+  await Promise.all([hostStopped, guestStopped]);
+  try { inPersonRecorders.stream.getTracks().forEach(t => t.stop()); } catch (e) {}
+  if (audioContext) { try { audioContext.close(); } catch (e) {} audioContext = null; }
+  clearInterval(meterInterval);
+  $('meter-bar').style.width = '0%';
+
+  await handleInPersonRecordingStop();
+}
+
+async function handleInPersonRecordingStop() {
+  const { chunksHost, chunksGuest, mimeType, keyHost, keyGuest } = inPersonRecorders;
+  const ext = (mimeType || '').includes('mp4') ? 'mp4' : 'webm';
+  const hostBlob = new Blob(chunksHost, { type: mimeType || 'audio/webm' });
+  const guestBlob = new Blob(chunksGuest, { type: mimeType || 'audio/webm' });
+
+  // 保険のローカルダウンロードリンクを両方出す
+  const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  for (const [tag, blob] of [['host', hostBlob], ['guest', guestBlob]]) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${window.currentSessionId || 'recording'}-${tag}-${ts}.${ext}`;
+    a.className = 'download-link';
+    a.textContent = `バックアップ: ${tag} をローカル保存`;
+    $('downloads').appendChild(a);
+  }
+
+  const uploads = [
+    { url: window.hostUploadUrl, blob: hostBlob, key: keyHost, name: 'host' },
+    { url: window.guestUploadUrl, blob: guestBlob, key: keyGuest, name: 'guest' }
+  ];
+
+  let anyFail = false;
+  for (const u of uploads) {
+    if (!u.url) { anyFail = true; continue; }
+    try {
+      const res = await fetch(u.url, { method: 'PUT', headers: { 'Content-Type': u.blob.type }, body: u.blob });
+      if (!res.ok) throw new Error(`upload ${u.name} failed: ${res.status}`);
+      try { await idbDeleteSession(u.key); } catch (e) { console.warn('IDB削除失敗:', e); }
+    } catch (err) {
+      console.warn(err);
+      anyFail = true;
+    }
+  }
+
+  $('status').textContent = anyFail
+    ? 'アップロード一部失敗。ダウンロードリンクからローカル保存してください'
+    : 'アップロード完了（host / guest 別ファイル）';
+
+  // Spoken パネル（sg のみ）には関係しないのでここでは出さない
+  inPersonRecorders = null;
 }
 
 async function handleRecordingStop() {
@@ -991,6 +1205,84 @@ function updateMeter() {
 }
 
 /* ============================================================
+   入力デバイス選択
+   - enumerateDevices() はマイク権限を取る前だと label が空
+   - 録音画面を開いた時点で一度だけ軽く getUserMedia で許可を取り、
+     ラベル付きの一覧を出す
+   - 選択は localStorage に保存、次回自動復元
+   - 録音本体（startRecording / startInPersonRecording）は
+     buildAudioConstraints() 経由で deviceId を渡す
+   ============================================================ */
+const DEVICE_STORAGE_KEY = 'podcast-recorder-deviceId';
+
+async function populateMicList() {
+  const sel = $('mic-select');
+  if (!sel) return;
+  // 権限取得（labels を埋めるため）
+  try {
+    const probe = await navigator.mediaDevices.getUserMedia({ audio: true });
+    probe.getTracks().forEach(t => t.stop());
+  } catch (err) {
+    sel.innerHTML = '<option value="">マイク権限が必要です（録音開始ボタンで許可できます）</option>';
+    console.warn('マイク権限取得に失敗:', err);
+    return;
+  }
+
+  let devices;
+  try {
+    devices = await navigator.mediaDevices.enumerateDevices();
+  } catch (err) {
+    sel.innerHTML = '<option value="">デバイス列挙に失敗</option>';
+    console.warn('enumerateDevices 失敗:', err);
+    return;
+  }
+
+  const mics = devices.filter(d => d.kind === 'audioinput');
+  const saved = localStorage.getItem(DEVICE_STORAGE_KEY) || '';
+
+  sel.innerHTML = '';
+  const defOpt = document.createElement('option');
+  defOpt.value = '';
+  defOpt.textContent = '（システム既定）';
+  sel.appendChild(defOpt);
+
+  for (const m of mics) {
+    const opt = document.createElement('option');
+    opt.value = m.deviceId;
+    opt.textContent = m.label || `マイク (${m.deviceId.slice(0, 8)}…)`;
+    if (m.deviceId === saved) opt.selected = true;
+    sel.appendChild(opt);
+  }
+
+  window.selectedDeviceId = sel.value || null;
+}
+
+function onMicChange() {
+  const sel = $('mic-select');
+  window.selectedDeviceId = sel.value || null;
+  if (sel.value) {
+    localStorage.setItem(DEVICE_STORAGE_KEY, sel.value);
+  } else {
+    localStorage.removeItem(DEVICE_STORAGE_KEY);
+  }
+}
+
+// 録音本体で使う audio constraints を組み立てる
+function buildAudioConstraints(channelCount) {
+  const c = {
+    sampleRate: CONFIG.SAMPLE_RATE,
+    channelCount: channelCount,
+    echoCancellation: false,
+    noiseSuppression: false,
+    autoGainControl: false
+  };
+  if (window.selectedDeviceId) {
+    c.deviceId = { exact: window.selectedDeviceId };
+  }
+  return c;
+}
+
+/* ============================================================
    初期化
    ============================================================ */
 function init() {
@@ -1001,7 +1293,27 @@ function init() {
   $('btn-record').addEventListener('click', startRecording);
   $('btn-stop').addEventListener('click', stopRecording);
   $('btn-submit-spoken').addEventListener('click', submitSpoken);
-  $('prefix-select').addEventListener('change', updateSuggestion);
+  $('mic-select').addEventListener('change', onMicChange);
+
+  // OS 側でマイクを抜き差ししたら一覧を更新
+  if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
+    navigator.mediaDevices.addEventListener('devicechange', () => {
+      if (!$('recorder').classList.contains('hidden')) {
+        populateMicList().catch(() => {});
+      }
+    });
+  }
+  $('prefix-select').addEventListener('change', () => {
+    updateSuggestion();
+    // 対面番組（現状 ff のみ）は対面モードを初期ONに
+    const p = $('prefix-select').value;
+    const autoInPerson = (p === 'ff');
+    $('in-person-mode').checked = autoInPerson;
+    $('in-person-hint').style.display = autoInPerson ? 'block' : 'none';
+  });
+  $('in-person-mode').addEventListener('change', () => {
+    $('in-person-hint').style.display = $('in-person-mode').checked ? 'block' : 'none';
+  });
 
   // 今日のテーマを ?t= から読み込んで表示（ホスト側のみ）
   todaysThemes = decodeThemesParam();
@@ -1016,6 +1328,7 @@ function init() {
     // ゲストは設定チェック不要、即座に録音画面
     $('recorder-label').textContent = `ゲストの録音 (${sessionId || '?'})`;
     $('recorder').classList.remove('hidden');
+    populateMicList().catch(err => console.warn('デバイス一覧取得失敗:', err));
     return;
   }
 
