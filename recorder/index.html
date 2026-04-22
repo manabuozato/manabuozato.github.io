@@ -148,10 +148,10 @@
   <input type="text" id="session-id" placeholder="例: sg013" maxlength="32">
 
   <label style="display:block; font-size:13px; color:var(--muted); margin-top:10px;">
-    <input type="checkbox" id="in-person-mode"> 対面収録（MV7iの2ch入力をL=ホスト/R=ゲストで自動分離）
+    <input type="checkbox" id="in-person-mode"> 対面収録（MV7i 1本、mono mixdown + SmartGate）
   </label>
   <div id="in-person-hint" style="font-size:12px; color:var(--muted); margin-top:4px; display:none;">
-    MOTIV Mix で音声出力モード＝マルチトラックにしてください。Zoom は不要です。
+    MOTIV Mix で「Mixdown」モードを選び、SmartGate を ON に。Zoom は不要。録音は 1 本 (host.webm) のみ。話者分離は文字起こし時に行います。
   </div>
 
   <button class="primary" id="btn-start-session">セッション開始</button>
@@ -773,25 +773,24 @@ async function startSession() {
   $('status').textContent = 'ゲスト用URLを発行中...';
 
   try {
-    const guestUploadUrl = await createResumableUploadUrl(`${id}_guest.webm`);
-    const hostUploadUrl = await createResumableUploadUrl(`${id}_host.webm`);
-
-    // 対面モード判定。対面時はゲストURL共有不要、ホスト1台でL/R分離録音
+    // 対面モード判定。対面時はゲストURL共有不要、MV7i 1本の mono mixdown を host.webm として上げる
     window.inPersonMode = $('in-person-mode').checked;
 
+    const hostUploadUrl = await createResumableUploadUrl(`${id}_host.webm`);
+    let guestUploadUrl = null;
     if (!window.inPersonMode) {
+      guestUploadUrl = await createResumableUploadUrl(`${id}_guest.webm`);
       const guestPageUrl = `${location.origin}${location.pathname}?role=guest&session=${id}&upload=${encodeURIComponent(guestUploadUrl)}`;
       $('guest-url').textContent = guestPageUrl;
       $('guest-url-area').classList.remove('hidden');
     }
 
-    // ホスト自身の録音も同じ Resumable URL 方式に揃える
     window.hostUploadUrl = hostUploadUrl;
-    window.guestUploadUrl = guestUploadUrl; // 対面モードでL=host/R=guestに分けてアップする
+    window.guestUploadUrl = guestUploadUrl;
     window.currentSessionId = id;
 
     $('recorder-label').textContent = window.inPersonMode
-      ? `対面収録 (${id}) / L=ホスト R=ゲスト`
+      ? `対面収録 (${id}) / MV7i 1本`
       : `ホストの録音 (${id})`;
     $('recorder').classList.remove('hidden');
     populateMicList().catch(err => console.warn('デバイス一覧取得失敗:', err));
@@ -813,11 +812,8 @@ function copyGuestUrl() {
    録音（ホスト/ゲスト共通）
    ============================================================ */
 async function startRecording() {
-  // 対面モードは別関数で処理（2ch取得→L/R分離→並行MediaRecorder 2本）
-  if (window.inPersonMode) {
-    return await startInPersonRecording();
-  }
-
+  // 対面モード（in_person_mono）は MV7i の Mixdown 出力を single MediaRecorder で録るだけ。
+  // 通常の solo/host 録音経路と同じ。ChannelSplitter 経路は廃止済み。
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: buildAudioConstraints(CONFIG.CHANNEL_COUNT)
   });
@@ -839,28 +835,11 @@ async function startRecording() {
 
   // getUserMedia の channelCount=1 はブラウザに無視されることがある
   // （MacBook 内蔵マイクや一部 USB マイクは stereo を返す）。
-  // MediaStreamDestination を explicit mono にして明示ダウンミックスした
-  // stream を MediaRecorder に渡す。ffmpeg 側での stereo→mono 変換が不要になる。
-  const monoDestination = audioContext.createMediaStreamDestination();
-  monoDestination.channelCount = 1;
-  monoDestination.channelCountMode = 'explicit';
-  monoDestination.channelInterpretation = 'speakers';
-  source.connect(monoDestination);
+  // explicit mono の MediaStreamDestination を経由して明示ダウンミックスする。
+  const monoDestination = createMonoDestinationNode(audioContext, source, null);
   const recordStream = monoDestination.stream;
 
-  const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-    ? 'audio/webm;codecs=opus'
-    : MediaRecorder.isTypeSupported('audio/mp4')
-      ? 'audio/mp4'
-      : 'audio/webm';
-
-  recorder = new MediaRecorder(recordStream, {
-    mimeType,
-    audioBitsPerSecond: CONFIG.BITRATE
-  });
-
-  chunks = [];
-  chunkIndex = 0;
+  const mimeType = pickRecorderMimeType();
 
   // IndexedDBに保存するためのセッションキーを発行
   const currentId = window.currentSessionId || sessionId || 'unknown';
@@ -885,24 +864,10 @@ async function startRecording() {
     console.warn('sessionメタ情報の書き込みに失敗:', err);
   }
 
-  recorder.ondataavailable = async e => {
-    if (!e.data || e.data.size === 0) return;
-    chunks.push(e.data);
-    const myIndex = chunkIndex++;
-    try {
-      await idbPutChunk(sessionKey, myIndex, e.data);
-    } catch (err) {
-      if (err && err.name === 'QuotaExceededError') {
-        const pruned = await pruneOldestSession();
-        if (pruned) {
-          try { await idbPutChunk(sessionKey, myIndex, e.data); }
-          catch (err2) { console.warn('IDB再書き込み失敗:', err2); }
-        }
-      } else {
-        console.warn('IDB書き込み失敗:', err);
-      }
-    }
-  };
+  const built = createChunkRecorder(recordStream, mimeType, sessionKey);
+  recorder = built.recorder;
+  chunks = built.chunks;
+  chunkIndex = 0;  // 旧コードとの互換用（実際のインデックスは built 側で管理）
   recorder.onstop = async () => {
     if (flushInterval) { clearInterval(flushInterval); flushInterval = null; }
     await handleRecordingStop();
@@ -937,9 +902,7 @@ async function startRecording() {
 }
 
 function stopRecording() {
-  if (window.inPersonMode) {
-    return stopInPersonRecording();
-  }
+  // 対面モードも single MediaRecorder なので通常経路で停止する
   if (!recorder || recorder.state === 'inactive') return;
   recorder.stop();
   clearInterval(timerInterval);
@@ -978,29 +941,10 @@ async function startInPersonRecording() {
   const splitter = audioContext.createChannelSplitter(2);
   source.connect(splitter);
 
-  function makeMonoDest(channelIndex) {
-    const dest = audioContext.createMediaStreamDestination();
-    dest.channelCount = 1;
-    dest.channelCountMode = 'explicit';
-    dest.channelInterpretation = 'speakers';
-    // splitter の特定出力だけを dest の入力0に繋ぐ
-    splitter.connect(dest, channelIndex, 0);
-    return dest;
-  }
-  const hostDest = makeMonoDest(0);   // L → host
-  const guestDest = makeMonoDest(1);  // R → guest
+  const hostDest = createMonoDestinationNode(audioContext, splitter, 0);  // L → host
+  const guestDest = createMonoDestinationNode(audioContext, splitter, 1); // R → guest
 
-  const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-    ? 'audio/webm;codecs=opus'
-    : MediaRecorder.isTypeSupported('audio/mp4')
-      ? 'audio/mp4'
-      : 'audio/webm';
-
-  const recHost = new MediaRecorder(hostDest.stream, { mimeType, audioBitsPerSecond: CONFIG.BITRATE });
-  const recGuest = new MediaRecorder(guestDest.stream, { mimeType, audioBitsPerSecond: CONFIG.BITRATE });
-
-  const chunksHost = [];
-  const chunksGuest = [];
+  const mimeType = pickRecorderMimeType();
   const currentId = window.currentSessionId || 'unknown';
 
   // IDB 記録。対面は2つの role を別 sessionKey で保存
@@ -1015,17 +959,12 @@ async function startInPersonRecording() {
     console.warn('in-person sessionメタ書き込み失敗:', err);
   }
 
-  let hostIdx = 0, guestIdx = 0;
-  recHost.ondataavailable = async e => {
-    if (!e.data || e.data.size === 0) return;
-    chunksHost.push(e.data);
-    try { await idbPutChunk(keyHost, hostIdx++, e.data); } catch (err) { console.warn('host IDB書き込み失敗:', err); }
-  };
-  recGuest.ondataavailable = async e => {
-    if (!e.data || e.data.size === 0) return;
-    chunksGuest.push(e.data);
-    try { await idbPutChunk(keyGuest, guestIdx++, e.data); } catch (err) { console.warn('guest IDB書き込み失敗:', err); }
-  };
+  const hostBuilt = createChunkRecorder(hostDest.stream, mimeType, keyHost);
+  const guestBuilt = createChunkRecorder(guestDest.stream, mimeType, keyGuest);
+  const recHost = hostBuilt.recorder;
+  const recGuest = guestBuilt.recorder;
+  const chunksHost = hostBuilt.chunks;
+  const chunksGuest = guestBuilt.chunks;
 
   // 片方だけ onstop で走らせると他方を待てないので両方の停止を待つ Promise を組む
   const hostStopped = new Promise(r => { recHost.onstop = r; });
@@ -1280,6 +1219,56 @@ function buildAudioConstraints(channelCount) {
     c.deviceId = { exact: window.selectedDeviceId };
   }
   return c;
+}
+
+// MediaRecorder の mimeType 選択は通常録音も対面録音も同じロジック
+function pickRecorderMimeType() {
+  if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) return 'audio/webm;codecs=opus';
+  if (MediaRecorder.isTypeSupported('audio/mp4')) return 'audio/mp4';
+  return 'audio/webm';
+}
+
+// mono 出力の MediaStreamDestination を作る。
+// sourceNode を直接繋ぐ場合は channelIndex=null、ChannelSplitter から
+// 特定のチャンネルだけ取る場合は channelIndex=0 or 1 を渡す。
+function createMonoDestinationNode(ctx, sourceNode, channelIndex) {
+  const dest = ctx.createMediaStreamDestination();
+  dest.channelCount = 1;
+  dest.channelCountMode = 'explicit';
+  dest.channelInterpretation = 'speakers';
+  if (channelIndex === null || channelIndex === undefined) {
+    sourceNode.connect(dest);
+  } else {
+    sourceNode.connect(dest, channelIndex, 0);
+  }
+  return dest;
+}
+
+// ondataavailable で IDB にチャンクを書き出す MediaRecorder を組み立てる。
+// 返り値の chunks 配列に Blob が push されるので、呼び出し側は最後に Blob 化する。
+function createChunkRecorder(recordStream, mimeType, sessionKey) {
+  const chunks = [];
+  const recorder = new MediaRecorder(recordStream, { mimeType, audioBitsPerSecond: CONFIG.BITRATE });
+  let idx = 0;
+  recorder.ondataavailable = async e => {
+    if (!e.data || e.data.size === 0) return;
+    chunks.push(e.data);
+    const myIndex = idx++;
+    try {
+      await idbPutChunk(sessionKey, myIndex, e.data);
+    } catch (err) {
+      if (err && err.name === 'QuotaExceededError') {
+        const pruned = await pruneOldestSession();
+        if (pruned) {
+          try { await idbPutChunk(sessionKey, myIndex, e.data); }
+          catch (err2) { console.warn('IDB再書き込み失敗:', err2); }
+        }
+      } else {
+        console.warn('IDB書き込み失敗:', err);
+      }
+    }
+  };
+  return { recorder, chunks };
 }
 
 /* ============================================================
