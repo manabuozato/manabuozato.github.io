@@ -210,11 +210,19 @@ const CONFIG = {
    構成:
      sessions: sessionKey をキーにメタ情報を保存
      chunks:   [sessionKey, index] をキーにBlobを逐次保存
+
+   設計メモ（2026-04-22 修正）:
+   - 旧実装は idbPutChunk ごとに openDB() を呼んでいた。録音中 (timeslice=1s)
+     毎秒 DB 接続の open/close を繰り返し、メインスレッドストール経由で
+     MediaRecorder の出力に ブツブツ ノイズが乗る疑いがあった。
+   - 現実装は dbInstance に接続を保持し、録音セッション中は閉じない。
    ============================================================ */
 const IDB_NAME = 'podcast-recorder';
 const IDB_VERSION = 1;
+let dbInstance = null;
 
 function openDB() {
+  if (dbInstance) return Promise.resolve(dbInstance);
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(IDB_NAME, IDB_VERSION);
     req.onupgradeneeded = () => {
@@ -227,7 +235,17 @@ function openDB() {
         store.createIndex('bySessionKey', 'sessionKey');
       }
     };
-    req.onsuccess = () => resolve(req.result);
+    req.onsuccess = () => {
+      dbInstance = req.result;
+      // 予期せず close された場合はキャッシュを破棄
+      dbInstance.onclose = () => { dbInstance = null; };
+      dbInstance.onversionchange = () => {
+        // 別タブで DB が upgrade されたときなど
+        try { dbInstance.close(); } catch (e) {}
+        dbInstance = null;
+      };
+      resolve(dbInstance);
+    };
     req.onerror = () => reject(req.error);
   });
 }
@@ -237,8 +255,8 @@ async function idbPutSession(session) {
   return new Promise((resolve, reject) => {
     const tx = db.transaction('sessions', 'readwrite');
     tx.objectStore('sessions').put(session);
-    tx.oncomplete = () => { db.close(); resolve(); };
-    tx.onerror = () => { db.close(); reject(tx.error); };
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
   });
 }
 
@@ -247,8 +265,8 @@ async function idbPutChunk(sessionKey, index, blob) {
   return new Promise((resolve, reject) => {
     const tx = db.transaction('chunks', 'readwrite');
     tx.objectStore('chunks').put({ sessionKey, index, blob, timestamp: Date.now() });
-    tx.oncomplete = () => { db.close(); resolve(); };
-    tx.onerror = () => { db.close(); reject(tx.error); };
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
   });
 }
 
@@ -257,8 +275,8 @@ async function idbGetAllSessions() {
   return new Promise((resolve, reject) => {
     const tx = db.transaction('sessions', 'readonly');
     const req = tx.objectStore('sessions').getAll();
-    req.onsuccess = () => { db.close(); resolve(req.result); };
-    req.onerror = () => { db.close(); reject(req.error); };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
   });
 }
 
@@ -269,10 +287,9 @@ async function idbGetChunks(sessionKey) {
     const idx = tx.objectStore('chunks').index('bySessionKey');
     const req = idx.getAll(IDBKeyRange.only(sessionKey));
     req.onsuccess = () => {
-      db.close();
       resolve(req.result.sort((a, b) => a.index - b.index));
     };
-    req.onerror = () => { db.close(); reject(req.error); };
+    req.onerror = () => reject(req.error);
   });
 }
 
@@ -287,8 +304,8 @@ async function idbDeleteSession(sessionKey) {
       const cursor = e.target.result;
       if (cursor) { cursor.delete(); cursor.continue(); }
     };
-    tx.oncomplete = () => { db.close(); resolve(); };
-    tx.onerror = () => { db.close(); reject(tx.error); };
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
   });
 }
 
@@ -557,6 +574,7 @@ let timerInterval = null;
 let audioContext = null;
 let analyser = null;
 let meterInterval = null;
+let flushInterval = null;  // 録音中クラッシュ復旧用に requestData を定期発火
 
 const $ = id => document.getElementById(id);
 
@@ -776,8 +794,9 @@ async function startRecording() {
     }
   });
 
-  // マイクレベルメーター用
-  audioContext = new AudioContext();
+  // マイクレベルメーター用。AudioContext のサンプルレートを stream と揃える
+  // （ズレると暗黙リサンプリングが入り、CPU 負荷と glitch 要因になりうる）
+  audioContext = new AudioContext({ sampleRate: CONFIG.SAMPLE_RATE });
   const source = audioContext.createMediaStreamSource(stream);
   analyser = audioContext.createAnalyser();
   analyser.fftSize = 256;
@@ -839,6 +858,7 @@ async function startRecording() {
     }
   };
   recorder.onstop = async () => {
+    if (flushInterval) { clearInterval(flushInterval); flushInterval = null; }
     await handleRecordingStop();
     stream.getTracks().forEach(t => t.stop());
     if (audioContext) {
@@ -849,7 +869,17 @@ async function startRecording() {
     $('meter-bar').style.width = '0%';
   };
 
-  recorder.start(1000);
+  // timeslice を指定せずに start() する。1 秒刻みの timeslice は Chromium の
+  // MediaRecorder + WebM で境界 click ノイズを発生させる既知問題がある。
+  // 代わりに requestData() を 30 秒間隔で呼び、IndexedDB に逐次保存する
+  // （WebM クラスタ境界を新規に切らないので、境界 click はほぼ起きない）。
+  recorder.start();
+  flushInterval = setInterval(() => {
+    if (recorder && recorder.state === 'recording') {
+      try { recorder.requestData(); } catch (e) { console.warn('requestData 失敗:', e); }
+    }
+  }, 30000);
+
   startTime = Date.now();
   $('timer').classList.add('recording');
   timerInterval = setInterval(updateTimer, 500);
