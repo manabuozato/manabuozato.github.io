@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>冬の家族旅行 候補7つ</title>
+<style>
+  :root{
+    --ink:#2a2a28;
+    --ink2:#52524e;
+    --muted:#86867f;
+    --line:#e4e3df;
+    --line2:#d6d5d0;
+    --bg:#f5f4f1;
+    --paper:#ffffff;
+    --accent:#2f5d4f;       /* 差し色は1色だけ。深い森と海の緑 */
+    --accent-soft:#eef3f0;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic Medium","Yu Gothic",sans-serif;
+    line-height:1.85;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  img{display:block;width:100%;height:100%;object-fit:cover;}
+
+  /* ===== 扉 ===== */
+  .cover{
+    position:relative;
+    min-height:74vh;
+    display:flex;
+    align-items:flex-end;
+    overflow:hidden;
+    background:#1c1c1a;
+  }
+  .cover .cover-img{position:absolute;inset:0;}
+  .cover .cover-img img{opacity:.78;}
+  .cover::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(20,20,18,.15) 0%,rgba(20,20,18,.05) 40%,rgba(20,20,18,.72) 100%);
+  }
+  .cover-inner{position:relative;z-index:2;max-width:1000px;margin:0 auto;width:100%;padding:0 28px 52px;color:#fff;}
+  .kicker{
+    font-size:12px;letter-spacing:.34em;text-transform:uppercase;
+    color:#e7e6e1;margin:0 0 14px;font-weight:600;
+  }
+  .cover h1{
+    font-size:clamp(30px,6vw,56px);
+    line-height:1.18;margin:0 0 14px;font-weight:800;letter-spacing:.01em;
+  }
+  .cover .lead{
+    font-size:clamp(14px,2.2vw,17px);
+    max-width:620px;margin:0;color:#f1f0ec;line-height:1.8;
+  }
+
+  /* ===== 本文ラッパ ===== */
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px;}
+  .intro{padding:44px 0 8px;}
+  .intro p{font-size:16px;color:var(--ink2);margin:0;max-width:760px;}
+  .intro .tiny{font-size:13px;color:var(--muted);margin-top:14px;}
+
+  /* ===== 導入ボックス（ゼッカ／飛行機） ===== */
+  .primer{
+    background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:26px 26px 22px;margin:30px 0 0;
+  }
+  .primer + .primer{margin-top:16px;}
+  .primer .p-head{display:flex;align-items:baseline;gap:12px;margin:0 0 14px;flex-wrap:wrap;}
+  .primer .p-tag{
+    font-size:11px;font-weight:700;letter-spacing:.12em;
+    background:var(--accent);color:#fff;padding:4px 11px;border-radius:14px;flex:none;
+  }
+  .primer .p-head h3{margin:0;font-size:18px;font-weight:800;line-height:1.4;}
+  .primer p{margin:0 0 12px;font-size:14px;color:var(--ink);line-height:1.85;max-width:780px;}
+  .primer p:last-child{margin-bottom:0;}
+  .primer .who-is{color:var(--ink2);}
+  /* ゼッカ系譜 3段 */
+  .lineage{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:16px;}
+  .lineage .ln{background:var(--paper);padding:15px 16px;}
+  .lineage .ln .ln-name{font-size:14px;font-weight:700;color:var(--ink);margin:0 0 5px;}
+  .lineage .ln .ln-rel{font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--accent);margin:0 0 6px;}
+  .lineage .ln p{font-size:13px;color:var(--ink2);margin:0;line-height:1.65;}
+  /* 飛行機の前提リスト */
+  .primer ul.air{margin:6px 0 0;padding:0;list-style:none;}
+  .primer ul.air li{
+    padding:11px 0;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink);line-height:1.7;display:flex;gap:14px;align-items:baseline;
+  }
+  .primer ul.air li:first-child{border-top:none;}
+  .primer ul.air li .air-who{flex:none;width:150px;color:var(--accent);font-weight:700;font-size:13px;}
+
+  /* ===== セクション見出し ===== */
+  .section-label{
+    display:flex;align-items:baseline;gap:14px;
+    margin:56px 0 8px;padding-bottom:10px;border-bottom:1px solid var(--line2);
+  }
+  .section-label .en{font-size:12px;letter-spacing:.22em;color:var(--accent);font-weight:700;text-transform:uppercase;}
+  .section-label .ja{font-size:14px;color:var(--muted);}
+
+  /* ===== リゾート帯 ===== */
+  .resort{padding:44px 0;border-bottom:1px solid var(--line);}
+  .resort:last-of-type{border-bottom:none;}
+  .resort-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px;}
+  .resort-num{
+    font-size:13px;letter-spacing:.2em;color:var(--accent);font-weight:700;margin:0 0 6px;
+  }
+  .resort h2{font-size:clamp(24px,4vw,34px);margin:0;line-height:1.2;font-weight:800;}
+  .resort h2 .romaji{display:block;font-size:13px;color:var(--muted);font-weight:500;letter-spacing:.06em;margin-top:6px;}
+  .resort .place{font-size:14px;color:var(--ink2);margin:6px 0 0;}
+  /* ゼッカ関係バッジ（一目で分かる） */
+  .resort .zecca-badge{
+    display:inline-flex;align-items:center;gap:7px;margin-top:10px;
+    font-size:12px;font-weight:700;letter-spacing:.04em;
+    color:var(--accent);background:var(--accent-soft);
+    padding:6px 13px;border-radius:16px;line-height:1.4;
+  }
+  .resort .zecca-badge .zd{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;}
+  .resort .oneline{
+    font-size:15px;color:var(--accent);font-weight:600;
+    background:var(--accent-soft);border-radius:6px;padding:8px 14px;
+    align-self:flex-start;max-width:300px;line-height:1.6;
+  }
+
+  /* 主役写真（各リゾートの最初） */
+  .hero-shot{
+    border-radius:10px;overflow:hidden;background:#e9e8e4;
+    aspect-ratio:16/9;margin-bottom:8px;position:relative;
+  }
+  .hero-shot figcaption{
+    position:absolute;left:0;right:0;bottom:0;
+    font-size:12px;color:#fff;padding:22px 16px 12px;
+    background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.6) 100%);
+    line-height:1.55;
+  }
+  .hero-note{font-size:14px;color:var(--ink2);margin:0 0 22px;max-width:760px;}
+
+  /* 写真ギャラリー（グリッド） */
+  .gallery{
+    display:grid;gap:10px;margin-bottom:24px;
+    grid-template-columns:repeat(3,1fr);
+  }
+  .gallery figure{margin:0;overflow:hidden;border-radius:8px;background:#e9e8e4;position:relative;aspect-ratio:3/2;}
+  .gallery figure.tall{aspect-ratio:3/4;}
+  .gallery figure.wide{grid-column:span 2;aspect-ratio:3/2;}
+  .gallery figcaption{
+    position:absolute;left:0;bottom:0;right:0;
+    font-size:11px;color:#fff;padding:16px 12px 8px;
+    background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.58) 100%);
+    line-height:1.5;
+  }
+
+  /* 4軸 */
+  .axes{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .axis{background:var(--paper);padding:16px 18px;}
+  .axis .ax-label{display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.08em;color:var(--muted);margin:0 0 6px;font-weight:600;}
+  .axis .ax-label .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;}
+  .axis p{margin:0;font-size:14px;color:var(--ink);line-height:1.7;}
+  .axis .big-fact{color:var(--accent);font-weight:700;}
+
+  /* 行き方・季節（本文ブロック） */
+  .detail-block{
+    display:grid;grid-template-columns:1fr 1fr;gap:1px;
+    background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;
+    margin-top:14px;
+  }
+  .detail-block .db{background:var(--paper);padding:18px 20px;}
+  .detail-block .db.full{grid-column:1 / -1;}
+  .detail-block .db .db-label{
+    display:flex;align-items:center;gap:8px;
+    font-size:12px;letter-spacing:.1em;color:var(--accent);font-weight:700;margin:0 0 10px;
+  }
+  .detail-block .db .db-label .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;}
+  .detail-block .db .route{margin:0 0 8px;font-size:14px;color:var(--ink);line-height:1.75;}
+  .detail-block .db .route .hop{color:var(--accent);font-weight:700;}
+  .detail-block .db .route-note{margin:0;font-size:13px;color:var(--ink2);line-height:1.7;}
+  .detail-block .db .detail-list{margin:0;padding:0;list-style:none;}
+  .detail-block .db .detail-list li{margin:0;padding:10px 0;border-top:1px solid var(--line);font-size:13px;color:var(--ink2);line-height:1.7;}
+  .detail-block .db .detail-list li:first-child{border-top:none;padding-top:0;}
+  .detail-block .db .detail-list .label{display:block;color:var(--accent);font-weight:700;margin-bottom:2px;}
+  .detail-block .db .season{margin:0 0 8px;font-size:14px;color:var(--ink);line-height:1.75;}
+  .detail-block .db .season .big-fact{color:var(--accent);font-weight:700;}
+  .detail-block .db .season:last-child{margin-bottom:0;}
+
+  /* リンク */
+  .links{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;}
+  .links a{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:13px;font-weight:600;text-decoration:none;
+    color:var(--accent);border:1.5px solid var(--accent);
+    padding:9px 16px;border-radius:22px;transition:all .15s;
+  }
+  .links a:hover{background:var(--accent);color:#fff;}
+  .links a .arrow{font-size:14px;}
+  .links a.plain{color:var(--ink2);border-color:var(--line2);}
+  .links a.plain:hover{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+  /* ===== 早見表 ===== */
+  .compare{margin:18px 0 0;}
+  .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:8px;border:1px solid var(--line);}
+  table{border-collapse:collapse;width:100%;min-width:620px;background:var(--paper);font-size:14px;}
+  th,td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);}
+  thead th{background:#33332f;color:#fff;font-weight:600;font-size:13px;letter-spacing:.04em;}
+  thead th:first-child{background:#222220;}
+  tbody th{background:#f0efec;font-weight:600;width:120px;white-space:nowrap;color:var(--ink2);font-size:13px;}
+  tbody tr:last-child th,tbody tr:last-child td{border-bottom:none;}
+  td .hl{color:var(--accent);font-weight:700;}
+  .row-star th{color:var(--accent);}
+  .row-star td{background:var(--accent-soft);}
+
+  /* ===== まとめ ===== */
+  .verdict{
+    background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:28px 26px;margin:30px 0 0;
+  }
+  .verdict .pick{display:flex;align-items:center;gap:10px;margin:0 0 18px;}
+  .verdict .pick .tag{font-size:11px;font-weight:700;letter-spacing:.1em;background:var(--accent);color:#fff;padding:4px 11px;border-radius:14px;}
+  .verdict .pick h3{margin:0;font-size:18px;font-weight:800;}
+  .verdict ul{margin:0;padding:0;list-style:none;}
+  .verdict li{padding:13px 0;border-top:1px solid var(--line);display:flex;gap:14px;align-items:baseline;font-size:14px;color:var(--ink);line-height:1.7;}
+  .verdict li:first-child{border-top:none;}
+  .verdict li .who{flex:none;width:128px;color:var(--accent);font-weight:700;font-size:13px;}
+  .verdict .closing{margin:18px 0 0;font-size:14px;color:var(--ink2);}
+
+  .fine{color:var(--muted);font-size:12px;line-height:1.85;margin:34px 0 56px;border-top:1px solid var(--line);padding-top:18px;}
+
+  /* ===== レスポンシブ ===== */
+  @media(max-width:720px){
+    .gallery{grid-template-columns:1fr 1fr;}
+    .gallery figure.wide{grid-column:span 2;}
+    .gallery figure.tall{aspect-ratio:3/2;}
+    .axes{grid-template-columns:1fr;}
+    .detail-block{grid-template-columns:1fr;}
+    .lineage{grid-template-columns:1fr;}
+    .primer ul.air li{flex-direction:column;gap:3px;}
+    .primer ul.air li .air-who{width:auto;}
+    .verdict li{flex-direction:column;gap:3px;}
+    .verdict li .who{width:auto;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== 扉 ===== -->
+<header class="cover">
+  <div class="cover-img"><img src="img/datai-hero.jpg" alt="ランカウイ島 ザ・ダタイの空撮。熱帯雨林と海"></div>
+  <div class="cover-inner">
+    <p class="kicker">Winter Family Trip 2026</p>
+    <h1>冬の家族旅行<br>候補は、この7つ</h1>
+    <p class="lead">どれも子どもを預ける旅ではない。自然学者や海の生物の専門家と、家族みんなで生き物や自然に触れる。アマンを生んだエイドリアン・ゼッカの系譜にある海外4つ(本物のアマン2、Zecha 会長の現役系譜1、思想を継ぐ系譜1)と、国内3つ(八重山)を並べた。冬の幅は9月から3月まで広く取った。4泊5日で行く前提で、7つを並べた。</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ===== 前提 ===== -->
+  <section class="intro">
+    <p>子どもにとっての旅は、見るだけでなく「やってみる」旅にしたい。プランクトンをすくう。サンゴを植える。ウミガメを見送る。蝶の庭を歩く。星空を見上げる。マングローブを漕ぐ。3段カスケードのプールに浮かぶ。7つともそれができる。違うのは、体験の幅と、移動の楽さと、お金、そして行ける時期。下に1つずつ並べた。最後に表とマトリクスでまとめる。</p>
+    <p class="tiny">弦といとが、親と一緒に自然に触れられる旅。7つを公平に並べてから、いまの本命を最後に書いた。写真は各リゾートの公式サイトと Wikipedia から。</p>
+  </section>
+
+  <!-- ===== 導入1 ゼッカって誰? ===== -->
+  <div class="primer">
+    <div class="p-head">
+      <span class="p-tag">まず前提</span>
+      <h3>ゼッカって、誰?</h3>
+    </div>
+    <p class="who-is">エイドリアン・ゼッカ。1933年生まれの92歳。アマンを生んだ伝説のホテルづくりの人。1988年、タイのプーケットで世界初のアマン「アマンプリ」を開き、「静かで、土地に溶けこむぜいたく」というホテルの型を、この人が発明した。20世紀のホテル界の巨人と呼ばれる。あとに続くシックスセンシズやソネバといったリゾートにも、大きく影響した。</p>
+    <p>ゼッカの設計の核は4つ。土地から始める。小さく、低密度に。出しゃばらないサービス。土地と文化に溶けこむ。海外4つは、ぜんぶこの人の系譜にある。関係の濃さはそれぞれ違う。あとに並べる国内3つ(八重山)はゼッカ系譜外だが、「土地に溶けこむ」という核は通底する。</p>
+    <div class="lineage">
+      <div class="ln">
+        <p class="ln-rel">本物のアマン</p>
+        <p class="ln-name">アマノイ・アマンキラ</p>
+        <p>どちらもゼッカが Aman 在籍中に開いたアマン。アマンキラ 1992年、アマノイ 2013年9月。ゼッカは 2014年 Aman を離れた。</p>
+      </div>
+      <div class="ln">
+        <p class="ln-rel">いまも現役の系譜</p>
+        <p class="ln-name">ザ・ダタイ</p>
+        <p>運営は GHM。ゼッカがいまも会長をつとめる会社。今も生きている系譜。</p>
+      </div>
+      <div class="ln">
+        <p class="ln-rel">思想を継ぐ系譜</p>
+        <p class="ln-name">シックスセンシズ コンダオ</p>
+        <p>創業は別の人。でもゼッカが作った流れの上にある。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 導入2 飛行機の前提 ===== -->
+  <div class="primer">
+    <div class="p-head">
+      <span class="p-tag">行き方の前提</span>
+      <h3>飛行機は、マイルで取ると安い</h3>
+    </div>
+    <p class="who-is">飛行機は「マイル(特典航空券)」で取ると、ぐっと安くなる。ここでは、マイルで取る区間と、別に現金で買う区間を分けて書く。必要マイル数と空席は、Delta の口座で検索して実数を入れる。Delta マイルの底値は片道22,500マイル/人(ホーチミン行きベトナム航空)。家族4人往復で18万マイルが目安。ただし日付次第で30,000から50,000マイル/人に上がる日も多い。</p>
+    <ul class="air">
+      <li><span class="air-who">ザ・ダタイ</span>マイル区間は日本からクアラルンプールまで。追加の現金航空券はクアラルンプールからランカウイまで、家族4人で約5.6万円(マレーシア航空直行、片道1時間)。乗り継ぎ2回。</li>
+      <li><span class="air-who">コンダオ</span>マイル区間は日本からホーチミンまで。ホーチミンからコンダオ島の国内線もマイルで取れるかは要確認。取れない場合は追加の現金航空券になる(VASCO 運航、片道5,000円から1.6万円)。</li>
+      <li><span class="air-who">アマノイ</span>マイル区間は羽田からハノイ、カムランまでを想定。カムランから宿までは車1時間20分(3泊以上は無料送迎)。追加の国内線航空券は基本なし。</li>
+      <li><span class="air-who">アマンキラ</span>マイル区間は羽田からデンパサール(バリ)まで(SkyTeam ガルーダ経由)。デンパサールから宿までは車1時間30分。追加の国内線航空券なし。冬は雨季+改装休業で利用窓が限定(9月、10月前半、3月以降)。</li>
+      <li><span class="air-who">国内3つ</span>マイルは使わない。羽田から石垣島 ANA/JAL 現金で1人4から7万円。Delta マイル温存。乗り継ぎ1回(石垣)+船10から45分。</li>
+    </ul>
+  </div>
+
+  <div class="section-label">
+    <span class="en">Part 1 - Overseas</span>
+    <span class="ja">海外4つを、写真で見る</span>
+  </div>
+
+  <!-- ===== 1. The Datai ===== -->
+  <section class="resort" id="datai">
+    <div class="resort-head">
+      <div>
+        <p class="resort-num">01 / Malaysia</p>
+        <h2>ザ・ダタイ<span class="romaji">The Datai Langkawi</span></h2>
+        <p class="place">マレーシア ランカウイ島</p>
+        <span class="zecca-badge"><span class="zd"></span>ゼッカがいまも会長の会社(GHM)。現役の系譜</span>
+      </div>
+      <p class="oneline">熱帯雨林とビーチ。子どもの自然体験が一番ゆたか</p>
+    </div>
+
+    <figure class="hero-shot">
+      <img src="img/datai-kids.jpg" alt="海洋生物学者と子どもが海の生き物を観察するダタイの体験">
+      <figcaption>宿のすぐ裏が1000万年の熱帯雨林。海では専門家と一緒に生き物を観察する</figcaption>
+    </figure>
+    <p class="hero-note">3つの中で、子どもが手を動かせる体験が一番多い。森も海も畑も蝶も、ぜんぶある。</p>
+
+    <div class="gallery">
+      <figure class="wide"><img src="img/datai-drifters.jpg" alt="ダタイで子どもたちが海の専門家とプランクトンをすくう">
+        <figcaption>海の専門家と、子どもがプランクトンすくい</figcaption></figure>
+      <figure class="tall"><img src="img/datai-hornbill.jpg" alt="ダタイの熱帯雨林にすむオオサイチョウ">
+        <figcaption>森にすむオオサイチョウ</figcaption></figure>
+      <figure><img src="img/datai-butterfly.jpg" alt="ダタイの蝶">
+        <figcaption>蝶の庭を歩く</figcaption></figure>
+      <figure><img src="img/datai-rainforest.jpg" alt="ダタイの熱帯雨林">
+        <figcaption>宿の裏にひろがる熱帯雨林</figcaption></figure>
+      <figure><img src="img/datai-beach2.jpg" alt="ダタイのビーチ">
+        <figcaption>静かなプライベートビーチ</figcaption></figure>
+      <figure><img src="img/datai-poolvilla.jpg" alt="ダタイのプール">
+        <figcaption>森に溶けこむプール</figcaption></figure>
+      <figure class="wide"><img src="img/datai-aerial.jpg" alt="ダタイの空撮。熱帯雨林と海">
+        <figcaption>森と海が一枚につながる地形</figcaption></figure>
+    </div>
+
+    <div class="axes">
+      <div class="axis">
+        <p class="ax-label"><span class="dot"></span>子どもとの体験</p>
+        <p>ネイチャーセンター、海の専門家とプランクトンすくい・サンゴの植え付け、畑づくり、蝶の庭、ジャングルの空中散歩。<span class="big-fact">体験の幅が3つで一番広い</span>。預けず、家族で一緒に。</p>
+      </div>
+      <div class="axis">
+        <p class="ax-label"><span class="dot"></span>費用のめやす</p>
+        <p>航空券は、クアラルンプールまでをマイル、最後のランカウイだけ現金で見る。宿は最安表示なら Canopy Deluxe が<span class="big-fact">約7.9万円/泊</span>、ヴィラなら Rainforest Villa が約10万円/泊。4泊で約31万円から40万円。ただし Canopy Deluxe で家族4人運用できるかは要確認。早割10%は<span class="big-fact">2026年12月22日</span>まで(2027年1月以降はピーク料金)。</p>
+      </div>
+    </div>
+
+    <div class="detail-block">
+      <div class="db">
+        <p class="db-label"><span class="dot"></span>行き方</p>
+        <p class="route">羽田<span class="hop"> から </span>ソウル<span class="hop"> から </span>クアラルンプール(ここまでマイル)<span class="hop"> から </span>ランカウイ。</p>
+        <p class="route-note">マイルで取るのはクアラルンプールまで。最後のランカウイまでの1区間(約1時間)は別に現金で買う。家族4人で約5.6万円(マレーシア航空直行、片道1時間)。3つで一番遠い。空港から宿まで車で40分。</p>
+      </div>
+      <div class="db">
+        <p class="db-label"><span class="dot"></span>季節</p>
+        <p class="season">乾季は<span class="big-fact">12月から1月</span>。冬の旅行とぴったり合う。</p>
+        <p class="season">自然体験は<span class="big-fact">一年じゅう</span>できる。冬に行っても、森も海も畑も蝶も、ぜんぶ楽しめる。</p>
+      </div>
+      <div class="db full">
+        <p class="db-label"><span class="dot"></span>子ども宿泊と施設制限</p>
+        <ul class="detail-list">
+          <li><span class="label">宿泊</span>子ども宿泊は可能と見る。11歳以下は既存ベッド利用なら無料。ただし人数は部屋タイプ次第。Canopy Deluxe は最安だが家族4人の1室運用は要確認。Rainforest Villa は広く、デイベッド運用しやすい本命。</li>
+          <li><span class="label">夕食</span>The Dining Room の夕食は12歳未満不可。回避方法は、夜を The Pavilion、The Gulai House、The Beach Club、In-Room Dining に寄せること。体験としては、大人ダイニングではなく、家族でマレー料理やタイ料理、ビーチ側の食事を楽しむ旅になる。</li>
+          <li><span class="label">プール</span>メインプールは16歳以上。子どもは Beach Pool、Family Pool、Toddler Pool、浅い水遊びエリアを使う。体験としては、静かな大人プールで休む旅ではなく、ビーチとファミリープールで遊ぶ旅になる。</li>
+          <li><span class="label">夜</span>Lobby Lounge は19時以降12歳未満不可。回避方法は、夕食後に Rainforest Villa へ戻ること。大人だけでラウンジに行くなら、24時間前にベビーシッターを依頼する選択肢がある。</li>
+          <li><span class="label">自然体験</span>Nature Centre、海洋生物学者セッション、Little Gardener、蝶の庭、海の観察は家族同伴で楽しめる。Datai は子ども不可ではなく、大人の静けさを守る場所と、家族で使う場所を分けている宿。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="links">
+      <a href="https://www.thedatai.com/" target="_blank" rel="noopener">公式サイト<span class="arrow">&#8599;</span></a>
+      <a href="https://www.thedatai.com/experiences/nature/" target="_blank" rel="noopener">自然体験を見る<span class="arrow">&#8599;</span></a>
+      <a class="plain" href="https://www.thedatai.com/information-for-families/" target="_blank" rel="noopener">家族向けの案内<span class="arrow">&#8599;</span></a>
+    </div>
+  </section>
+
+  <!-- ===== 2. Six Senses Con Dao ===== -->
+  <section class="resort" id="condao">
+    <div class="resort-head">
+      <div>
+        <p class="resort-num">02 / Vietnam</p>
+        <h2>シックスセンシズ コンダオ<span class="romaji">Six Senses Con Dao</span></h2>
+        <p class="place">ベトナム コンダオ島</p>
+        <span class="zecca-badge"><span class="zd"></span>ゼッカの思想を継ぐ系譜(本人の創業ではない)</span>
+      </div>
+      <p class="oneline">島まるごと国立公園。海とウミガメ保護に強い</p>
+    </div>
+
+    <figure class="hero-shot">
+      <img src="img/condao-hero.jpg" alt="シックスセンシズ コンダオの海と入り江">
+      <figcaption>島ぜんたいが国立公園。手つかずの入り江に、海ぞいのヴィラが点在する</figcaption>
+    </figure>
+    <p class="hero-note">海とウミガメに強い。子どもがウミガメの赤ちゃんを海へ見送れる宿。</p>
+
+    <div class="gallery">
+      <figure class="wide"><img src="img/condao-turtle.jpg" alt="シックスセンシズ コンダオでウミガメの赤ちゃんを海へ放流する">
+        <figcaption>ウミガメの赤ちゃんを、子どもの手で海へ見送る</figcaption></figure>
+      <figure class="tall"><img src="img/condao-incubation.jpg" alt="ウミガメの形をしたコンダオの孵化センター">
+        <figcaption>ウミガメ型の孵化センター</figcaption></figure>
+      <figure><img src="img/condao-snorkel.jpg" alt="コンダオの透きとおる海でシュノーケリング">
+        <figcaption>透きとおる海でシュノーケル</figcaption></figure>
+      <figure><img src="img/condao-paddle.jpg" alt="コンダオの海でスタンドアップパドル">
+        <figcaption>パドルボードで海あそび</figcaption></figure>
+      <figure><img src="img/condao-poolvilla2.jpg" alt="コンダオのビーチフロント プールヴィラ">
+        <figcaption>砂浜に面したプールヴィラ</figcaption></figure>
+      <figure><img src="img/condao-villa.jpg" alt="コンダオのオーシャンビュー プールヴィラ">
+        <figcaption>海を望むプールヴィラ</figcaption></figure>
+      <figure class="wide"><img src="img/condao-resortview.jpg" alt="コンダオのリゾート全景">
+        <figcaption>国立公園の入り江に沿って広がるリゾート</figcaption></figure>
+    </div>
+
+    <div class="axes">
+      <div class="axis">
+        <p class="ax-label"><span class="dot"></span>子どもとの体験</p>
+        <p>海の専門家がいる。<span class="big-fact">ウミガメの孵化センター</span>(これまで2.9万匹を孵化)、タートルトーク、Earth Lab(石けんやキャンドル作り)、菜園でキノコや卵の収穫。</p>
+      </div>
+      <div class="axis">
+        <p class="ax-label"><span class="dot"></span>費用のめやす</p>
+        <p>航空券はホーチミンまでをマイルで見る。コンダオ島までの国内線は、マイルで取れるか要確認。宿は最安もヴィラで、Ocean View Duplex Pool Villa が<span class="big-fact">約12.5万円/泊</span>。2ベッドの Family Pool Villa は約18.9万円/泊。</p>
+      </div>
+    </div>
+
+    <div class="detail-block">
+      <div class="db">
+        <p class="db-label"><span class="dot"></span>行き方</p>
+        <p class="route">成田<span class="hop"> から </span>ホーチミン<span class="hop"> から </span>コンダオ島(45分)。</p>
+        <p class="route-note">ホーチミンまではマイルで見る。コンダオ島までの国内線45分は、Delta検索で特典枠が出るか要確認。出なければ追加の現金航空券として見る。片道はおおむね11から12時間。</p>
+      </div>
+      <div class="db">
+        <p class="db-label"><span class="dot"></span>季節</p>
+        <p class="season">乾季は<span class="big-fact">12月から1月</span>。天気のうえでは冬がよい。</p>
+        <p class="season">ただしウミガメの放流は<span class="big-fact">5月から12月</span>。冬の1月は端境期で、赤ちゃんガメの放流は見られないことがある。</p>
+        <p class="season"><span class="big-fact">12月24日から1月6日</span>はピーク。年末ガラディナーが大人1人約12万円で家族4人なら30万円上乗せ。1月成人の日(1月11日以降)が穏やか。</p>
+      </div>
+    </div>
+
+    <div class="links">
+      <a href="https://www.sixsensescondao.com/" target="_blank" rel="noopener">公式サイト<span class="arrow">&#8599;</span></a>
+      <a href="https://www.sixsensescondao.com/green-sea-turtle-conservation-six-senses-con-dao/" target="_blank" rel="noopener">ウミガメ保護を見る<span class="arrow">&#8599;</span></a>
+    </div>
+  </section>
+
+  <!-- ===== 3. Amanoi ===== -->
+  <section class="resort" id="amanoi">
+    <div class="resort-head">
+      <div>
+        <p class="resort-num">03 / Vietnam</p>
+        <h2>アマノイ<span class="romaji">Amanoi</span></h2>
+        <p class="place">ベトナム ニンスアン</p>
+        <span class="zecca-badge"><span class="zd"></span>本物のアマン。ゼッカが創業したブランドそのもの</span>
+      </div>
+      <p class="oneline">本物のアマン。国立公園とビーチ</p>
+    </div>
+
+    <figure class="hero-shot">
+      <img src="img/amanoi-hero.jpg" alt="アマノイの国立公園と海を望む全景">
+      <figcaption>ヌイチュア国立公園と海を見おろす丘の上。ゼッカが創業したアマンそのもの</figcaption>
+    </figure>
+    <p class="hero-note">3つで一番ぜいたく。雄大な景色とアマンの静けさ。体験の作り込みは控えめ。</p>
+
+    <div class="gallery">
+      <figure class="wide"><img src="img/amanoi-villa.jpg" alt="アマノイのオーシャンプールヴィラから海を望む">
+        <figcaption>海を見おろすプールヴィラ</figcaption></figure>
+      <figure class="tall"><img src="img/amanoi-lake.jpg" alt="アマノイの湖畔のパビリオン">
+        <figcaption>湖畔の静かなパビリオン</figcaption></figure>
+      <figure><img src="img/amanoi-pool.jpg" alt="アマノイの丘の上のインフィニティプール">
+        <figcaption>森にせり出すプール</figcaption></figure>
+      <figure><img src="img/amanoi-park.jpg" alt="アマノイのヌイチュア国立公園">
+        <figcaption>ヌイチュア国立公園を歩く</figcaption></figure>
+      <figure><img src="img/amanoi-beach.jpg" alt="アマノイのプライベートビーチ">
+        <figcaption>静かなプライベートビーチ</figcaption></figure>
+      <figure><img src="img/amanoi-dining.jpg" alt="アマノイのビーチクラブの食事">
+        <figcaption>海を望むビーチクラブ</figcaption></figure>
+      <figure class="wide"><img src="img/amanoi-catamaran.jpg" alt="アマノイの夕暮れのカタマランセーリング">
+        <figcaption>夕暮れのカタマランで海へ出る</figcaption></figure>
+    </div>
+
+    <div class="axes">
+      <div class="axis">
+        <p class="ax-label"><span class="dot"></span>子どもとの体験</p>
+        <p>ヌイチュア国立公園のトレッキング、ウミガメの放流、漁村のボート。<span class="big-fact">雄大だが、作り込みは控えめ</span>。専門家と並走する体験は3つで一番少ない。</p>
+      </div>
+      <div class="axis">
+        <p class="ax-label"><span class="dot"></span>費用のめやす</p>
+        <p>航空券は羽田からハノイ、カムランまでをマイルで見る。宿は最安の Ocean Pavilion が約22万円/泊だが、<span class="big-fact">Pavilion 1室で家族4人は入らない</span>。家族向けは Ocean Pool Family Villa(310㎡、推定 USD 1,400から2,000/泊)以上が現実的。3つで一番高い。</p>
+      </div>
+    </div>
+
+    <div class="detail-block">
+      <div class="db">
+        <p class="db-label"><span class="dot"></span>行き方</p>
+        <p class="route">羽田<span class="hop"> から </span>ハノイ<span class="hop"> から </span>カムラン。そこから車。</p>
+        <p class="route-note">羽田からハノイ、カムランまでをベトナム航空のマイル発券で見る。追加の国内線航空券は基本なし。カムランから宿までは車。<span class="hop">羽田発で一番楽</span>。</p>
+      </div>
+      <div class="db">
+        <p class="db-label"><span class="dot"></span>季節</p>
+        <p class="season">乾季は<span class="big-fact">12月から3月</span>。冬のあいだはずっと天気がよい。</p>
+        <p class="season">ただしウミガメの放流は夏から秋。<span class="big-fact">冬は放流が休み</span>。</p>
+      </div>
+    </div>
+
+    <div class="links">
+      <a href="https://www.aman.com/resorts/amanoi" target="_blank" rel="noopener">公式サイト<span class="arrow">&#8599;</span></a>
+      <a href="https://www.aman.com/resorts/amanoi/experiences/exploring-nui-chua-national-park" target="_blank" rel="noopener">国立公園の体験を見る<span class="arrow">&#8599;</span></a>
+    </div>
+  </section>
+
+  <!-- ===== 4. Amankila ===== -->
+  <section class="resort" id="amankila">
+    <div class="resort-head">
+      <div>
+        <p class="resort-num">04 / Indonesia</p>
+        <h2>アマンキラ<span class="romaji">Amankila</span></h2>
+        <p class="place">インドネシア バリ東岸 マンギス</p>
+        <span class="zecca-badge"><span class="zd"></span>本物のアマン。1992年オープン、ゼッカが在籍中に開いた</span>
+      </div>
+      <p class="oneline">崖の上の3段カスケード インフィニティプール</p>
+    </div>
+
+    <figure class="hero-shot">
+      <img src="img/amankila-hero.jpg" alt="アマンキラの3段カスケード インフィニティプールと海">
+      <figcaption>アマンキラの象徴。海を見おろす3段カスケードのインフィニティプール</figcaption>
+    </figure>
+    <p class="hero-note">アマンキラは1992年、アマンプリ(1988)の4年後にゼッカが開いた2軒目のバリのアマン。プールがブランドの象徴。利用窓は限定(9月後半・10月前半・3月後半のみ)。</p>
+
+    <div class="gallery">
+      <figure class="wide"><img src="img/amankila-bedroom.jpg" alt="アマンキラのスイートのベッドルーム">
+        <figcaption>スイートのベッドルーム。木と籐の落ち着いた室内</figcaption></figure>
+      <figure class="wide"><img src="img/amankila-hero.jpg" alt="3段カスケードプール全景">
+        <figcaption>3段カスケードプール全景。家族で泳ぐ</figcaption></figure>
+    </div>
+
+    <div class="axes">
+      <div class="axis">
+        <p class="ax-label"><span class="dot"></span>子どもとの体験</p>
+        <p>3段プール、プライベートビーチ、ヒンドゥー文化体験、伝統料理クラス。<span class="big-fact">12歳未満は宿泊無料</span>(既存ベッド利用)。預けず家族で。アマンの作り込みは控えめ寄り。</p>
+      </div>
+      <div class="axis">
+        <p class="ax-label"><span class="dot"></span>費用のめやす</p>
+        <p>家族4人は <span class="big-fact">2-Bedroom Amankila Suite(660㎡)</span> が筆頭。1泊概算 USD 1,500-2,500。4泊で USD 6,000-10,000。アマノイと同等の高額レンジ。</p>
+      </div>
+    </div>
+
+    <div class="detail-block">
+      <div class="db">
+        <p class="db-label"><span class="dot"></span>行き方</p>
+        <p class="route">羽田<span class="hop"> から </span>デンパサール(バリ)<span class="hop"> から </span>車1時間30分。</p>
+        <p class="route-note">マイル区間は羽田からデンパサールまで(SkyTeam ガルーダ経由)。空港から宿までは車で1時間30分(リゾート手配)。追加航空券なし。バリ既訪問(アマンダリ)とは別の東岸エリア。</p>
+      </div>
+      <div class="db">
+        <p class="db-label"><span class="dot"></span>季節と利用窓</p>
+        <p class="season">乾季は<span class="big-fact">4月から10月</span>。冬は雨季+改装休業の二重制約。</p>
+        <p class="season">利用可能窓: <span class="big-fact">2026年9月後半・2026年10月前半(10/17まで)・2027年1月18日以降-4月</span>。改装休業 10/18-1/17、ブラックアウト 8月全月と12/20-1/3。</p>
+      </div>
+    </div>
+
+    <div class="links">
+      <a href="https://www.aman.com/resorts/amankila" target="_blank" rel="noopener">公式サイト<span class="arrow">&#8599;</span></a>
+      <a href="https://www.aman.com/resorts/amankila/accommodation/suites" target="_blank" rel="noopener">スイートを見る<span class="arrow">&#8599;</span></a>
+    </div>
+  </section>
+
+  <!-- ===== 国内 Plan B 導入 ===== -->
+  <div class="primer">
+    <div class="p-head">
+      <span class="p-tag">国内3つ</span>
+      <h3>海ではなく、星と森と島文化</h3>
+    </div>
+    <p class="who-is">海外がうまく取れないとき、あるいは節約軸を最優先にしたいとき、八重山がもう一つの選択肢になる。冬の八重山は北東風で時化、海泳ぎはむずかしい。代わりに<span class="big-fact">星空保護区・マングローブ・島文化・サウナとスパ</span>に振る。マイルは温存できる。羽田から石垣まで現金で1人4から7万円、フェリーで30分から45分。冬は欠航リスクがあるので、日程に1日バッファを取りたい。</p>
+  </div>
+
+  <div class="section-label">
+    <span class="en">Part 2 - Japan</span>
+    <span class="ja">国内3つを、写真で見る</span>
+  </div>
+
+  <!-- ===== 4. Iriomote Hotel by Hoshino ===== -->
+  <section class="resort" id="iriomote">
+    <div class="resort-head">
+      <div>
+        <p class="resort-num">04 / Japan</p>
+        <h2>イリオモテホテル<span class="romaji">Iriomote Hotel by Hoshino Resorts</span></h2>
+        <p class="place">日本 西表島</p>
+        <span class="zecca-badge"><span class="zd"></span>世界自然遺産・西表島。家族4人1室で最安レンジ</span>
+      </div>
+      <p class="oneline">マングローブとジャングルの島。星空とナイトツアー</p>
+    </div>
+
+    <figure class="hero-shot">
+      <img src="img/iriomote-mangrove.jpg" alt="西表島のマングローブ林">
+      <figcaption>西表島は島の9割が亜熱帯のジャングルとマングローブ。世界自然遺産</figcaption>
+    </figure>
+    <p class="hero-note">写真は西表島の自然(Wikipedia Commons)。リゾート自体はジャングルに溶け込む小規模ホテル。公式サイトで宿の写真を見られる。</p>
+
+    <div class="gallery">
+      <figure class="wide"><img src="img/iriomote-river.jpg" alt="西表島の浦内川">
+        <figcaption>島最大の浦内川。クルーズで奥地へ</figcaption></figure>
+      <figure class="tall"><img src="img/iriomote-waterfall.jpg" alt="マリュドゥの滝">
+        <figcaption>マリュドゥの滝。トレッキングで会いに行く</figcaption></figure>
+      <figure><img src="img/iriomote-beach.jpg" alt="星砂の浜・ツドゥマリの浜">
+        <figcaption>静かな浜辺</figcaption></figure>
+      <figure><img src="img/iriomote-starsand.jpg" alt="星砂">
+        <figcaption>有孔虫の殻からできた星の砂</figcaption></figure>
+      <figure class="wide"><img src="img/iriomote-mangrove.jpg" alt="マングローブ">
+        <figcaption>マングローブをカヤックで漕ぎ抜ける</figcaption></figure>
+    </div>
+
+    <div class="axes">
+      <div class="axis">
+        <p class="ax-label"><span class="dot"></span>子どもとの体験</p>
+        <p>マングローブのカヤック、ジャングルナイトツアー、ヤエヤマヒメボタル観察、満点の星空。<span class="big-fact">世界自然遺産の島</span>を、家族で歩く旅。</p>
+      </div>
+      <div class="axis">
+        <p class="ax-label"><span class="dot"></span>費用のめやす</p>
+        <p>Deluxe Room 54㎡。デイベッド利用で<span class="big-fact">家族4人1室で泊まれる</span>。1泊2から4万円。羽田-石垣は1人4から7万円。4泊5日の総額目安は<span class="big-fact">25から50万円</span>。国内候補で最安。</p>
+      </div>
+    </div>
+
+    <div class="detail-block">
+      <div class="db">
+        <p class="db-label"><span class="dot"></span>行き方</p>
+        <p class="route">羽田<span class="hop"> から </span>石垣<span class="hop"> から </span>船45分。</p>
+        <p class="route-note">羽田から石垣まで ANA か JAL で現金。石垣港から大原港 or 上原港まで船で約45分。マイルは使わない。乗り継ぎ1回。片道おおむね6時間。</p>
+      </div>
+      <div class="db">
+        <p class="db-label"><span class="dot"></span>季節</p>
+        <p class="season">冬は気温<span class="big-fact">20℃前後</span>。海泳ぎは無理。代わりに森と星と夜のいきものを見る旅になる。</p>
+        <p class="season">注意:<span class="big-fact">2026年1月19日14時から1月23日8時は休館</span>(公式)。候補A(成人の日週)も候補B(12月)も候補C(11月)も外れているので問題なし。</p>
+      </div>
+    </div>
+
+    <div class="links">
+      <a href="https://hoshinoresorts.com/en/hotels/iriomote/" target="_blank" rel="noopener">公式サイト<span class="arrow">&#8599;</span></a>
+    </div>
+  </section>
+
+  <!-- ===== 5. はいむるぶし ===== -->
+  <section class="resort" id="haimurubushi">
+    <div class="resort-head">
+      <div>
+        <p class="resort-num">05 / Japan</p>
+        <h2>はいむるぶし<span class="romaji">Haimurubushi</span></h2>
+        <p class="place">日本 小浜島</p>
+        <span class="zecca-badge"><span class="zd"></span>星空保護区。新オーシャンフロント・プールヴィラが2026年7月新オープン</span>
+      </div>
+      <p class="oneline">日本の星空保護区に指定された島。家族同伴体験が豊富</p>
+    </div>
+
+    <figure class="hero-shot">
+      <img src="img/haimuru-villa.jpg" alt="はいむるぶしのヴィラ">
+      <figcaption>小浜島のヴィラ。日本最南端のアイランドビーチリゾート</figcaption>
+    </figure>
+    <p class="hero-note">写真は楽天トラベルのギャラリーから。2026年7月新オープンのオーシャンフロント・プールヴィラは別途。</p>
+
+    <div class="gallery">
+      <figure class="wide"><img src="img/haimuru-pool.jpg" alt="はいむるぶしのメインプール">
+        <figcaption>家族で過ごすメインプール</figcaption></figure>
+      <figure class="tall"><img src="img/haimuru-bath.jpg" alt="はいむるぶしのオーシャンビュー湯浴み">
+        <figcaption>オーシャンビューの湯浴み</figcaption></figure>
+      <figure><img src="img/haimuru-yoga.jpg" alt="フローティング SUP ヨガ">
+        <figcaption>海上の SUP ヨガ(夏)</figcaption></figure>
+      <figure><img src="img/haimuru-villa.jpg" alt="ヴィラ外観">
+        <figcaption>ヴィラ外観</figcaption></figure>
+    </div>
+
+    <div class="axes">
+      <div class="axis">
+        <p class="ax-label"><span class="dot"></span>子どもとの体験</p>
+        <p>星空ツアー、マングローブ探検、ヤギやアヒルとのふれあい。<span class="big-fact">星空保護区</span>指定エリアで、ナチュラリストと夜空を見上げる。</p>
+      </div>
+      <div class="axis">
+        <p class="ax-label"><span class="dot"></span>費用のめやす</p>
+        <p>既存客室で1泊5から10万円レンジ。2026年7月15日に<span class="big-fact">新オーシャンフロント・プールヴィラ(コネクティングルーム対応)</span>がオープン予定で、料金は2026年6月公開予定。4泊5日の総額目安は30から60万円。</p>
+      </div>
+    </div>
+
+    <div class="detail-block">
+      <div class="db">
+        <p class="db-label"><span class="dot"></span>行き方</p>
+        <p class="route">羽田<span class="hop"> から </span>石垣<span class="hop"> から </span>船30分。</p>
+        <p class="route-note">羽田から石垣まで現金。石垣港から小浜島まで船で約30分。マイル不要。片道おおむね5.5時間。</p>
+      </div>
+      <div class="db">
+        <p class="db-label"><span class="dot"></span>季節</p>
+        <p class="season">冬は海泳ぎ不可。<span class="big-fact">星空・スパ・島文化</span>に振る旅になる。</p>
+        <p class="season">フェリー欠航リスクあり。日程に1日バッファ推奨。</p>
+      </div>
+    </div>
+
+    <div class="links">
+      <a href="https://www.haimurubushi.co.jp/" target="_blank" rel="noopener">公式サイト<span class="arrow">&#8599;</span></a>
+      <a class="plain" href="https://www.mitsuifudosan.co.jp/corporate/news/2026/0226_02/" target="_blank" rel="noopener">新ヴィラ告知を見る<span class="arrow">&#8599;</span></a>
+    </div>
+  </section>
+
+  <!-- ===== 6. 星のや竹富島 ===== -->
+  <section class="resort" id="hoshinoya-taketomi">
+    <div class="resort-head">
+      <div>
+        <p class="resort-num">06 / Japan</p>
+        <h2>星のや竹富島<span class="romaji">Hoshinoya Taketomi</span></h2>
+        <p class="place">日本 竹富島</p>
+        <span class="zecca-badge"><span class="zd"></span>島の集落に溶け込む滞在。沖縄文化に深く入る</span>
+      </div>
+      <p class="oneline">家族4人は2室必要。総額は国内候補で最も高い</p>
+    </div>
+
+    <figure class="hero-shot">
+      <img src="img/hoshinoya-room.jpg" alt="星のや竹富島のガジョーニ客室">
+      <figcaption>客室は1棟ずつ独立した平屋・赤瓦。集落の一部になる</figcaption>
+    </figure>
+    <p class="hero-note">写真は楽天トラベルのギャラリーから。客室・スパ・夕暮れのサバニ・プールなど。</p>
+
+    <div class="gallery">
+      <figure class="wide"><img src="img/hoshinoya-sabani.jpg" alt="夕暮れのプライベートサバニ">
+        <figcaption>夕暮れのプライベートサバニ体験</figcaption></figure>
+      <figure class="tall"><img src="img/hoshinoya-hammock.jpg" alt="ハンモック">
+        <figcaption>客室付属のハンモック</figcaption></figure>
+      <figure><img src="img/hoshinoya-dining.jpg" alt="島テロワール ダイニング">
+        <figcaption>島テロワール ダイニング</figcaption></figure>
+      <figure><img src="img/hoshinoya-pool.jpg" alt="プール">
+        <figcaption>集落のプール</figcaption></figure>
+      <figure class="wide"><img src="img/hoshinoya-room.jpg" alt="客室全景">
+        <figcaption>琉球畳の客室と石垣</figcaption></figure>
+    </div>
+
+    <div class="axes">
+      <div class="axis">
+        <p class="ax-label"><span class="dot"></span>子どもとの体験</p>
+        <p>島集落の散策、星空、三線、染め。<span class="big-fact">沖縄文化に深く入る</span>。集落の中に客室が点在し、宿が「島の一部」になる。</p>
+      </div>
+      <div class="axis">
+        <p class="ax-label"><span class="dot"></span>費用のめやす</p>
+        <p>客室最大3名で、<span class="big-fact">家族4人は2室必要</span>。大人2人1泊で約9.7万から19.5万円。4人2室で1泊15から25万円。4泊5日の総額目安は<span class="big-fact">60から100万円</span>。国内で最も高い。竹富島ふるさと納税3万円ギフト券で一部割引可。</p>
+      </div>
+    </div>
+
+    <div class="detail-block">
+      <div class="db">
+        <p class="db-label"><span class="dot"></span>行き方</p>
+        <p class="route">羽田<span class="hop"> から </span>石垣<span class="hop"> から </span>船10分。</p>
+        <p class="route-note">石垣から竹富島まで船で約10分。3島の中で一番近い。片道おおむね5時間。</p>
+      </div>
+      <div class="db">
+        <p class="db-label"><span class="dot"></span>季節</p>
+        <p class="season">冬は海泳ぎ不可。<span class="big-fact">集落と星と文化</span>に振る旅。</p>
+        <p class="season">フェリー欠航リスクあり。日程に1日バッファ推奨。</p>
+      </div>
+    </div>
+
+    <div class="links">
+      <a href="https://hoshinoresorts.com/ja/hotels/hoshinoyataketomijima/" target="_blank" rel="noopener">公式サイト<span class="arrow">&#8599;</span></a>
+    </div>
+  </section>
+
+  <!-- ===== 統合 早見表 (7候補×11軸) ===== -->
+  <div class="section-label">
+    <span class="en">Side by side - All 7</span>
+    <span class="ja">7つを、同じ軸で並べる</span>
+  </div>
+
+  <div class="compare">
+  <div class="tablewrap">
+    <table style="min-width:1180px;">
+      <thead>
+        <tr>
+          <th></th>
+          <th>ダタイ<br>Langkawi</th>
+          <th>コンダオ<br>Vietnam</th>
+          <th>アマノイ<br>Vietnam</th>
+          <th>アマンキラ<br>Bali</th>
+          <th>イリオモテ<br>西表島</th>
+          <th>はいむるぶし<br>小浜島</th>
+          <th>星のや竹富島<br>竹富島</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>ブランド</th>
+          <td>GHM(Zecha 会長)</td>
+          <td>Six Senses</td>
+          <td>Aman(本物)</td>
+          <td>Aman(本物)</td>
+          <td>星野</td>
+          <td>三井系</td>
+          <td>星野</td>
+        </tr>
+        <tr class="row-star">
+          <th>家族4人<br>部屋</th>
+          <td>Rainforest Villa<br>1室 123㎡</td>
+          <td>Duplex Pool Villa<br>1室 194㎡</td>
+          <td><span class="hl">Family Villa<br>必須 310㎡+</span></td>
+          <td>2-Bed Suite<br>660㎡</td>
+          <td><span class="hl">Deluxe 54㎡<br>1室 OK</span></td>
+          <td>新ヴィラ<br>1室</td>
+          <td><span class="hl">2室必要</span><br>最大3名/室</td>
+        </tr>
+        <tr class="row-star">
+          <th>1泊めやす</th>
+          <td><span class="hl">約10万円</span></td>
+          <td>約12.5-18.9万円</td>
+          <td>約22-30万円</td>
+          <td>約22-37万円</td>
+          <td><span class="hl">約2-4万円</span></td>
+          <td>約5-10万円</td>
+          <td>約15-25万円(2室)</td>
+        </tr>
+        <tr class="row-star">
+          <th>4泊総額<br>めやす</th>
+          <td><span class="hl">31-40万円</span></td>
+          <td>50-75万円</td>
+          <td>87-180万円</td>
+          <td>60-100万円</td>
+          <td><span class="hl">25-50万円</span></td>
+          <td>30-60万円</td>
+          <td>60-100万円</td>
+        </tr>
+        <tr>
+          <th>マイル区間</th>
+          <td>KULまで<br>(ICN経由 or SGN/HAN)</td>
+          <td>SGNまで<br>(VN 直行)</td>
+          <td>HAN+CXR まで<br>(VN)</td>
+          <td>DPSまで<br>(Garuda)</td>
+          <td>不要</td>
+          <td>不要</td>
+          <td>不要</td>
+        </tr>
+        <tr>
+          <th>追加<br>現金区間</th>
+          <td>KUL-LGK<br>家族 約5.6万円</td>
+          <td>SGN-VCS<br>$40-100/人</td>
+          <td>HAN-CXR 国内線<br>+ 車1h20m</td>
+          <td>なし<br>(車1h30m)</td>
+          <td>羽田-石垣<br>4-7万円/人</td>
+          <td>羽田-石垣<br>4-7万円/人</td>
+          <td>羽田-石垣<br>4-7万円/人</td>
+        </tr>
+        <tr class="row-star">
+          <th>子どもの<br>体験の幅</th>
+          <td><span class="hl">最強</span><br>森・海・畑・蝶</td>
+          <td>海・ウミガメ</td>
+          <td>雄大だが控えめ</td>
+          <td>プール・文化</td>
+          <td>マングローブ・星</td>
+          <td>星空・島文化</td>
+          <td>集落・文化・星</td>
+        </tr>
+        <tr>
+          <th>冬の<br>海泳ぎ</th>
+          <td><span class="hl">可</span></td>
+          <td><span class="hl">可</span></td>
+          <td><span class="hl">可</span></td>
+          <td>可(乾季外は不可)</td>
+          <td>不可(時化)</td>
+          <td>不可(時化)</td>
+          <td>不可(時化)</td>
+        </tr>
+        <tr>
+          <th>子ども制限</th>
+          <td>夕食・プール・夜に制限</td>
+          <td>要確認</td>
+          <td>なし</td>
+          <td><span class="hl">12歳未満宿泊無料</span></td>
+          <td>なし</td>
+          <td>なし</td>
+          <td>なし</td>
+        </tr>
+        <tr>
+          <th>Zecca</th>
+          <td>GHM 会長</td>
+          <td>思想継承</td>
+          <td><span class="hl">本物のアマン</span></td>
+          <td><span class="hl">本物のアマン</span></td>
+          <td>系譜外</td>
+          <td>系譜外</td>
+          <td>系譜外</td>
+        </tr>
+        <tr>
+          <th>注意</th>
+          <td>夕食12歳未満不可<br>早割 12/22 期限</td>
+          <td>12/24-1/6 Peak<br>Gala Dinner 別途</td>
+          <td>Pavilion 1室で4人不可</td>
+          <td>10/18-1/17 改装休業<br>8月全月も休業</td>
+          <td>1/19-23 休館</td>
+          <td>新ヴィラ料金未公開</td>
+          <td>4人2室必要</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  </div>
+
+  <!-- ===== windows × 候補 マトリクス ===== -->
+  <div class="section-label">
+    <span class="en">When can we go?</span>
+    <span class="ja">どの時期に、どこへ行けるか</span>
+  </div>
+
+  <div class="compare">
+  <div class="tablewrap">
+    <table style="min-width:880px;">
+      <thead>
+        <tr>
+          <th></th>
+          <th>窓1<br>9月後半 2026</th>
+          <th>窓2<br>10月前半 2026</th>
+          <th>窓3<br>11月後半 2026</th>
+          <th>窓4<br>1月成人の日 2027</th>
+          <th>窓5<br>3月後半 2027</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>ダタイ</th>
+          <td><span class="hl">◎ 早割可</span></td>
+          <td><span class="hl">◎ 早割可</span></td>
+          <td><span class="hl">◎ 早割可</span></td>
+          <td>△ 早割切れ</td>
+          <td>○ 早割切れ</td>
+        </tr>
+        <tr>
+          <th>コンダオ</th>
+          <td>○ 雨季残り</td>
+          <td>○ 雨季残り</td>
+          <td>○ 乾季入り</td>
+          <td><span class="hl">◎ Peak明け</span></td>
+          <td><span class="hl">◎ 乾季</span></td>
+        </tr>
+        <tr>
+          <th>アマノイ</th>
+          <td>○</td>
+          <td>○</td>
+          <td><span class="hl">◎ 乾季</span></td>
+          <td><span class="hl">◎ 乾季</span></td>
+          <td><span class="hl">◎ 乾季</span></td>
+        </tr>
+        <tr>
+          <th>アマンキラ</th>
+          <td><span class="hl">◎ 乾季末</span></td>
+          <td>○ 10/17まで</td>
+          <td>× 改装休業</td>
+          <td>× 改装休業<br>(1/18以降は可)</td>
+          <td><span class="hl">◎ 乾季入り</span></td>
+        </tr>
+        <tr>
+          <th>イリオモテ</th>
+          <td>○ 残暑</td>
+          <td>○</td>
+          <td>○</td>
+          <td>○(1/19-23 休館)</td>
+          <td><span class="hl">◎</span></td>
+        </tr>
+        <tr>
+          <th>はいむるぶし</th>
+          <td>○ 残暑</td>
+          <td>○</td>
+          <td>○</td>
+          <td>○</td>
+          <td><span class="hl">◎</span></td>
+        </tr>
+        <tr>
+          <th>星のや竹富島</th>
+          <td>○ 残暑</td>
+          <td>○</td>
+          <td>○</td>
+          <td>○</td>
+          <td><span class="hl">◎</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="tiny" style="font-size:12px;color:var(--muted);margin:8px 4px 0;">◎ ベスト適合 / ○ 利用可能 / △ 制約あり / × 不可。アマンキラは候補窓のうち3窓(9月後半・10月前半・3月後半)で利用可。3月後半は7候補すべて行ける唯一の窓。</p>
+  </div>
+
+  <!-- ===== 候補時期(5窓) ===== -->
+  <div class="primer">
+    <div class="p-head">
+      <span class="p-tag">いつ行くか</span>
+      <h3>5つの時期候補</h3>
+    </div>
+    <p class="who-is">時期は決まっていない。9月から3月までの幅で5窓を並べた。利点と欠点を一行ずつ。</p>
+    <ul class="air">
+      <li><span class="air-who">窓1 9月後半</span>2026年9月19日(土)から23日(水)、シルバーウィーク。全候補(アマンキラ含む)利用可。ダタイ早割有効。研究 T2/T3 測定期と重複、台風シーズン残り。</li>
+      <li><span class="air-who">窓2 10月前半</span>2026年10月10日(土)から14日(水)、スポーツの日連休。アマンキラ 10/17 まで利用可。ダタイ早割有効。明治公園祭(10/25-26)直前で疲労残し気味。</li>
+      <li><span class="air-who">窓3 11月後半</span>2026年11月5日(木)から9日(月)。ダタイ早割有効、研究の主分析(12-1月)開始直前で抜けやすい。<span class="hl">アマンキラ休業中</span>、11月9日マレーシア祝日の可能性。</li>
+      <li><span class="air-who">窓4 1月成人の日</span>2027年1月9日(土)から13日(水)。コンダオ Peak明けで穏やか、祝日効率良。<span class="hl">アマンキラ休業中(1/17まで)</span>、ダタイ早割切れ、研究主分析期と完全重複、弦の小学校入学直前。</li>
+      <li><span class="air-who">窓5 3月後半</span>2027年3月19日(木)から23日(月)、春分の日連休。<span class="hl">全7候補が行ける唯一の春窓</span>。研究 Study 1 投稿直後で抜けやすい。弦の小学校入学(4月)直前。</li>
+    </ul>
+  </div>
+
+  <!-- ===== 判断を変える閾値 ===== -->
+  <div class="primer">
+    <div class="p-head">
+      <span class="p-tag">判断軸</span>
+      <h3>こうなったら、こちらに振る</h3>
+    </div>
+    <p class="who-is">7つを並べたが、判断を変える具体条件は6つ。</p>
+    <ul class="air">
+      <li><span class="air-who">マイル18万超</span>家族4人 Delta マイルが18万マイル以内で取れない → ベトナム/マレーシア/バリ弱体、<span class="hl">国内八重山</span>へ振る</li>
+      <li><span class="air-who">宿USD4,000超</span>ダタイ4泊が USD 4,000を超える → アマノイ/アマンキラ(さらに高い)消去、<span class="hl">コンダオ or 八重山</span>へ</li>
+      <li><span class="air-who">コンダオ荒天</span>12月後半旅行でコンダオ天候予報が荒れる → 1月後半延期 or <span class="hl">ランカウイ/八重山</span>へ</li>
+      <li><span class="air-who">大人ダイニング</span>The Dining Room ディナーを家族で取りたい希望が強い → ダタイ弱化、<span class="hl">アマノイ or アマンキラ</span>へ</li>
+      <li><span class="air-who">欠航ストレス</span>子がフェリー欠航ストレスに弱い → 八重山弱化、<span class="hl">海外候補</span>へ</li>
+      <li><span class="air-who">海泳ぎ希望強</span>家族で海泳ぎを楽しみたい希望が強い → 国内3候補弱化(冬は時化)、<span class="hl">ランカウイ/コンダオ/バリ</span>へ</li>
+    </ul>
+  </div>
+
+  <!-- ===== まとめ ===== -->
+  <div class="verdict">
+    <div class="pick">
+      <span class="tag">いまの本命</span>
+      <h3>ザ・ダタイ</h3>
+    </div>
+    <ul>
+      <li><span class="who">体験を一番に</span>ザ・ダタイ。森も海も畑も蝶も、子どものやってみることが一番多い。冬でも全部できる</li>
+      <li><span class="who">移動を軽く</span>コンダオかアマノイ。どちらも乗り継ぎ1回。ただしコンダオ国内線(VASCO)の発券条件は要確認</li>
+      <li><span class="who">宿代を軽く</span>ザ・ダタイ。海外4つの中で最安。ただし子ども利用の施設制限は先に知っておく</li>
+      <li><span class="who">本物のアマンを優先</span>アマノイ(年間通じて開いている)かアマンキラ(9月・10月前半・3月後半のみ)。総額は跳ねる</li>
+      <li><span class="who">徹底的に節約</span>イリオモテ。家族4人1室で4泊5日 25から50万円。マイル温存。冬の海泳ぎは諦める判断が前提</li>
+      <li><span class="who">マイル取れなければ</span>八重山。海外がうまく取れないとき、自然に切り替えが効く保険</li>
+    </ul>
+    <p class="closing">本命はザ・ダタイ。ただし上の6つの判断条件で他の候補に振り替わる。とくに窓5(2027年3月後半)は7候補すべてが行ける唯一の春窓で、本物のアマン(アマンキラ・アマノイ)と国内八重山を含めて選び直しが起きる窓。3窓比較ではなく、5窓×7候補のマトリクスで判断する。</p>
+  </div>
+
+  <p class="fine">
+    金額はすべて概算。時期や為替、空き状況で変わる。海外4つの宿泊費は2026年5月25日に見た予約画面ベース、Datai と Con Dao は10月、Amanoi は9月の表示なので冬本番の料金は再見積もりが必要、Amankila は公開情報概算。国内3つは2026年5月時点の公開情報概算で、はいむるぶし新ヴィラは2026年6月料金公開予定。飛行機はマイル(特典航空券)を使う前提だが、必要マイル数と空席は Delta 口座で要確認。乗り継ぎの時間は経路や待ち時間で前後する。ウミガメの放流は巣作りの時期に合わせて季節限定で変わる。写真は Datai/Con Dao/Amanoi は各リゾート公式サイトより、Amankila と西表島は Wikipedia Commons より、はいむるぶしと星のや竹富島は楽天トラベル公開ギャラリーより。
+  </p>
+
+</div>
+<div style="max-width:1000px;margin:0 auto;padding:18px 28px 32px;"><a href="../" style="color:#2f5d4f;text-decoration:none;font-size:13px;font-family:-apple-system,sans-serif;">← Back to Index</a></div>
+</body>
+</html>

@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Datai Langkawi 家族4人 滞在プラン</title>
+<style>
+  :root{
+    --ink:#2a2a28;
+    --ink2:#52524e;
+    --muted:#86867f;
+    --line:#e4e3df;
+    --line2:#d6d5d0;
+    --bg:#f5f4f1;
+    --paper:#ffffff;
+    --accent:#2f5d4f;
+    --accent-soft:#eef3f0;
+    --warn:#a66b2f;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic Medium","Yu Gothic",sans-serif;
+    line-height:1.85;font-size:16px;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  img{display:block;width:100%;height:100%;object-fit:cover;}
+
+  /* 扉 */
+  .cover{position:relative;min-height:74vh;display:flex;align-items:flex-end;overflow:hidden;background:#1c1c1a;}
+  .cover .cover-img{position:absolute;inset:0;}
+  .cover .cover-img img{opacity:.72;}
+  .cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,20,18,.18) 0%,rgba(20,20,18,.05) 40%,rgba(20,20,18,.78) 100%);}
+  .cover-inner{position:relative;z-index:2;max-width:1000px;margin:0 auto;width:100%;padding:0 28px 52px;color:#fff;}
+  .kicker{font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:#e7e6e1;margin:0 0 14px;font-weight:600;}
+  .cover h1{font-size:clamp(30px,6vw,56px);line-height:1.18;margin:0 0 14px;font-weight:800;letter-spacing:.01em;}
+  .cover .lead{font-size:clamp(14px,2.2vw,17px);max-width:680px;margin:0;color:#f1f0ec;line-height:1.8;}
+
+  /* ラッパ */
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px;}
+  .intro{padding:44px 0 8px;}
+  .intro p{font-size:16px;color:var(--ink2);margin:0;max-width:760px;}
+  .intro .tiny{font-size:13px;color:var(--muted);margin-top:14px;}
+
+  /* primer */
+  .primer{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:26px 26px 22px;margin:30px 0 0;}
+  .primer + .primer{margin-top:16px;}
+  .primer .p-head{display:flex;align-items:baseline;gap:12px;margin:0 0 14px;flex-wrap:wrap;}
+  .primer .p-tag{font-size:11px;font-weight:700;letter-spacing:.12em;background:var(--accent);color:#fff;padding:4px 11px;border-radius:14px;flex:none;}
+  .primer .p-head h3{margin:0;font-size:18px;font-weight:800;line-height:1.4;}
+  .primer p{margin:0 0 12px;font-size:14px;color:var(--ink);line-height:1.85;max-width:780px;}
+  .primer p:last-child{margin-bottom:0;}
+  .primer .who-is{color:var(--ink2);}
+  .primer ul.air{margin:6px 0 0;padding:0;list-style:none;}
+  .primer ul.air li{padding:11px 0;border-top:1px solid var(--line);font-size:14px;color:var(--ink);line-height:1.7;display:flex;gap:14px;align-items:baseline;}
+  .primer ul.air li:first-child{border-top:none;}
+  .primer ul.air li .air-who{flex:none;width:130px;color:var(--accent);font-weight:700;font-size:13px;}
+
+  /* セクションラベル */
+  .section-label{display:flex;align-items:baseline;gap:14px;margin:56px 0 8px;padding-bottom:10px;border-bottom:1px solid var(--line2);}
+  .section-label .en{font-size:12px;letter-spacing:.22em;color:var(--accent);font-weight:700;text-transform:uppercase;}
+  .section-label .ja{font-size:14px;color:var(--muted);}
+
+  /* hero shot */
+  .hero-shot{border-radius:10px;overflow:hidden;background:#e9e8e4;aspect-ratio:16/9;margin:24px 0 8px;position:relative;}
+  .hero-shot figcaption{position:absolute;left:0;right:0;bottom:0;font-size:12px;color:#fff;padding:22px 16px 12px;background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.6) 100%);line-height:1.55;}
+  .hero-note{font-size:14px;color:var(--ink2);margin:0 0 22px;max-width:760px;}
+
+  /* タイムライン */
+  .timeline{margin:24px 0 0;}
+  .day{background:var(--paper);border:1px solid var(--line);border-radius:10px;margin:0 0 14px;overflow:hidden;}
+  .day-head{background:#33332f;color:#fff;padding:14px 22px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+  .day-head .d-num{font-size:13px;letter-spacing:.18em;color:#d9d8d3;font-weight:700;}
+  .day-head .d-title{font-size:17px;font-weight:800;margin:0;}
+  .day-head .d-theme{font-size:13px;color:#d9d8d3;margin-left:auto;}
+  .day-body{padding:16px 22px 22px;}
+  .day-slot{display:grid;grid-template-columns:90px 1fr;gap:14px;padding:9px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.7;}
+  .day-slot:first-child{border-top:none;}
+  .day-slot .time{color:var(--accent);font-weight:700;font-size:13px;letter-spacing:.04em;}
+  .day-slot .act{color:var(--ink);}
+  .day-slot .act .tag{display:inline-block;font-size:11px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-right:6px;font-weight:600;}
+
+  /* 体験表 */
+  .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:8px;border:1px solid var(--line);margin-top:14px;}
+  table{border-collapse:collapse;width:100%;min-width:780px;background:var(--paper);font-size:14px;}
+  thead th{background:#33332f;color:#fff;font-weight:600;font-size:13px;letter-spacing:.04em;padding:10px 12px;text-align:left;}
+  thead th:first-child{background:#222220;}
+  tbody th{background:#f0efec;font-weight:600;width:130px;white-space:nowrap;color:var(--ink2);font-size:13px;padding:11px 12px;text-align:left;vertical-align:top;}
+  tbody td{padding:11px 12px;border-top:1px solid var(--line);vertical-align:top;color:var(--ink);line-height:1.55;}
+  tbody tr:first-child td,tbody tr:first-child th{border-top:none;}
+  .hl{color:var(--accent);font-weight:700;}
+  .ng{color:var(--muted);}
+
+  /* check list */
+  .checklist{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:18px 22px;margin:14px 0 0;}
+  .checklist h4{margin:0 0 8px;font-size:14px;color:var(--accent);letter-spacing:.06em;font-weight:700;}
+  .checklist ul{margin:0 0 14px;padding:0;list-style:none;}
+  .checklist ul:last-child{margin-bottom:0;}
+  .checklist li{padding:6px 0 6px 26px;position:relative;font-size:14px;color:var(--ink);line-height:1.6;}
+  .checklist li::before{content:"";position:absolute;left:0;top:11px;width:13px;height:13px;border:1.5px solid var(--accent);border-radius:3px;}
+
+  /* alt patterns */
+  .alt-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px;}
+  .alt-card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:14px 16px;}
+  .alt-card .a-tag{font-size:11px;font-weight:700;color:#fff;background:var(--warn);padding:3px 9px;border-radius:10px;display:inline-block;margin-bottom:6px;letter-spacing:.04em;}
+  .alt-card h5{margin:0 0 6px;font-size:14px;font-weight:700;color:var(--ink);}
+  .alt-card p{margin:0;font-size:13px;color:var(--ink2);line-height:1.6;}
+
+  /* details */
+  details{background:var(--paper);border:1px solid var(--line);border-radius:8px;margin:14px 0 0;padding:0;}
+  details summary{padding:14px 22px;cursor:pointer;font-size:14px;font-weight:700;color:var(--accent);list-style:none;}
+  details summary::-webkit-details-marker{display:none;}
+  details summary::after{content:"+";float:right;font-size:20px;line-height:1;color:var(--accent);}
+  details[open] summary::after{content:"−";}
+  details .email-body{padding:0 22px 22px;font-family:ui-monospace,Menlo,monospace;font-size:12px;line-height:1.65;color:var(--ink2);white-space:pre-wrap;border-top:1px solid var(--line);padding-top:18px;}
+
+  /* gallery 2col */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 0;}
+  .duo figure{margin:0;border-radius:8px;overflow:hidden;background:#e9e8e4;aspect-ratio:4/3;position:relative;}
+  .duo figcaption{position:absolute;left:0;right:0;bottom:0;font-size:11px;color:#fff;padding:14px 12px 8px;background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.6) 100%);line-height:1.5;}
+
+  /* 結論 verdict */
+  .verdict{background:var(--paper);border:1px solid var(--accent);border-radius:10px;padding:22px 24px;margin:30px 0 0;}
+  .verdict .pick{display:flex;align-items:center;gap:10px;margin:0 0 14px;}
+  .verdict .pick .tag{font-size:11px;font-weight:700;letter-spacing:.1em;background:var(--accent);color:#fff;padding:4px 11px;border-radius:14px;}
+  .verdict .pick h3{margin:0;font-size:18px;font-weight:800;}
+  .verdict p{margin:0 0 10px;font-size:14px;color:var(--ink);line-height:1.85;}
+  .verdict p:last-child{margin-bottom:0;}
+
+  .fine{color:var(--muted);font-size:12px;line-height:1.85;margin:48px 0 64px;border-top:1px solid var(--line);padding-top:18px;}
+
+  /* 27体験 詳細カード */
+  .cat-label{margin:32px 0 12px;font-size:13px;color:var(--accent);font-weight:700;letter-spacing:.12em;text-transform:uppercase;border-left:3px solid var(--accent);padding-left:10px;}
+  .exp-card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:18px 22px 20px;margin:0 0 12px;}
+  .exp-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:0 0 10px;padding-bottom:10px;border-bottom:1px solid var(--line);}
+  .exp-num{flex:none;font-size:11px;font-weight:700;color:#fff;background:var(--accent);padding:3px 8px;border-radius:10px;letter-spacing:.04em;}
+  .exp-name{margin:0;font-size:16px;font-weight:800;color:var(--ink);line-height:1.4;flex:1;min-width:200px;}
+  .exp-name .romaji{display:block;font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.06em;margin-top:2px;}
+  .exp-meta{display:flex;gap:6px;flex-wrap:wrap;}
+  .exp-meta span{font-size:11px;color:var(--ink2);background:var(--accent-soft);padding:3px 8px;border-radius:10px;line-height:1.4;}
+  .exp-meta span.fee{color:var(--warn);background:#f5ebdc;}
+  .exp-meta span.free{color:var(--accent);background:var(--accent-soft);}
+  .exp-meta span.ng-meta{color:var(--muted);background:#ededea;}
+  .exp-body{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px;}
+  .exp-block{font-size:13px;color:var(--ink);line-height:1.7;}
+  .exp-block .b-label{display:block;font-size:11px;color:var(--accent);font-weight:700;letter-spacing:.08em;margin-bottom:3px;text-transform:uppercase;}
+  .exp-block.full{grid-column:1 / -1;}
+  .exp-block .quote{font-size:12px;color:var(--ink2);font-style:italic;border-left:2px solid var(--line2);padding-left:10px;margin-top:4px;display:block;}
+  .exp-fit{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;}
+  .exp-fit .child{font-size:12px;padding:8px 10px;background:#f7f6f3;border-radius:6px;line-height:1.55;}
+  .exp-fit .child .who{color:var(--accent);font-weight:700;display:block;font-size:11px;letter-spacing:.04em;margin-bottom:2px;}
+
+  @media(max-width:720px){
+    .alt-grid{grid-template-columns:1fr;}
+    .duo{grid-template-columns:1fr;}
+    .day-slot{grid-template-columns:1fr;gap:2px;}
+    .day-slot .time{font-size:12px;}
+    .exp-body{grid-template-columns:1fr;}
+    .exp-fit{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== 扉 ===== -->
+<header class="cover">
+  <div class="cover-img"><img src="img/datai-kids.jpg" alt="ザ・ダタイで海洋生物学者と子どもが海の生き物を観察する"></div>
+  <div class="cover-inner">
+    <p class="kicker">The Datai Langkawi - Family Plan</p>
+    <h1>ザ・ダタイ<br>家族4人 滞在プラン</h1>
+    <p class="lead">6歳男子と3歳半女子の家族4人を、ダタイのレジデント・ナチュラリストとマリンバイオロジストに預けず、ぜんぶ親と一緒にやる旅。27の体験プログラムから「兄と妹のちょうどいい」を選び、4泊5日に組み立てた。</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ===== 前提 ===== -->
+  <section class="intro">
+    <p>ダタイには専用キッズクラブが「ない」。代わりに Nature Centre と The Lab、The Garden、The Atelier を拠点に、専門家が小人数制(多くが最大6名)で個別のネイチャー&クラフト体験を提供する形式だ。預けて大人だけ休む宿ではなく、専門家と家族で一緒に深く入っていく宿。</p>
+    <p class="tiny">この資料はリゾート公式(thedatai.com 各ページ、Festive Brochure 2024-2025、Datai Pledge Impact Report)、Tripadvisor 過去レビュー、Happy Go KL/Tots Too/Two Keys/i-escape など家族滞在レポートから組み立てた。料金・曜日・年齢は2026-2027シーズンで再確認が必要。</p>
+  </section>
+
+  <!-- ===== 結論 ===== -->
+  <div class="verdict">
+    <div class="pick"><span class="tag">本命</span><h3>ザ・ダタイを6歳兄と3歳半妹の家族で進める</h3></div>
+    <p>6歳兄向けの自然・海洋・料理・冒険・工作の刺さりが密度高く、3歳半妹向けの Toddler Pool + 砂遊び + 蝶 + 花 + 短時間絵付けで「同時刻に何かしらある」設計が成立する。Tripadvisor 2024年5月の3歳児連れ Beach Villa 滞在レビュー(benpp88)は「We could not be more happy with the 7 nights we spent here」「Our son did the little chef activity, mini-beast discovery on the beach, rainforest walk, kayaking, painting class and little gardener」と書く。</p>
+    <p>最大化を狙うなら4泊5日のうち4泊フル。<span class="hl">2026年12月後半より、2027年1月成人の日(1月11日)周辺のほうが推奨</span>。理由は降雨と海の安定性。Climates to Travel によれば1月の降雨は約23.9mmで年最少、Weather Atlas は1月平均海水温28°C と記録する。<span class="hl">12月20日〜1月5日のピーク期は最低5泊縛り</span>がかかる(Kuoni)ので、成人の日(1月11日前後)はピークを外せて天候・客層の両面でファミリーに最適。</p>
+  </div>
+
+  <!-- ===== 主役写真 ===== -->
+  <figure class="hero-shot">
+    <img src="img/datai-poolvilla.jpg" alt="ダタイのプールヴィラと熱帯雨林">
+    <figcaption>森に溶けこむ宿。専属キッズクラブがない代わりに、宿の裏が1000万年の熱帯雨林</figcaption>
+  </figure>
+
+  <!-- ===== 4泊5日タイムライン ===== -->
+  <div class="section-label">
+    <span class="en">Day by day</span>
+    <span class="ja">4泊5日 モデル旅程(2027年1月成人の日連休を想定)</span>
+  </div>
+  <p style="font-size:14px;color:var(--ink2);margin:14px 0 0;max-width:780px;">妹3歳半の昼寝(13:00-15:00)と暑さピーク(12:00-15:00)を必ず外す。水分補給は1時間ごと、着替えは午前と午後の活動ごとに用意。</p>
+
+  <div class="timeline">
+
+    <div class="day">
+      <div class="day-head"><span class="d-num">DAY 1</span><h4 class="d-title">金曜・到着日</h4><span class="d-theme">慣らし</span></div>
+      <div class="day-body">
+        <div class="day-slot"><span class="time">朝</span><span class="act">成田／羽田発、クアラルンプール経由</span></div>
+        <div class="day-slot"><span class="time">昼</span><span class="act">ランカウイ国際空港着、リゾート車で約40分。妹は車内昼寝</span></div>
+        <div class="day-slot"><span class="time">15:00</span><span class="act"><span class="tag">CHECK-IN</span>Welcome tea、館内ガイド</span></div>
+        <div class="day-slot"><span class="time">16:00</span><span class="act"><span class="tag">兄妹</span>Nature Centre 訪問。子ども用双眼鏡を借りる(Tripadvisor 2024年5月レビューで貸出ディテール確認)</span></div>
+        <div class="day-slot"><span class="time">17:30</span><span class="act"><span class="tag">家族</span>Family Pool で軽く泳ぐ、夕日見学</span></div>
+        <div class="day-slot"><span class="time">19:00</span><span class="act"><span class="tag">夕食</span>The Beach Club で夕食(The Dining Room は12歳未満不可なので回避)</span></div>
+        <div class="day-slot"><span class="time">20:30</span><span class="act">就寝準備</span></div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-head"><span class="d-num">DAY 2</span><h4 class="d-title">土曜</h4><span class="d-theme">蝶と虫と海</span></div>
+      <div class="day-body">
+        <div class="day-slot"><span class="time">7:30</span><span class="act"><span class="tag">朝食</span>The Dining Room(朝食は子連れ可、昼も可)</span></div>
+        <div class="day-slot"><span class="time">9:30</span><span class="act"><span class="tag">家族</span>Butterfly Walk(60分、無料、要予約)</span></div>
+        <div class="day-slot"><span class="time">10:30</span><span class="act"><span class="tag">家族</span>Family Pool + Toddler Pool(ビーチ横)</span></div>
+        <div class="day-slot"><span class="time">12:00</span><span class="act">Beach Club で軽めのランチ</span></div>
+        <div class="day-slot"><span class="time">13:00</span><span class="act"><span class="tag">妹昼寝</span>父か母が交代で兄と Nature Centre 図鑑+顕微鏡見学、または It's Painting Day(兄、60分、MYR60)</span></div>
+        <div class="day-slot"><span class="time">15:00</span><span class="act"><span class="tag">兄本命</span>Minibeast Discovery(60分、無料)。妹は親と短時間覗き見、抱っこ撤退OK</span></div>
+        <div class="day-slot"><span class="time">16:00</span><span class="act"><span class="tag">家族</span>ビーチで砂遊び、カニ観察</span></div>
+        <div class="day-slot"><span class="time">17:00</span><span class="act">シャワー+部屋休憩</span></div>
+        <div class="day-slot"><span class="time">19:00</span><span class="act"><span class="tag">夕食</span>The Pavilion でタイ料理</span></div>
+        <div class="day-slot"><span class="time">20:30</span><span class="act">就寝</span></div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-head"><span class="d-num">DAY 3</span><h4 class="d-title">日曜</h4><span class="d-theme">海洋生物学者と畑</span></div>
+      <div class="day-body">
+        <div class="day-slot"><span class="time">7:30</span><span class="act"><span class="tag">朝食</span>The Dining Room</span></div>
+        <div class="day-slot"><span class="time">9:30</span><span class="act"><span class="tag">兄本命</span>Ocean's Drifters(60分、無料)。マリンバイオロジストとプランクトン採取→顕微鏡。妹は親と一部だけ参加</span></div>
+        <div class="day-slot"><span class="time">10:30</span><span class="act"><span class="tag">水上</span>父+兄でカヤック2人乗り。母+妹は Toddler Pool + 砂遊び</span></div>
+        <div class="day-slot"><span class="time">12:00</span><span class="act">Beach Club でランチ</span></div>
+        <div class="day-slot"><span class="time">13:30</span><span class="act"><span class="tag">妹昼寝</span>兄は親と Little Gardener(60分、MYR100)、堆肥・苗・水やり</span></div>
+        <div class="day-slot"><span class="time">15:30</span><span class="act">Family Pool でアイス+スイカ、ビーチサンセット</span></div>
+        <div class="day-slot"><span class="time">17:30</span><span class="act">Nature Centre のライブラリーでナチュラリストに翌日 Crystal Creek 相談</span></div>
+        <div class="day-slot"><span class="time">19:00</span><span class="act"><span class="tag">夕食</span>The Gulai House で家族夕食(公式「Children under 12 can enjoy meals with their parents at The Gulai House and The Pavilion」)</span></div>
+        <div class="day-slot"><span class="time">21:00</span><span class="act">就寝</span></div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-head"><span class="d-num">DAY 4</span><h4 class="d-title">月曜・成人の日</h4><span class="d-theme">渓流と料理</span></div>
+      <div class="day-body">
+        <div class="day-slot"><span class="time">7:00</span><span class="act">起床、朝食</span></div>
+        <div class="day-slot"><span class="time">9:00</span><span class="act"><span class="tag">家族</span>Crystal Creek トレッキング(120分、車5分+500m歩、滝つぼで水浴。大人MYR240/子MYR120)</span></div>
+        <div class="day-slot"><span class="time">11:30</span><span class="act">戻ってシャワー、Beach Club で軽食</span></div>
+        <div class="day-slot"><span class="time">13:00</span><span class="act"><span class="tag">妹昼寝</span>兄は Little Chef(60分、MYR250)。実施日でなければ It's Painting Day で代替</span></div>
+        <div class="day-slot"><span class="time">15:00</span><span class="act"><span class="tag">家族</span>Family Pool / ビーチ。シュノーケリングは父+兄で短時間</span></div>
+        <div class="day-slot"><span class="time">17:30</span><span class="act">Beach Walk(最干潮日に当たれば家族で)</span></div>
+        <div class="day-slot"><span class="time">19:00</span><span class="act"><span class="tag">夕食</span>Private Dining(要予約)または Beach Club の Sunset Teppanyaki(限定6席、要予約)</span></div>
+        <div class="day-slot"><span class="time">21:00</span><span class="act">子どもが寝た後、両親はテラスでルームサービス+ワイン</span></div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-head"><span class="d-num">DAY 5</span><h4 class="d-title">火曜・出発日</h4><span class="d-theme">名残惜しく</span></div>
+      <div class="day-body">
+        <div class="day-slot"><span class="time">7:30</span><span class="act">朝食</span></div>
+        <div class="day-slot"><span class="time">8:30</span><span class="act">Butterfly Garden 再訪 + Permaculture Garden 散策</span></div>
+        <div class="day-slot"><span class="time">10:00</span><span class="act">ビーチで貝拾い、最後の記念撮影</span></div>
+        <div class="day-slot"><span class="time">11:00</span><span class="act"><span class="tag">CHECK-OUT</span></span></div>
+        <div class="day-slot"><span class="time">13:00</span><span class="act">ランカウイ発、KL／成田経由で帰国</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== 体験27プログラム ===== -->
+  <div class="section-label">
+    <span class="en">27 Experiences</span>
+    <span class="ja">体験27プログラムを、兄と妹のフィット度で並べる</span>
+  </div>
+  <p style="font-size:14px;color:var(--ink2);margin:14px 0 0;max-width:780px;">公式 Nature Experiences ページ + Festive Brochure 2024-2025 + 過去実績。フィット度は <span class="hl">最高</span>=本人主役、高=ちょうど良い、中=条件付きで OK、不可=年齢制限あり。</p>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>体験</th>
+          <th>場所</th>
+          <th>対象年齢</th>
+          <th>6歳兄</th>
+          <th>3歳半妹</th>
+          <th>所要</th>
+          <th>料金</th>
+          <th>注意</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>Minibeast Discovery</th><td>Nature Centre</td><td>4-12歳</td><td><span class="hl">最高</span></td><td>親同伴で可</td><td>60分</td><td>無料</td><td>定員6名、要予約</td></tr>
+        <tr><th>Young Explorer</th><td>Nature Centre</td><td>4-12歳</td><td>高</td><td>親同伴で可</td><td>60分</td><td>無料</td><td>開催日固定</td></tr>
+        <tr><th>Botanical Wonders</th><td>Nature Centre</td><td>4歳以上</td><td>中</td><td>親同伴で可</td><td>60分</td><td>無料</td><td>火曜開催実績、顕微鏡</td></tr>
+        <tr><th>Ocean's Drifters</th><td>Nature Centre + ビーチ</td><td>4-18歳</td><td><span class="hl">最高</span></td><td>親同伴で可</td><td>60分</td><td>無料</td><td>海洋生物学者、プランクトン→顕微鏡</td></tr>
+        <tr><th>Ocean's Whisper</th><td>Nature Centre</td><td>6歳以上</td><td>高</td><td class="ng">不可</td><td>60分</td><td>無料</td><td>日曜開催、講話形式</td></tr>
+        <tr><th>Jungle Voices</th><td>Nature Centre</td><td>6歳以上</td><td>中</td><td class="ng">不可</td><td>60分</td><td>無料</td><td>土曜開催、話題週替</td></tr>
+        <tr><th>Little Chef</th><td>The Gulai House</td><td>5-12歳(3歳児参加報告あり)</td><td><span class="hl">最高</span></td><td>要相談</td><td>60分</td><td>MYR250</td><td>木・土実績、24時間前予約</td></tr>
+        <tr><th>Little Gardener</th><td>The Garden</td><td>6歳以上</td><td>高</td><td>保護者同伴で見学可</td><td>60分</td><td>MYR100</td><td>火・木・土・日実績、雨で中止可</td></tr>
+        <tr><th>Butterfly Walk</th><td>Butterfly Garden</td><td>6歳以上が公式目安</td><td>高</td><td>親同伴で歩ける</td><td>60分</td><td>無料</td><td>水・金実績、Spa walkway 沿い</td></tr>
+        <tr><th>Beach Walk</th><td>Datai Beach</td><td>6歳以上</td><td><span class="hl">最高</span></td><td>親同伴で短時間可</td><td>90分</td><td>無料</td><td>月のうち最干潮日のみ。要事前潮汐確認</td></tr>
+        <tr><th>Journey Through The Forests</th><td>Rimba Trail</td><td>6歳以上(高所注意)</td><td><span class="hl">最高</span></td><td class="ng">不可</td><td>90分</td><td>MYR180</td><td>70m高架歩道+15m高 Canopy Walk</td></tr>
+        <tr><th>Trek to Crystal Creek</th><td>リゾート外、車5分+徒歩500m</td><td>4歳以上</td><td>高</td><td>親同伴で可(短いが歩く)</td><td>120分</td><td>大人MYR240/子MYR120</td><td>マリンシューズ・替え着必須</td></tr>
+        <tr><th>Mysterious Mangrove(カヤック)</th><td>マングローブ</td><td>カヤック最低年齢要確認</td><td>高(同乗)</td><td class="ng">推定不可</td><td>半日</td><td>要見積</td><td>親同乗、ライフジャケット</td></tr>
+        <tr><th>Rainforest Awakening</th><td>リゾート内</td><td>13歳以上</td><td class="ng">不可</td><td class="ng">不可</td><td>90分</td><td>無料</td><td>子は対象外</td></tr>
+        <tr><th>Rainforest After Dark</th><td>リゾート内</td><td>13歳以上</td><td class="ng">不可</td><td class="ng">不可</td><td>90分</td><td>無料</td><td>コルゴ・トビトカゲ夜間観察</td></tr>
+        <tr><th>Coral Adoption</th><td>ビーチ</td><td>12歳未満は保護者同伴必須</td><td>親同伴で参加</td><td>見学のみ</td><td>60分</td><td>MYR150</td><td>e-Certificate 付き</td></tr>
+        <tr><th>It's Painting Day</th><td>The Lab</td><td>全年齢</td><td>高</td><td><span class="hl">最高</span></td><td>60分</td><td>MYR60</td><td>妹も参加可、雨に強い</td></tr>
+        <tr><th>Plastic Upcycling</th><td>The Lab</td><td>16歳以上</td><td class="ng">不可</td><td class="ng">不可</td><td>60分</td><td>MYR80</td><td>The Lab は12歳以上向けが多い</td></tr>
+        <tr><th>Tie-Dye / Batik / Beeswax</th><td>The Lab</td><td>多くが13歳以上、一部「全年齢」</td><td>一部可</td><td>ほぼ不可</td><td>60分</td><td>MYR80-120</td><td>例外的「all ages」枠あり</td></tr>
+        <tr><th>Bee A Beekeeper</th><td>The Garden</td><td>12歳以上</td><td class="ng">不可</td><td class="ng">不可</td><td>60分</td><td>MYR140</td><td>養蜂体験</td></tr>
+        <tr><th>Permaculture Walk</th><td>The Garden</td><td>全年齢</td><td>高</td><td>親同伴で可</td><td>60分</td><td>無料</td><td>月・水・金実績</td></tr>
+        <tr><th>Family Pool</th><td>ビーチ横</td><td>16歳未満はここ</td><td><span class="hl">最高</span></td><td><span class="hl">最高</span></td><td>自由</td><td>無料</td><td>ライフガード非常駐(公式)</td></tr>
+        <tr><th>Toddler Pool / Wading Pool</th><td>ビーチ横</td><td>幼児用</td><td>-</td><td><span class="hl">最高</span></td><td>自由</td><td>無料</td><td>妹のメイン水場</td></tr>
+        <tr><th>ビーチ遊び・砂遊び</th><td>Datai Bay</td><td>全年齢</td><td><span class="hl">最高</span></td><td><span class="hl">最高</span></td><td>自由</td><td>無料</td><td>遠浅、シャワーあり</td></tr>
+        <tr><th>非モーター水上スポーツ</th><td>Watersports Pavilion</td><td>12歳未満は保護者同伴必須</td><td>親同乗で高</td><td>親同乗短時間</td><td>自由</td><td>無料</td><td>カヤック・SUP・ウィンドサーフ・ホビー</td></tr>
+        <tr><th>シュノーケリング(ビーチから)</th><td>Datai Bay</td><td>-</td><td>高</td><td>浅瀬で見学</td><td>自由</td><td>機材要確認</td><td>5基の人工リーフ、クマノミ生息</td></tr>
+        <tr><th>Spa(マッサージ)</th><td>The Spa</td><td>6歳以上</td><td>体験可</td><td class="ng">不可</td><td>60分</td><td>別料金</td><td>兄だけ短時間可</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== 兄妹マップ写真 ===== -->
+  <div class="duo">
+    <figure><img src="img/datai-drifters.jpg" alt="Ocean's Drifters 海の専門家とプランクトンすくい"><figcaption>兄本命: Ocean's Drifters。海の専門家と一緒にプランクトンを採って顕微鏡で見る</figcaption></figure>
+    <figure><img src="img/datai-butterfly.jpg" alt="Butterfly Garden 蝶の庭"><figcaption>家族で: Butterfly Walk。3歳半の妹も歩ける距離</figcaption></figure>
+  </div>
+
+  <!-- ===== 27体験 詳細 ===== -->
+  <div class="section-label">
+    <span class="en">In detail</span>
+    <span class="ja">27体験を、ひとつずつ詳しく</span>
+  </div>
+  <p style="font-size:14px;color:var(--ink2);margin:14px 0 0;max-width:780px;">公式 Nature Experiences ページ、Festive Brochure 2024-2025、Datai Pledge Impact Report、Tripadvisor・Happy Go KL・Tots Too・Two Keys 等の家族滞在レポートから「何をする・誰が案内・何を使う・兄妹のフィット」を1枚にまとめた。</p>
+
+  <p class="cat-label">A. ネイチャー系(Nature Centre 中心)</p>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">01</span>
+      <h4 class="exp-name">Minibeast Discovery<span class="romaji">虫眼鏡で雨林の小さな生き物を観察</span></h4>
+      <div class="exp-meta"><span>4-12歳</span><span>60分</span><span class="free">無料</span><span>最大6名</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>Nature Centre 集合→ナチュラリストと敷地内を徒歩観察→虫眼鏡で間近に観察→Nature Centre の顕微鏡で拡大して環境内の役割を解説。</div>
+      <div class="exp-block"><span class="b-label">見るもの・道具</span>リゾート敷地のアリ、蜘蛛、ヤスデ、ダンゴムシなど雨林の小型無脊椎動物。道具は虫眼鏡(公式)+ Nature Centre 顕微鏡。</div>
+      <div class="exp-block full"><span class="b-label">専門家</span>レジデント・ナチュラリスト。<span class="quote">Tripadvisor 2024年6月「Our son did the little chef activity, mini-beast discovery on the beach, rainforest walk, kayaking, painting class and little gardener. It was amazing.」 同レビュー「having kids binoculars that he got to take with him to spot all the animals」</span></div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>虫好きならドンピシャ。本人主役で参加</div><div class="child"><span class="who">3歳半妹</span>年齢下限4歳、大人同伴での部分参加。歩く時間が長いと飽きる可能性、蚊対策必須</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">02</span>
+      <h4 class="exp-name">Young Explorer<span class="romaji">森が動物にどう食料・水・住処を与えるかゲーム形式で発見</span></h4>
+      <div class="exp-meta"><span>4-12歳</span><span>60分</span><span class="free">無料</span><span>最大6名</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>Nature Centre 集合→周辺雨林ウォーク→食料・水・住処の発見ゲーム形式。</div>
+      <div class="exp-block"><span class="b-label">見るもの</span>イチジク(フィカス)の実、樹洞、ツル植物、小さな水たまり、リス・サル類の食痕。Datai Diaries で頻出する Strangling Fig(絞め殺しイチジク)が典型対象。</div>
+      <div class="exp-block full"><span class="b-label">注意</span>隣接 Andaman Langkawi の常設キッズクラブ「Young Explorer's Club」と名称が紛らわしい。両者は別ホテル・別運営。Andaman 側にしかないバタフライハント、バードウォッチング、ジュニアヨガなどを Datai のものと混同しないこと。</div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>物語仕立てで向く</div><div class="child"><span class="who">3歳半妹</span>60分の歩きと話聞きは長め、短時間離脱を前提に参加</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">03</span>
+      <h4 class="exp-name">Botanical Wonders<span class="romaji">植物の葉や花を顕微鏡で観察</span></h4>
+      <div class="exp-meta"><span>4歳以上</span><span>60分</span><span class="free">無料</span><span>火曜11:00</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>Nature Centre 集合→敷地内で葉や花を採集→ラボに戻り顕微鏡で表皮・葉脈・毛・気孔を観察。</div>
+      <div class="exp-block"><span class="b-label">見るもの・道具</span>ハイビスカス、パパイヤ、シナモン、レモングラス、ガランガル、ウラム・ラジャ(King's Salad)など Permaculture Garden 由来の植物。顕微鏡(公式)、葉サンプル、ピンセット類。</div>
+      <div class="exp-block full"><span class="b-label">実体験</span><span class="quote">Happy Go KL 著者 Rebecca「My girls were absolutely fascinated」と顕微鏡体験への食いつきを報告。</span></div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>理科の入口として刺さる</div><div class="child"><span class="who">3歳半妹</span>顕微鏡を覗くこと自体は5-10分で楽しめる</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">04</span>
+      <h4 class="exp-name">Ocean's Drifters<span class="romaji">マリンバイオロジストとプランクトン採取→顕微鏡</span></h4>
+      <div class="exp-meta"><span>4-18歳</span><span>60分</span><span class="free">無料</span><span>最大6名</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>マリンバイオロジストとビーチへ→細目ネット(プランクトンネット)で海水サンプリング→Nature Centre のミニラボの顕微鏡で植物プランクトンと動物プランクトンを観察→カイアシ類・矢虫・珪藻の解説。</div>
+      <div class="exp-block"><span class="b-label">見るもの・道具</span>copepod、arrow worm、珪藻、群体ケイ藻のチェーン状。プランクトンネット、ビーカー、顕微鏡。</div>
+      <div class="exp-block full"><span class="b-label">実体験</span><span class="quote">Happy Go KL「the marine biologist brings them to the beach to collect plankton and they bring it back to the lab where they get to view the samples under the microscope. My girls were absolutely fascinated.」</span></div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>自分でサンプル採り→顕微鏡が一連で完結し刺さる(本命)</div><div class="child"><span class="who">3歳半妹</span>ネット引きは大人補助、像の動きで盛り上がる</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">05</span>
+      <h4 class="exp-name">Ocean's Whisper<span class="romaji">海の捕食者・ジュゴン類・海中音を講話形式で学ぶ</span></h4>
+      <div class="exp-meta"><span>6歳以上</span><span>60分</span><span class="free">無料</span><span>日曜15:00</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>Nature Centre のライブラリーで講話形式。標本・画像・海中録音などを使う。</div>
+      <div class="exp-block"><span class="b-label">専門家・道具</span>マリンバイオロジスト。プロジェクター、標本、録音。</div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>年齢下限ぴったり</div><div class="child"><span class="who">3歳半妹</span>対象外</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">06</span>
+      <h4 class="exp-name">Jungle Voices<span class="romaji">週替わりテーマでナチュラリストの自然レクチャー</span></h4>
+      <div class="exp-meta"><span>6歳以上</span><span>60分前後</span><span class="free">無料</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>60分前後のレクチャー+短い散策。話題は週ごとに変わる。</div>
+      <div class="exp-block"><span class="b-label">見るもの・専門家</span>薬用植物、夜行性動物、鳥、昆虫、蝶。ナチュラリスト、マリンバイオロジスト、招聘専門家。</div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>話題が虫や夜行性なら集中可</div><div class="child"><span class="who">3歳半妹</span>難しい</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">07</span>
+      <h4 class="exp-name">Butterfly Walk<span class="romaji">島内530種以上のうちの代表種を観察</span></h4>
+      <div class="exp-meta"><span>6歳以上目安</span><span>60分</span><span class="free">無料</span><span>水・金実績</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>Butterfly Garden(オープンコンセプトの蝶園)を散策しながら蝶の食草・蜜源植物の解説と観察。</div>
+      <div class="exp-block"><span class="b-label">見るもの・道具</span>Great Mormon ほか島内530種以上の代表種、卵・幼虫・蛹のステージ。双眼鏡、フィールドガイド。</div>
+      <div class="exp-block full"><span class="b-label">場所</span>Spa walkway 沿いで距離が短い。Happy Go KL「colourful butterflies at the butterfly walk」。</div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>走り回って楽しめる</div><div class="child"><span class="who">3歳半妹</span>親同伴で歩ける(距離が短い)。日中は暑いので帽子と水必須</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">08</span>
+      <h4 class="exp-name">Beach Walk<span class="romaji">最干潮時の砂地・潮だまりを歩く</span></h4>
+      <div class="exp-meta"><span>6歳以上</span><span>90分</span><span class="free">無料</span><span>最干潮日のみ</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>マリンバイオロジストと干上がった砂地・潮だまりを歩く。</div>
+      <div class="exp-block"><span class="b-label">見るもの</span>ヤドカリ、カニ、貝、海綿、海藻、星砂、稚魚。観察容器、虫眼鏡。</div>
+      <div class="exp-block full"><span class="b-label">注意</span>公式「This activity is only available during the lowest tides of the month.」 滞在日と最干潮日が合うかが鍵。事前に潮汐表を確認すべし。Happy Go KL「lots of tiny crabs scuttling along the beach」。</div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>最高、本命級</div><div class="child"><span class="who">3歳半妹</span>親同伴で短時間可</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">09</span>
+      <h4 class="exp-name">Journey Through The Forests<span class="romaji">海岸林→マングローブ→低地雨林→キャノピーウォーク</span></h4>
+      <div class="exp-meta"><span>6歳以上</span><span>90分</span><span class="fee">MYR180</span><span>Rimba Trail</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>海岸林→マングローブ→低地雨林を歩く。70m高架歩道+15m高 20m長のキャノピーウォークで登る。</div>
+      <div class="exp-block"><span class="b-label">見るもの・道具</span>マングローブ根、絞め殺しイチジク、樹冠、小鳥、リス。双眼鏡。</div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>高所階段が冒険になる</div><div class="child"><span class="who">3歳半妹</span>階段と高所が不安なら抱っこ・部分参加</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">10</span>
+      <h4 class="exp-name">Mysterious Mangrove<span class="romaji">2人乗りカヤックでマングローブ運河を運航</span></h4>
+      <div class="exp-meta"><span>カヤック最低年齢要確認</span><span>3-4時間</span><span class="fee">要見積</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>Kilim Geoforest Park 等に移動→安全説明→2人乗りカヤックでマングローブ運河→コウモリ洞窟、フローティング・フィッシュファーム訪問など。</div>
+      <div class="exp-block"><span class="b-label">見るもの・道具</span>ブラフミニカイト、白腹海ワシ、オオトカゲ、マングローブピットバイパー、サル、ムツゴロウ。カヤック、ライフジャケット、防水バッグ。</div>
+      <div class="exp-block full"><span class="b-label">実体験</span><span class="quote">Mummytravels.com「overhead eagles swoop, Brahminy kites and white bellied sea eagles」「a mangrove pit viper entwines itself around a branch」</span></div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>保護者同乗が条件のオペレーターが多く、大人と1艇が現実的</div><div class="child"><span class="who">3歳半妹</span>時間と体力的に厳しめ。3-6歳料金設定のあるボートツアー版に切り替えるのが無難</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">11</span>
+      <h4 class="exp-name">Trek to Crystal Creek<span class="romaji">渓流まで500m歩、滝つぼで水浴び</span></h4>
+      <div class="exp-meta"><span>4歳以上</span><span>120分</span><span class="fee">大人MYR240/子MYR120</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>車でトレイル入口→500m緩やか下り→渓流で水浴び。</div>
+      <div class="exp-block"><span class="b-label">見るもの・道具</span>渓流、小魚、シダ類、岩のコケ。水着、サンダル、タオル、マリンシューズ必須。</div>
+      <div class="exp-block full"><span class="b-label">公式</span><span class="quote">「Just a short drive from the hotel and a 500-metre trek into the rainforest is a wonderful swimming creek.」「guests travelling with children aged 4 and above can join The Datai Langkawi resident naturalists on a serene walk to Crystal Creek」</span></div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>冷水浴び+探検でハイライト級</div><div class="child"><span class="who">3歳半妹</span>4歳以上のため大人補助で参加可。滑りやすいので注意</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">12</span>
+      <h4 class="exp-name">Rainforest Awakening<span class="romaji">早朝の雨林ウォーク</span></h4>
+      <div class="exp-meta"><span class="ng-meta">13歳以上</span><span>90分</span><span class="free">無料</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>日の出前後にロビー集合→2時間程度の森歩き。Resident Naturalist の Irshad Mobarak(在籍32年以上)が長年主導。</div>
+      <div class="exp-block"><span class="b-label">見るもの・専門家</span>オオサイチョウ、ブラフミニカイト、目覚めたサル類、樹皮の動物の痕跡。ヘッド・ナチュラリストや経験豊富なガイド。</div>
+      <div class="exp-block full"><span class="quote">Her World Singapore「Mobarak makes the complimentary Rainforest Awakening and Rainforest After Dark walks memorable and educational for both kids and grown-ups alike.」</span></div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>13歳以上のため対象外</div><div class="child"><span class="who">3歳半妹</span>対象外</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">13</span>
+      <h4 class="exp-name">Rainforest After Dark<span class="romaji">夜の雨林ウォーク</span></h4>
+      <div class="exp-meta"><span class="ng-meta">13歳以上</span><span>90分</span><span class="free">無料</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>日没後→懐中電灯散策→ネズミジカ、ムカデ、ヤドカリ、トカゲ、ニシキヘビ、フライング・ファイブを探す。</div>
+      <div class="exp-block"><span class="b-label">見るもの</span>「the 'flying five' - giant squirrels, paradise tree snakes, lizards, flying foxes and a flying lemur, or colugo」。マリンバイオロジスト/ナチュラリスト引率。</div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>13歳以上のため対象外</div><div class="child"><span class="who">3歳半妹</span>対象外</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">14</span>
+      <h4 class="exp-name">Nature Centre ライブラリー・展示・顕微鏡<span class="romaji">施設の自由見学</span></h4>
+      <div class="exp-meta"><span>全年齢</span><span>自由</span><span class="free">無料</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何ができるか</span>図鑑閲覧、ナチュラリストへの質問、ティーコーナーで Ramuan ハーブ茶、ミニラボの顕微鏡で生物観察、Coral Nursery 展示と Native Tree Nursery(2024年時点で153種カタログ化)の見学。</div>
+      <div class="exp-block"><span class="b-label">建築</span>バンブー・ロングハウス様式のオープンエア建築。Resident Naturalist Mobarak「The Nature Centre embodies our brand DNA of 'Man and Nature in perfect harmony'」。</div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>図鑑と苗木で時間が持つ</div><div class="child"><span class="who">3歳半妹</span>雨の日の避難先としても優秀</div></div>
+    </div>
+  </div>
+
+  <p class="cat-label">B. キッズ・クラフト・料理系</p>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">15</span>
+      <h4 class="exp-name">Little Chef<span class="romaji">ペストリーシェフとお菓子作り</span></h4>
+      <div class="exp-meta"><span>5-12歳</span><span>60分</span><span class="fee">MYR250</span><span>木・土実績</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>The Gulai House 内の The Dapur 集合→コック帽とエプロン着用→Executive Pastry Chef Baharuddin のデモ→生地を捏ねる・丸める・絞り出す→焼成中に器具と衛生の話→試食→包装。</div>
+      <div class="exp-block"><span class="b-label">作るもの・道具</span>ピーナッツバタークッキー、チョコチップクッキー、モンキー・マフィン、プロフィテロール。子ども用エプロン、コック帽、ボウル、麺棒、絞り袋、計量器。</div>
+      <div class="exp-block full"><span class="b-label">達成物</span>焼き菓子(持ち帰り想定)。大人版 The Dapur Cooking Class では certificate of accomplishment が発行されるため子ども版でも同等の証明書が出る可能性があるが要現地確認。<span class="quote">Tripadvisor 2024年「Our son did the little chef activity... It was amazing.」</span></div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>年齢下限のため部分的に手伝う形(本命の1つ)</div><div class="child"><span class="who">3歳半妹</span>5歳未満で正式参加対象外、要交渉</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">16</span>
+      <h4 class="exp-name">Little Gardener<span class="romaji">堆肥・苗・水やりで Permaculture Garden を体験</span></h4>
+      <div class="exp-meta"><span>6歳以上</span><span>60分</span><span class="fee">MYR100</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>The Garden 集合→コンポスト解説(生ゴミと土とミミズの役割)→堆肥を混ぜる→苗を植える→水やり→手洗い。</div>
+      <div class="exp-block"><span class="b-label">見るもの・道具</span>ミミズ、コンポスト、ハーブ苗、果樹、野菜。軍手、シャベル、ジョウロ、苗。</div>
+      <div class="exp-block full"><span class="b-label">公式</span><span class="quote">「Get your hands dirty with our team to create a healthier and more sustainable community through composting and planting at The Garden. Let us turn waste into life with the help of creepy crawlies. Proper footwear is compulsory and insect repellent and sunblock encouraged.」</span></div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>泥遊び&実用感で刺さる</div><div class="child"><span class="who">3歳半妹</span>年齢下限のため大人補助で部分参加が現実的</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">17</span>
+      <h4 class="exp-name">It's Painting Day<span class="romaji">リサイクルガラスや石にペイント</span></h4>
+      <div class="exp-meta"><span>全年齢</span><span>60分</span><span class="fee">MYR60</span><span>The Lab</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>The Lab 集合→リサイクルガラス(廃ボトル)または石を選ぶ→絵具で自由に描画→乾燥→持ち帰り想定。</div>
+      <div class="exp-block"><span class="b-label">場所</span>The Lab 自体が再利用ボトル建築。Luxury Travel Magazine「a sustainability showcase and workshop space constructed from 8,000 recycled bottles」(2022年プレスは「over 9,000 used wine, champagne, and liquor bottles」と数字に揺れあり)。</div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>短時間集中で楽しめる</div><div class="child"><span class="who">3歳半妹</span>最も向く(雨の日のバックアップ最強候補)</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">18</span>
+      <h4 class="exp-name">Tie-Dye / Batik / Beeswax Wrap<span class="romaji">布や蝋でマレーシア伝統工芸</span></h4>
+      <div class="exp-meta"><span>種類による</span><span>60分</span><span class="fee">MYR80-120</span><span>The Lab</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">3種類</span>Tie-Dye(全年齢、白いハンカチや布に輪ゴムでくくり→染液に浸す)、Batik(全年齢、蜜蝋で模様を描いてから染料で着色する伝統技法)、Beeswax Wrap(13歳以上、布に蜜蝋を染み込ませて食品用ラップを作る)。</div>
+      <div class="exp-block"><span class="b-label">専門家</span>ローカル職人 Kak Liza(バティック・タイダイ)。</div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>Tie-Dye / Batik / It's Painting Day / Soap Propolis が現実的</div><div class="child"><span class="who">3歳半妹</span>Tie-Dye / Batik / It's Painting Day</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">19</span>
+      <h4 class="exp-name">Plastic Upcycling / Glass Craft<span class="romaji">廃プラ・廃ガラス再加工(The Lab)</span></h4>
+      <div class="exp-meta"><span class="ng-meta">16歳以上</span><span>60分</span><span class="fee">MYR80</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>The Lab で廃プラスチック・廃ガラスを再加工。<span class="quote">公式「The artisanal nature of these workshop activities is designed to stimulate creativity and will appeal to guests aged 12 and above.」</span></div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>16歳以上のため対象外</div><div class="child"><span class="who">3歳半妹</span>対象外</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">20</span>
+      <h4 class="exp-name">Bee A Beekeeper<span class="romaji">刺さないハリナシバチで養蜂体験</span></h4>
+      <div class="exp-meta"><span class="ng-meta">12歳以上</span><span>60分</span><span class="fee">MYR140</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>The Garden 集合→刺さないハリナシバチ Trigona itama の生態解説→巣箱開封→蜜の採取→試飲→蜜瓶持ち帰り。</div>
+      <div class="exp-block"><span class="b-label">公式</span><span class="quote">「learn how to harvest honey directly from our unique stingless beehives. Discover these interesting pollinators in their natural habitat and taste the slightly tangy flavour of Trigona Itama honey - the honey you harvest will be yours to take home.」</span> 養蜂家 Pak Long 指導。</div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>12歳以上のため対象外</div><div class="child"><span class="who">3歳半妹</span>対象外</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">21</span>
+      <h4 class="exp-name">Permaculture Walk<span class="romaji">ゼロウェイスト循環システムを巡る</span></h4>
+      <div class="exp-meta"><span>全年齢</span><span>60分</span><span class="free">無料</span><span>月・水・金</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>The Garden 入口集合→循環システム解説→ハーブ畑→果樹→コンポスト→ハチ巣箱を巡る。</div>
+      <div class="exp-block"><span class="b-label">見るもの</span>ウラム・ラジャ、ガランガル、レモングラス、ターメリック、シナモン、カフィルライム、ミント、シトロネラ、柑橘、パパイヤ、ハリナシバチの巣箱。</div>
+      <div class="exp-block full"><span class="b-label">公式</span><span class="quote">「The permaculture garden is a zero-waste organic food production system with a closed-loop waste management scheme.」</span> ガーデナー、サステナビリティ・アンバサダー案内。</div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>虫探しと合わせると深い</div><div class="child"><span class="who">3歳半妹</span>「いい匂い」探しで楽しめる</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">22</span>
+      <h4 class="exp-name">Coral Adoption<span class="romaji">サンゴ片をロープに結んでナーサリーへ</span></h4>
+      <div class="exp-meta"><span>12歳未満は保護者同伴</span><span>60分</span><span class="fee">MYR150</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>Nature Centre 集合→講義→ロープにサンゴ断片を結ぶ→名札を付ける→Artificial Reef のナーサリーへ→養子証明書受領→数か月後に進捗報告メール。</div>
+      <div class="exp-block"><span class="b-label">専門家・達成物</span>マリンバイオロジスト指導。e-Certificate、進捗報告メール。The Datai では Pure For The Future / Wildlife For The Future の枠で運用。</div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>大人補助で達成感大</div><div class="child"><span class="who">3歳半妹</span>作業自体は短く、結ぶ部分は大人が代行</div></div>
+    </div>
+  </div>
+
+  <p class="cat-label">C. 施設・自由遊び系</p>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">23</span>
+      <h4 class="exp-name">Family Pool / Toddler Pool<span class="romaji">ビーチ横の家族用プール</span></h4>
+      <div class="exp-meta"><span>16歳未満はここ</span><span>自由</span><span class="free">無料</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">公式</span><span class="quote">「The newly renovated Family Pool is just a few steps from the beach and has a Toddler Pool and wading area. Its deck loungers are popular with both couples and families.」</span> Adult Pool は16歳以上限定でメインビルディング側。</div>
+      <div class="exp-block"><span class="b-label">注意</span>「There are no lifeguards on duty」(公式)。プール深さ・水温管理は公式記載なし・要確認。</div>
+      <div class="exp-block full"><span class="quote">Happy Go KL「My girls would spend each day shuffling between the beach and the pool - never once getting bored.」</span></div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>メイン水場の1つ</div><div class="child"><span class="who">3歳半妹</span>Toddler Pool / Wading Pool がメイン水場</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">24</span>
+      <h4 class="exp-name">Datai Beach<span class="romaji">8,000年前のフリンジング・コーラルリーフ前の白砂浜</span></h4>
+      <div class="exp-meta"><span>全年齢</span><span>自由</span><span class="free">無料</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">基本情報</span>白砂、長さ1.5km、幅30m。National Geographic 2016年6月29日掲載「Top 10 Beaches」リスト入り。</div>
+      <div class="exp-block"><span class="b-label">海の生き物</span>Datai Bay 内のイソギンチャクにクマノミが生息(「Clown Fish in Anemone in Teluk Datai」)。Datai 側は自前の Artificial Reef を Coral Adoption と紐づけて運用。</div>
+      <div class="exp-block full"><span class="quote">Happy Go KL「one of the calmest waters around」。</span> 8歳以上で出るシュノーケル種は公式記載なし・要確認。</div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>遠浅、穏やか、シャワーあり</div><div class="child"><span class="who">3歳半妹</span>同じく遠浅で安心</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">25</span>
+      <h4 class="exp-name">Watersports<span class="romaji">非モーター水上スポーツ無料貸出</span></h4>
+      <div class="exp-meta"><span>12歳未満は保護者同伴</span><span>9:00-18:00</span><span class="free">無料</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">貸出機材</span>Hobie Wave、ウィンドサーフィン、フルフェイス・スノーケルマスク、スノーケル・マスク、フィン、シングル・カヤック、ダブル・カヤック、SUP ボード、ボディボードを Water Sports Pavilion で無料貸出(非モーター式のみ)。</div>
+      <div class="exp-block"><span class="b-label">注意</span>子ども同乗の年齢ルールは現地スタッフ判断・要確認。</div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>父+兄でカヤック2人乗り、SUP 親同乗</div><div class="child"><span class="who">3歳半妹</span>親同乗短時間のみ</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">26</span>
+      <h4 class="exp-name">シュノーケリング(ビーチから)<span class="romaji">人工リーフでクマノミ観察</span></h4>
+      <div class="exp-meta"><span>機材要確認</span><span>自由</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block"><span class="b-label">何をする</span>Datai Bay には「five artificial reefs deployed」。ビーチから直接エントリーしてシュノーケリング。</div>
+      <div class="exp-block"><span class="b-label">見るもの</span><span class="quote">「The ocellaris clownfish (Amphiprion ocellaris) is an attraction in the coral reef in front of The Datai」(公式)</span></div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>浅瀬で短時間体験、父同伴</div><div class="child"><span class="who">3歳半妹</span>浅瀬で見学</div></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-head">
+      <span class="exp-num">27</span>
+      <h4 class="exp-name">Spa(マッサージ)<span class="romaji">The Spa の子ども向けマッサージ</span></h4>
+      <div class="exp-meta"><span>6歳以上</span><span>60分</span><span class="fee">別料金</span></div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-block full"><span class="b-label">公式</span><span class="quote">「Massages are made available for children over 6 years.」</span></div>
+      <div class="exp-fit"><div class="child"><span class="who">6歳兄</span>短時間だけ体験可</div><div class="child"><span class="who">3歳半妹</span>対象外</div></div>
+    </div>
+  </div>
+
+  <!-- ===== 優先予約リスト ===== -->
+  <div class="section-label">
+    <span class="en">Pre-arrival bookings</span>
+    <span class="ja">優先予約リスト</span>
+  </div>
+
+  <div class="checklist">
+    <h4>到着前に予約(reservations@dataihotels.com 宛)</h4>
+    <ul>
+      <li>Little Chef(兄、定員6名、24時間前要)</li>
+      <li>Little Gardener(兄)</li>
+      <li>Ocean's Drifters(兄、海洋生物学者付き、定員6名)</li>
+      <li>Mysterious Mangrove カヤック(家族カヤック可否を要確認)</li>
+      <li>Crystal Creek トレッキング(家族4人、妹のペース要申告)</li>
+      <li>ベビーシッター(公式「24 hrs advance notice」)</li>
+      <li>Beach Club 席(混雑日)</li>
+    </ul>
+    <h4>到着日に Nature Centre で確認</h4>
+    <ul>
+      <li>Minibeast Discovery、Young Explorer、Botanical Wonders、Ocean's Whisper、Jungle Voices の開催曜日・時間</li>
+      <li>Butterfly Walk と Beach Walk の催行日(Beach Walk は最干潮日依存)</li>
+      <li>Coral Adoption の枠</li>
+      <li>It's Painting Day の枠(雨天バックアップ)</li>
+    </ul>
+    <h4>当日天候で判断</h4>
+    <ul>
+      <li>カヤック・SUP・シュノーケリング</li>
+      <li>Butterfly Walk、ビーチピクニック、星空観察</li>
+    </ul>
+    <h4>無理しなくてよい(年齢外)</h4>
+    <ul>
+      <li>Rainforest Awakening / Rainforest After Dark(13歳以上)</li>
+      <li>Bee A Beekeeper(12歳以上)</li>
+      <li>The Lab の Plastic Upcycling / Glass Craft(16歳以上)</li>
+    </ul>
+  </div>
+
+  <!-- ===== 代替プラン ===== -->
+  <div class="section-label">
+    <span class="en">Backup patterns</span>
+    <span class="ja">代替プラン(こうなったら、こう動く)</span>
+  </div>
+
+  <div class="alt-grid">
+    <div class="alt-card"><span class="a-tag">雨の日</span><h5>屋内ルートに切替</h5><p>Nature Centre のライブラリー+顕微鏡セッション / The Lab の It's Painting Day / Little Chef はキッチン内で実施可 / 部屋で図鑑と観察日記まとめ。</p></div>
+    <div class="alt-card"><span class="a-tag">子どもが疲れた</span><h5>ペースダウン</h5><p>Family Pool と Toddler Pool で午前ゆっくり、Beach Club ピクニック、午後は部屋で映画。</p></div>
+    <div class="alt-card"><span class="a-tag">兄だけ深掘り</span><h5>分業</h5><p>Ocean's Drifters や Little Chef、シュノーケリングは兄+親で1時間〜90分。妹は残り親と Toddler Pool + It's Painting Day。</p></div>
+    <div class="alt-card"><span class="a-tag">妹が眠い日</span><h5>短時間+昼寝</h5><p>午前のみ Butterfly Walk と砂遊び、午後は部屋で昼寝最大2時間、その後 Permaculture Garden を抱っこで散歩。</p></div>
+    <div class="alt-card"><span class="a-tag">海が荒れている日</span><h5>陸寄せ</h5><p>マングローブカヤックは穏やかな川で実施可、または Crystal Creek にシフト。Family Pool 中心。</p></div>
+    <div class="alt-card"><span class="a-tag">親が休みたい日</span><h5>シッター+大人プール</h5><p>ベビーシッター(24時間前要予約)を午前に依頼、兄は Nature Centre のスケジュール活動、妹は部屋+シッターでお絵描き。両親は Adult Pool(16歳以上限定)+Spa。</p></div>
+  </div>
+
+  <!-- ===== 持ち物 ===== -->
+  <div class="section-label">
+    <span class="en">Packing checklist</span>
+    <span class="ja">持ち物リスト</span>
+  </div>
+
+  <div class="checklist">
+    <h4>虫よけ・日焼け対策</h4>
+    <ul>
+      <li>DEET または Picaridin の子ども用虫よけ</li>
+      <li>日焼け止め SPF50(リーフセーフ)</li>
+      <li>日除け帽</li>
+      <li>(Tripadvisor pwt2013 はサンドフライ被害、Two Keys 2025 は「bats のおかげで蚊なし」と二極。油断しない)</li>
+    </ul>
+    <h4>衣類</h4>
+    <ul>
+      <li>ラッシュガード上下</li>
+      <li>水着2セット</li>
+      <li>速乾Tシャツ</li>
+      <li>長袖薄手・薄手長ズボン(虫対策)</li>
+      <li>白いシャツやワンピース(Christmas Eve・NYE が WHITE 指定実績)</li>
+    </ul>
+    <h4>足元</h4>
+    <ul>
+      <li>マリンシューズ(Crystal Creek、ビーチ、移動)</li>
+      <li>スニーカー(自然散策)</li>
+      <li>サンダル</li>
+    </ul>
+    <h4>観察・記録</h4>
+    <ul>
+      <li>子ども用双眼鏡(リゾート貸出あり)</li>
+      <li>子ども用カメラ</li>
+      <li>観察ノート+色鉛筆</li>
+      <li>簡易図鑑</li>
+    </ul>
+    <h4>医療・衛生</h4>
+    <ul>
+      <li>絆創膏</li>
+      <li>抗ヒスタミン軟膏</li>
+      <li>酔い止め</li>
+      <li>小児用解熱剤</li>
+      <li>経口補水(リゾート内クリニックは医師・看護師常駐)</li>
+    </ul>
+    <h4>その他</h4>
+    <ul>
+      <li>ジップロック大、メッシュ洗濯袋、旅行用洗剤</li>
+      <li>USB マルチプラグ(部屋に多目的充電ポートあり)</li>
+      <li>粉末スポーツドリンク</li>
+      <li>好きなぬいぐるみ</li>
+      <li>日本食常備(米味噌系)</li>
+      <li>ベビーカーは敷地が丘で階段多いので、3歳半なら抱っこひも併用推奨(Happy Go KL)</li>
+    </ul>
+  </div>
+
+  <!-- ===== 事前確認メール ===== -->
+  <div class="section-label">
+    <span class="en">Pre-arrival email</span>
+    <span class="ja">ホテルへの事前確認メール(英語、コピペで使える)</span>
+  </div>
+
+  <details>
+    <summary>reservations@dataihotels.com 宛のテンプレを開く</summary>
+    <div class="email-body">Subject: Family stay enquiry - 2 adults + 2 children (ages 6 and 3.5) - January 2027
+
+Dear The Datai Langkawi team,
+
+We are a family of four from Japan planning a 4-night stay around the Japanese public holiday (Coming-of-Age Day weekend), tentatively 8-12 January 2027 (please confirm availability). Our children will be aged approximately 6 (boy) and 3.5 (girl) at the time of travel. The trip is centred on giving the children deep nature, marine, food, and craft experiences, so we would greatly appreciate detailed information on the following:
+
+1. Family activities and children's programmes
+  - Will the following be offered during our dates, and on which days/times: Minibeast Discovery, Young Explorer, Botanical Wonders, Ocean's Drifters, Ocean's Whisper, Jungle Voices, Little Chef, Little Gardener, Butterfly Walk, Beach Walk, Journey Through The Forests, Mysterious Mangrove, Crystal Creek trek.
+  - Could you share the Activities Calendar / Festive Brochure for December 2026-January 2027 once available?
+  - For each activity, please confirm minimum/maximum age, fee, capacity, advance booking lead time, and whether a parent must accompany children under 6.
+  - Can our 3.5-year-old daughter participate (or observe alongside a parent) in Minibeast Discovery, Young Explorer, Botanical Wonders, Ocean's Drifters, Little Chef, Little Gardener and Butterfly Walk?
+  - Which activities are absolutely off-limits for a 3.5-year-old?
+
+2. Pre-arrival priority bookings
+  - Which activities are most likely to sell out and should be pre-booked from Japan?
+  - For Little Chef and Little Gardener, are private family sessions available?
+
+3. Accommodation
+  - For two adults plus two children (ages 6 and 3.5), which room/villa do you recommend for ease of movement, safety (we noted the balcony ledge advisory), and proximity to the Family Pool and Nature Centre?
+  - Is bedding configured as one king + two daybeds in Canopy Premium / Canopy Suite / Beach Villa for our family size?
+  - Do you provide a baby cot or bed rail for the 3.5-year-old? Is it complimentary?
+
+4. Pools, beach, watersports
+  - Confirm operating hours and child rules at the Family Pool, Toddler Pool, and Beach.
+  - At the Watersports Pavilion, what is the minimum age for kayak/SUP/Hobie as a passenger with a parent? Are child-sized life jackets available?
+  - Are snorkel masks available in child sizes? Is the bay safe for a 6-year-old beginner snorkeler in January?
+
+5. Dining
+  - Please confirm children's menu availability at The Beach Club, The Dining Room (lunch), The Gulai House, The Pavilion, and In-Room Dining. We understand The Dining Room is restricted after 18:00 for children under 12 - is this still the policy in January 2027?
+  - Do you have high chairs and soft baby food on request for our 3.5-year-old?
+
+6. Babysitting / childcare
+  - Hourly rate, languages spoken, advance notice required, whether sitters can supervise in-room or at the Toddler Pool/Beach (with adult also present).
+
+7. Health and safety
+  - Sandfly and mosquito situation in January for children. What repellent does the resort provide? Is the clinic open 24/7?
+  - Wildlife policy - are macaques/dusky langurs likely to enter the balcony? Best practice with young children on balconies?
+
+8. Wet-weather alternatives
+  - On a heavy-rain day, which indoor activities are available for children aged 3-6 (e.g., The Lab It's Painting Day, in-villa cooking demonstration)?
+
+9. Festive period rules
+  - For stays touching 1-11 January 2027, is there a minimum-night requirement, a compulsory gala dinner, or any white-dress-code event we should plan for?
+
+10. Logistics
+  - Airport transfer time and child seat availability.
+  - Buggy availability for moving between Lobby, Nature Centre, Beach Club, and rooms.
+
+Thank you for your detailed reply. We are very much looking forward to introducing our children to the rainforest of Datai.
+
+Warm regards,
+[Your name]</div>
+  </details>
+
+  <!-- ===== 判断と次回比較軸 ===== -->
+  <div class="section-label">
+    <span class="en">Decision frame</span>
+    <span class="ja">判断と次回比較軸</span>
+  </div>
+
+  <div class="primer">
+    <div class="p-head"><span class="p-tag">部屋・日程・予約</span><h3>最重要ポイント</h3></div>
+    <ul class="air">
+      <li><span class="air-who">部屋</span>Beach Villa(プライベートプール+砂浜直結、3歳児連れの好レビュー実例あり)、または Canopy Premium / Canopy Suite(メイン棟近接、Family Pool まで徒歩近、king+デイベッド2台で家族4人収容可、i-escape の家族記事「All the Canopy rooms are ideal, each sleeping up to 4 in a kingsize bed and 2 single daybeds」)。公式「The balcony in selected room categories has a bottom ledge which children may be able to climb on」と注意喚起あり</li>
+      <li><span class="air-who">日程</span>2027年1月成人の日前後(雨少・海穏やか)。Chef Series 2027 の発表前なので、発表後に日程被りを再調整</li>
+      <li><span class="air-who">予約</span>Little Chef・Little Gardener・Ocean's Drifters・Crystal Creek・カヤック・シッターを到着前メールで仮押さえ、到着初日に Nature Centre で最終確定</li>
+    </ul>
+  </div>
+
+  <div class="primer">
+    <div class="p-head"><span class="p-tag">比較軸</span><h3>Six Senses Con Dao / Amanoi / Amankila / 八重山 と並べる時の軸</h3></div>
+    <p class="who-is">次回の他候補との比較は、以下の軸で並べると Datai 推しの強みが具体的に見える。</p>
+    <ul class="air">
+      <li><span class="air-who">海洋活動の数</span>6歳が参加可・自走できる海洋活動の数(シュノーケリング年齢制限、ボート同乗最低年齢、ウミガメ観察の有無)</li>
+      <li><span class="air-who">妹同伴可</span>3歳半同伴可の自然プログラム本数 / Toddler Pool の独立有無</li>
+      <li><span class="air-who">キッズクラブ</span>専属キッズクラブの有無と運営時間(Datai は無、他は有が多い)</li>
+      <li><span class="air-who">夕食制限</span>夕食レストランの子ども入店時間制限</li>
+      <li><span class="air-who">移動</span>日本からの所要と乗り継ぎ数(石垣・西表は圧倒的に有利)</li>
+      <li><span class="air-who">シッター</span>ベビーシッター料金・言語対応</li>
+      <li><span class="air-who">海泳ぎ</span>海の透明度・遠浅度・波・クラゲ・潮位による日別の海泳ぎ可否</li>
+      <li><span class="air-who">雨天</span>雨天時の屋内アクティビティの厚み</li>
+      <li><span class="air-who">健康</span>マラリア・デング・サンドフライリスク(リゾート内クリニック有無)</li>
+      <li><span class="air-who">食事</span>キッズメニューの実態(写真／メニュー入手)</li>
+    </ul>
+  </div>
+
+  <!-- ===== 注意 ===== -->
+  <p class="fine">
+    料金・曜日・年齢は The Datai Langkawi Festive Brochure 2024-2025(過去実績)に基づく。2026-2027 シーズンで同一とは断定できないので、予約前に公式へ最新版の Activities Calendar を取り寄せること。公式記載なし項目(Minibeast Discovery での虫眼鏡以外の機材、Botanical Wonders の押し葉持ち帰り、It's Painting Day の画材種別、Family Pool 水深、6歳児推奨シュノーケル種、Andaman 側 Coral Nursery と Datai 側 Artificial Reef の利用境界)は現地問い合わせ必須。「Young Explorer」名称は隣接 Andaman Langkawi の常設キッズクラブ「Young Explorer's Club」と紛らわしいが、別ホテル・別運営。出典: thedatai.com 各ページ、Festive Brochure 2024-2025、Datai Pledge Impact Report 2024、Tripadvisor(benpp88 2024年5月ほか)、Happy Go KL、Tots Too、Two Keys、Mr & Mrs Smith、FlyerTalk、i-escape、Kuoni、Climates to Travel、Weather Atlas、Holiday-Weather。
+  </p>
+
+</div>
+<div style="max-width:1000px;margin:0 auto;padding:18px 28px 32px;"><a href="../" style="color:#2f5d4f;text-decoration:none;font-size:13px;font-family:-apple-system,sans-serif;">← Back to Index</a></div>
+</body>
+</html>
