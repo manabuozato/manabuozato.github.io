@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
-<title>Chef Friends | Japan Chef-in-Residence Support Association (CIRE)</title>
+<title>シェフフレンズ募集 | 一般社団法人日本シェフ・イン・レジデンス応援協会</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
@@ -22,7 +22,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
-    font-family: "Lato", "Zen Kaku Gothic New", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    font-family: "Zen Kaku Gothic New", "Lato", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
     background: var(--bg);
     color: var(--ink);
     line-height: 1.6;
@@ -83,13 +83,13 @@
   .hero h1 {
     font-size: clamp(28px, 5vw, 44px);
     font-weight: 800;
-    letter-spacing: 1.2px;
-    line-height: 1.4;
+    letter-spacing: 2px;
+    line-height: 1.5;
     margin-bottom: 24px;
   }
   .hero .lead {
     font-size: clamp(14px, 1.6vw, 17px);
-    max-width: 760px;
+    max-width: 720px;
     margin: 0 auto;
     line-height: 1.9;
   }
@@ -102,14 +102,14 @@
     color: var(--ink);
   }
   .about-cta .inner {
-    max-width: 760px;
+    max-width: 720px;
     margin: 0 auto;
   }
   .about-cta h2 {
-    font-size: clamp(18px, 2.4vw, 24px);
+    font-size: clamp(18px, 2.4vw, 22px);
     font-weight: 700;
-    letter-spacing: 1px;
-    line-height: 1.6;
+    letter-spacing: 1.6px;
+    line-height: 1.8;
     margin-bottom: 16px;
   }
   .about-cta p {
@@ -118,7 +118,7 @@
     margin-bottom: 24px;
   }
 
-  /* Sub-nav */
+  /* Sub-nav (page内ナビ) */
   .subnav {
     padding: 0 0 64px;
     text-align: center;
@@ -162,14 +162,14 @@
     text-align: center;
     font-size: clamp(28px, 4vw, 44px);
     font-weight: 800;
-    letter-spacing: 1.8px;
+    letter-spacing: 2.4px;
     margin-bottom: 16px;
   }
   .section-sub {
     text-align: center;
     font-size: clamp(18px, 2.4vw, 26px);
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 1.9px;
     margin-bottom: 32px;
   }
   .section-desc {
@@ -177,10 +177,10 @@
     margin: 0 auto 48px;
     font-size: 15px;
     line-height: 1.9;
-    text-align: left;
+    text-align: justify;
   }
 
-  /* Cards */
+  /* Cards (3カラム) */
   .cards {
     display: grid;
     grid-template-columns: 1fr;
@@ -210,13 +210,50 @@
   .card h4 {
     font-size: 18px;
     font-weight: 700;
-    letter-spacing: 0.5px;
-    line-height: 1.5;
+    letter-spacing: 1.3px;
+    line-height: 1.6;
   }
   .card p {
     font-size: 14px;
     line-height: 1.9;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Steps (6段階グラデーション) */
+  .steps {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  @media (min-width: 720px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .steps { grid-template-columns: repeat(3, 1fr); } }
+  .step {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  section.block.alt .step { background: #fff; }
+  .step .step-no {
+    font-family: "Lato", sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+  }
+  .step h5 {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+  }
+  .step p {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--ink);
   }
 
   /* Target list */
@@ -253,7 +290,7 @@
     color: #fff;
     font-weight: 700;
     font-size: 16px;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
     padding: 14px 32px;
     border-radius: 29px;
     border: 0;
@@ -323,7 +360,7 @@
     color: var(--footer-ink);
     font-weight: 700;
     font-size: 14px;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.7px;
     text-decoration: none;
   }
   .footer-nav a:hover { color: #fff; }
@@ -335,27 +372,28 @@
     padding-top: 24px;
     border-top: 1px solid rgba(233,232,227,0.2);
     font-size: 12px;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.6px;
   }
   @media (min-width: 720px) {
     .footer-bottom { flex-direction: row; justify-content: space-between; }
   }
+
 </style>
 </head>
 <body>
 
 <div role="status" aria-live="polite" style="background:#5a3729;color:#f7e489;text-align:center;padding:14px 24px;font-size:14px;font-weight:700;letter-spacing:0.4px;line-height:1.7;">
-  <div>Work in progress — this page is a draft we are still building. Some wording and details may change. We're sharing it early to start the conversation.</div>
-  <div style="margin-top:6px;opacity:0.85;font-size:13px;">このページは現在作成中です。表現や内容は今後変わる可能性があります。会話のきっかけとして先にお見せしています。</div>
+  <div>このページは現在作成中です。表現や内容は今後変わる可能性があります。会話のきっかけとして先にお見せしています。</div>
+  <div style="margin-top:6px;opacity:0.85;font-size:13px;">Work in progress — this page is a draft we are still building. Some wording and details may change.</div>
   <div style="margin-top:10px;font-size:13px;font-weight:700;">
-    <a href="/cire-chef-friends/" style="color:#f7e489;text-decoration:underline;">日本語版 →</a>
+    <a href="/cire-chef-friends-en/" style="color:#f7e489;text-decoration:underline;">English version →</a>
   </div>
 </div>
 
 <header>
   <div class="container">
     <nav>
-      <a href="https://cire.or.jp" class="logo">Japan Chef-in-Residence Support Association (CIRE)</a>
+      <a href="https://cire.or.jp" class="logo">一般社団法人日本シェフ・イン・レジデンス応援協会</a>
       <div class="nav-links">
         <a href="https://cire.or.jp/#/about">ABOUT</a>
         <a href="https://cire.or.jp/?section=mission">MISSION</a>
@@ -373,17 +411,18 @@
 <section class="hero">
   <div class="container">
     <span class="eyebrow">CHEF FRIENDS</span>
-    <h1>We'd love to get to know you, chef.</h1>
+    <h1>シェフのみなさんと、つながりたい。</h1>
     <p class="lead">
-      Travelling chefs, and the regions that welcome them.<br>
-      We care about the encounters and exchanges that happen between them.<br>
-      CIRE (Japan Chef-in-Residence Support Association) is, right now,<br>
-      starting to build a loose circle with chefs who are curious about this work.<br>
-      We call these chefs our <strong>Chef Friends</strong>.
+      旅するシェフと、シェフを迎える地域。<br>
+      その出会いと交流から生まれる経験を、たいせつにしたい。<br>
+      CIRE（シェフ・イン・レジデンス応援協会）は、いま、<br>
+      活動に興味のあるシェフのみなさんと、ゆるやかな輪をひろげはじめています。<br>
+      この仲間のことを、わたしたちは「シェフフレンズ」と呼んでいます。
     </p>
   </div>
 
-  <nav class="subnav" aria-label="In-page navigation">
+  <!-- Sub-nav (ページ内アンカー) -->
+  <nav class="subnav" aria-label="ページ内ナビゲーション">
     <ul>
       <li><a href="#about">ABOUT</a></li>
       <li><a href="#activities">ACTIVITIES</a></li>
@@ -394,17 +433,17 @@
   </nav>
 </section>
 
-<!-- About CTA -->
+<!-- About CTA (青ブロック) -->
 <section class="about-cta" id="about">
   <div class="inner">
     <h2>
-      CIRE is a non-profit intermediary<br>
-      that stands between regions and chefs.
+      CIREは、地域とシェフのあいだに立つ<br>
+      非営利の中間組織です
     </h2>
     <p>
-      We are not a staffing agency or a registered booking platform.<br>
-      We act as a bridge so that regions and chefs can meet and build relationships over time.<br>
-      Chef Friends are the chefs who join us in that relationship-building work.
+      派遣会社でも、登録エージェントでもありません。<br>
+      地域とシェフが出会い、関係を深めていくための橋渡しをしています。<br>
+      シェフフレンズは、その関係づくりに参加してくれる仲間のことです。
     </p>
     <a href="https://cire.or.jp/about" class="btn" target="_blank" rel="noopener noreferrer">ABOUT CIRE</a>
   </div>
@@ -414,27 +453,27 @@
 <section class="block" id="activities">
   <div class="container">
     <h2 class="section-title">ACTIVITIES</h2>
-    <h3 class="section-sub">Three things we'd like to do together with our Friends</h3>
+    <h3 class="section-sub">フレンズと一緒にやっていきたい、3つのこと</h3>
     <p class="section-desc">
-      CIRE has three main areas of activity. As a Chef Friend, you are invited to engage with whichever ones interest you, and only as much as you have time for. The idea is not "please join all of it," but rather "let's find together the part you actually want to join."<br><br>
-      The relationship itself works the same way. Texting back and forth → talking on Zoom → sharing a meal → visiting a region → co-creating a project. We grow the relationship at your pace. You can start anywhere, and pause anywhere.
+      CIREの活動は大きく3つあります。シェフフレンズには、興味のあるものから無理のない範囲で関わってもらえたらと思っています。「全部参加してください」ではなく、「ここなら参加したい」を一緒に探していくスタイルです。<br><br>
+      関係性も同じ。テキストでやりとり → Zoomで話す → いっしょにごはん → 地域を訪ねる → いっしょに企画する。お互いの状況に合わせて、ゆっくり育てていけたらと思っています。どこからでも、どこで止まっても構いません。
     </p>
 
     <div class="cards">
       <div class="card">
-        <span class="badge">No.1</span>
-        <h4>Chef-in-Residence<br>Programs<br><span style="display:inline-block;background:#71b0ff;color:#fff;font-size:11px;padding:3px 12px;border-radius:60px;margin-top:8px;font-weight:700;letter-spacing:0.5px;">Active</span></h4>
-        <p>We support the launch and operation of chef-in-residence programs in regions across Japan, working with the host side (the kitchens). This is the core of what we do. We may reach out to Friends for site visits, programme design conversations, or local exchanges.</p>
+        <span class="badge">その１</span>
+        <h4>シェフ・イン・<br>レジデンス活動<br><span style="display:inline-block;background:#71b0ff;color:#fff;font-size:11px;padding:3px 12px;border-radius:60px;margin-top:8px;font-weight:700;letter-spacing:1px;">実施中</span></h4>
+        <p>地域でシェフ・イン・レジデンスを実施したい受け入れ側（キッチン）の立ち上げと運営を支援する取り組み。CIRE の本丸の活動です。フレンズには、現地視察や滞在プログラムの企画相談、地域での交流などで、声をかけることがあります。</p>
       </div>
       <div class="card">
-        <span class="badge">No.2</span>
-        <h4>Chef<br>Network<br><span style="display:inline-block;background:#fff;color:#5a3729;font-size:11px;padding:3px 12px;border-radius:60px;margin-top:8px;font-weight:700;letter-spacing:0.5px;">In development</span></h4>
-        <p>We are preparing ways for travelling chefs to connect with each other and share information and spaces. The exact form is something we want to shape together with our Chef Friends.</p>
+        <span class="badge">その２</span>
+        <h4>シェフ<br>ネットワーク<br><span style="display:inline-block;background:#fff;color:#5a3729;font-size:11px;padding:3px 12px;border-radius:60px;margin-top:8px;font-weight:700;letter-spacing:1px;">検討中</span></h4>
+        <p>旅するシェフどうしがつながり、情報や場を共有していく取り組みを準備しています。やり方や場のかたちは、シェフフレンズのみなさんと一緒に考えていきたいと思っています。</p>
       </div>
       <div class="card">
-        <span class="badge">No.3</span>
-        <h4>The Relay Awards<br><span style="display:inline-block;background:#71b0ff;color:#fff;font-size:11px;padding:3px 12px;border-radius:60px;margin-top:8px;font-weight:700;letter-spacing:0.5px;">Active</span></h4>
-        <p>An awards programme that makes outstanding chef-in-residence work visible and shares what we can learn from it. We may invite Friends to nominate, take part in selection conversations, or join the ceremony.</p>
+        <span class="badge">その３</span>
+        <h4>The Relay Awards<br>（アワード）<br><span style="display:inline-block;background:#71b0ff;color:#fff;font-size:11px;padding:3px 12px;border-radius:60px;margin-top:8px;font-weight:700;letter-spacing:1px;">実施中</span></h4>
+        <p>すぐれたシェフ・イン・レジデンスの取り組みを可視化し、学びを共有する表彰プログラム。フレンズには、推薦や選考の対話、授賞式への参加などで、声をかけることがあります。</p>
       </div>
     </div>
   </div>
@@ -444,22 +483,22 @@
 <section class="block" id="target">
   <div class="container">
     <h2 class="section-title">FOR CHEFS</h2>
-    <h3 class="section-sub">Chefs we'd love to connect with</h3>
+    <h3 class="section-sub">こんなシェフと、つながりたい</h3>
 
     <div class="target">
       <ul>
-        <li>Any working style. With or without your own restaurant. Chefs who are curious about cooking on the road, or cooking in different regions.</li>
-        <li>Chefs who want to grow through encounters with local ingredients, food cultures, and people.</li>
-        <li>Chefs who, beyond daily practice in their own kitchen, want to face unfamiliar land, ingredients, and guests.</li>
-        <li>Chefs who carry a feeling of always wanting to be travelling.</li>
-        <li>Chefs who want to host travelling chefs in their own restaurant or region.</li>
-        <li>Chefs who want to be inspired by chefs visiting from overseas.</li>
+        <li>働き方は問いません。店がある方も、店を持たない方も、旅や地域での仕事に興味があるシェフ</li>
+        <li>地域の食材・食文化・人との出会いを、自分の仕事の糧にしたいシェフ</li>
+        <li>毎日の研鑽の場だけでなく、普段とは違う土地と食材とお客さんに向き合ってみたいと思っているシェフ</li>
+        <li>いつも旅をしていたいという感覚を持っているシェフ</li>
+        <li>自分の店や地域を、旅するシェフを迎える場にしてみたいと考えているシェフ</li>
+        <li>海外からのシェフから刺激をうけてみたいと思っているシェフ</li>
       </ul>
-      <p style="margin-top:16px; text-align:right; font-size:14px; color:#8a6f5e;">…and more.</p>
+      <p style="margin-top:16px; text-align:right; font-size:14px; color:#8a6f5e;">…などなど</p>
     </div>
 
     <p class="section-desc" style="margin-top:32px;">
-      We don't care about your résumé, the size of your restaurant, or how well known you are. "Travelling chefs," "regions that welcome them," "the experiences born from those encounters" — if any of these speak to you, please get in touch.
+      経歴・店の規模・知名度は問いません。「旅するシェフ」「シェフを迎える地域」「その出会いから生まれる経験」。このどれかにピンとくる方なら、まずはお声がけください。
     </p>
   </div>
 </section>
@@ -471,28 +510,28 @@
 
     <div class="faq">
       <details>
-        <summary>What happens after I join?</summary>
-        <p>Once you send in the form, we will invite you to a closed Facebook group run by CIRE. We will share updates for Chef Friends in that group from time to time. Direct outreach from CIRE only happens with people who opt in to "OK to reach out to me" on the form.</p>
+        <summary>参加するとどうなりますか？</summary>
+        <p>フォームを送っていただくと、CIRE 運営のクローズドな Facebook グループへご招待します。グループ内で、シェフフレンズ向けの情報を不定期でお届けします。CIRE 側からの個別お声がけは、フォームで「お声がけしてもよい」を選んでいただいた方にのみ行います。</p>
       </details>
       <details>
-        <summary>Are there any registration or membership fees?</summary>
-        <p>No. Chef Friends is a relationship in which CIRE reaches out to chefs as fellow travellers. There are no fees of any kind.</p>
+        <summary>登録料や会費はかかりますか？</summary>
+        <p>かかりません。シェフフレンズは、CIREからシェフへの「仲間として声をかける」関係です。会費・登録料はいただきません。</p>
       </details>
       <details>
-        <summary>Do you offer job placements or booking services?</summary>
-        <p>CIRE is a non-profit intermediary and does not earn fees for introducing chefs. We are not a staffing agency or registered booking platform. That said, when a request from a region (a kitchen) seems to align with a Friend's interests, we may reach out. Whether or not to move forward is always decided by both the kitchen and the Friend.</p>
+        <summary>仕事の紹介や案件のあっせんはありますか？</summary>
+        <p>CIRE は非営利の中間組織で、シェフの紹介で対価を得ることは目的としていません。派遣・登録エージェントでもありません。ただし、地域（キッチン）からの相談がフレンズの関心と合いそうなときは、お声がけすることがあります。やる・やらないの判断は、キッチン側とフレンズ側の双方にあります。</p>
       </details>
       <details>
-        <summary>How often will I hear from you?</summary>
-        <p>Most of the communication happens in the Facebook group, roughly a few times a month. Direct outreach from CIRE depends on what comes up, and is therefore irregular.</p>
+        <summary>どのくらいの頻度で連絡が来ますか？</summary>
+        <p>Facebookグループでの情報共有が中心で、月数回程度を想定しています。CIRE 側からの個別お声がけは、案件や機会に合わせて不定期です。</p>
       </details>
       <details>
-        <summary>Can I step back at any time?</summary>
-        <p>Of course. Chef Friends is meant to be a loose, no-pressure circle. You are free to pause or leave whenever you wish.</p>
+        <summary>関わりかたを途中でやめてもいいですか？</summary>
+        <p>もちろんです。シェフフレンズはあくまで「ゆるやかな仲間」の関係です。いつでも休む・やめるが自由にできる設計にしています。</p>
       </details>
       <details>
-        <summary>Can chefs based outside Japan apply?</summary>
-        <p>Yes, very welcome. CIRE thinks about "travelling chefs" broadly, and we'd love to hear from chefs who are not based in Japan as well.</p>
+        <summary>海外のシェフでも応募できますか？</summary>
+        <p>はい、歓迎します。CIREは「旅するシェフ」全般を対象にしており、日本国内に拠点を持たないシェフからのご連絡もお待ちしています。</p>
       </details>
     </div>
   </div>
@@ -502,11 +541,11 @@
 <section class="block" id="join">
   <div class="container">
     <h2 class="section-title">JOIN</h2>
-    <h3 class="section-sub">Say hello first</h3>
+    <h3 class="section-sub">まずは、お声がけください</h3>
     <p class="section-desc">
-      Please fill in the form with a short profile.<br>
-      We'll invite you to the CIRE Chef Friends Facebook group, and share updates from time to time.<br>
-      There are no fees to join. We will get back to you in turn.
+      フォームに簡単なプロフィールをお書きください。<br>
+      ご参加いただいた方には、CIRE運営の Facebook グループへご招待し、シェフフレンズ向けの情報を不定期でお送りします。<br>
+      参加に登録料・会費はかかりません。CIREから順次ご返信します。
     </p>
 
     <div class="btn-center">
@@ -527,7 +566,7 @@
       <a href="https://cire.or.jp/#/legal">Privacy Policy</a>
     </nav>
     <div class="footer-bottom">
-      <span>©2026 Japan Chef-in-Residence Support Association. All rights reserved.</span>
+      <span>©2026 一般社団法人日本シェフ・イン・レジデンス応援協会 All rights reserved.</span>
       <a href="https://note.com/cire" target="_blank" rel="noopener noreferrer" style="color:var(--footer-ink); text-decoration:none;">note →</a>
     </div>
   </div>
