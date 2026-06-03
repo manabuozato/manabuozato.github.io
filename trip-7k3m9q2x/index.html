@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ディズニー 1泊2日プラン｜2026年7月6日-7日（ランド+シー）</title>
+<style>
+  :root{
+    --bg:#f5f6f7; --card:#fff; --ink:#2b2b2e; --sub:#70727a; --line:#e5e6ea;
+    --accent:#2f6f9f; --accent-deep:#235577; --accent-mid:#7fb0cf; --accent-soft:#eaf2f8;
+    --meal:#b06a2c; --meal-soft:#f7efe6; --land:#2f6f9f; --sea:#1f8a8a; --sea-soft:#e6f4f4;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+    line-height:1.7;font-size:16px;}
+  .wrap{max-width:880px;margin:0 auto;padding:18px 16px 80px;}
+  /* hero */
+  header.top{position:relative;border-radius:18px;overflow:hidden;margin-bottom:18px;
+    background:linear-gradient(165deg,rgba(35,85,119,.84),rgba(47,111,159,.55)),url('disney-assets/castle-hero.jpg');
+    background-size:cover;background-position:center 28%;color:#fff;box-shadow:0 8px 26px rgba(35,85,119,.28);}
+  .top-inner{padding:28px 22px 30px;}
+  header.top .kicker{font-size:12.5px;letter-spacing:.1em;opacity:.9;margin:0 0 6px;}
+  header.top h1{font-size:23px;margin:0 0 8px;line-height:1.45;}
+  header.top p{margin:0;font-size:14px;opacity:.95;}
+  .meta-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px;}
+  .chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.32);padding:4px 10px;border-radius:999px;font-size:12px;}
+  /* section heads */
+  .h2row{display:flex;align-items:center;gap:10px;margin:34px 0 6px;padding-bottom:8px;border-bottom:2px solid var(--line);}
+  .h2row h2{font-size:19px;margin:0;}
+  .h2row .ico{flex:0 0 26px;width:26px;height:26px;color:var(--accent);}
+  .lead{color:var(--accent-deep);font-weight:600;}
+  .small{font-size:13px;color:var(--sub);}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0;box-shadow:0 1px 3px rgba(0,0,0,.03);}
+  /* day banner */
+  .day{border-radius:16px;overflow:hidden;margin:18px 0 8px;border:1px solid var(--line);}
+  .day-head{padding:14px 18px;color:#fff;display:flex;align-items:center;gap:10px;}
+  .day-head.land{background:linear-gradient(120deg,var(--land),var(--accent-deep));}
+  .day-head.sea{background:linear-gradient(120deg,var(--sea),#15616d);}
+  .day-head .dnum{font-size:13px;opacity:.9;}
+  .day-head h3{margin:0;font-size:18px;}
+  .day-head .park{margin-left:auto;font-size:12.5px;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:999px;}
+  .day-body{background:var(--card);padding:8px 14px 14px;}
+  /* timeline */
+  .tl-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line);}
+  .tl-item:last-child{border-bottom:none;}
+  .tl-time{flex:0 0 60px;font-variant-numeric:tabular-nums;font-weight:700;color:var(--accent);font-size:13.5px;padding-top:2px;}
+  .tl-body{flex:1;font-size:14.5px;}
+  .tl-body .t-title{font-weight:600;}
+  .phase{display:inline-block;font-size:11px;letter-spacing:.04em;color:var(--sub);background:#eef0f3;border-radius:6px;padding:1px 8px;margin-bottom:3px;}
+  /* meal row */
+  .meal{display:flex;gap:10px;align-items:flex-start;background:var(--meal-soft);border-left:4px solid var(--meal);border-radius:8px;padding:9px 12px;margin:8px 0;}
+  .meal svg{flex:0 0 20px;width:20px;height:20px;color:var(--meal);margin-top:2px;}
+  .meal .m-body{font-size:13.5px;}
+  .meal .m-body b{color:#8a5220;font-weight:600;}
+  .tip{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;padding:9px 12px;margin:8px 0;font-size:13.5px;}
+  /* attraction guide */
+  .seg{display:flex;align-items:center;gap:8px;margin:20px 0 6px;font-weight:700;font-size:15px;}
+  .seg .dot{width:12px;height:12px;border-radius:3px;}
+  .seg .land{background:var(--land);} .seg .sea{background:var(--sea);}
+  .att{display:flex;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card);margin:12px 0;box-shadow:0 1px 3px rgba(0,0,0,.03);}
+  .att .media{flex:0 0 150px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;}
+  .att .media img{width:100%;height:100%;object-fit:cover;display:block;min-height:150px;}
+  .att .media.icon{color:var(--accent);} .att .media.icon svg{width:54px;height:54px;}
+  .att .media.icon.sea{background:var(--sea-soft);color:var(--sea);}
+  .att .body{padding:12px 15px;flex:1;}
+  .att h4{margin:0 0 6px;font-size:15.5px;}
+  .att .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+  .att .tag{font-size:11.5px;background:#eef0f3;color:#555;border-radius:6px;padding:2px 8px;}
+  .att .tag.h{background:#fdecec;color:#b04a4a;}
+  .att .tag.ok{background:var(--accent-soft);color:var(--accent-deep);}
+  .att p{margin:5px 0;font-size:13.7px;}
+  .att .enjoy{color:var(--accent-deep);}
+  @media(max-width:600px){.att{flex-direction:column;}.att .media{flex:0 0 auto;}.att .media img{min-height:160px;max-height:200px;}}
+  /* generic */
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px;}
+  th,td{border:1px solid var(--line);padding:8px 9px;text-align:left;vertical-align:top;}
+  th{background:#eef1f4;}
+  ul,ol{margin:8px 0;padding-left:1.25em;}li{margin:4px 0;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px;}@media(max-width:600px){.two{grid-template-columns:1fr;}}
+  .scroll{overflow-x:auto;}
+  .fig{width:100%;height:auto;display:block;}.figcap{font-size:12px;color:var(--sub);text-align:center;margin-top:6px;}
+  .toc{font-size:13.5px;} .toc a{color:var(--accent);text-decoration:none;} .toc a:hover{text-decoration:underline;}
+  footer{margin-top:34px;font-size:12px;color:var(--sub);text-align:center;}
+  h2{font-weight:700;} h3,h4{font-weight:600;}
+</style>
+</head>
+<body>
+<div id="gate" style="position:fixed;inset:0;background:linear-gradient(160deg,#2f6f9f,#235577);display:flex;align-items:center;justify-content:center;z-index:9999;color:#fff;font-family:-apple-system,sans-serif;">
+  <div style="text-align:center;padding:24px;max-width:320px;">
+    <div style="font-size:13px;letter-spacing:.1em;opacity:.85;margin-bottom:6px;">PRIVATE</div>
+    <div style="font-size:16px;margin-bottom:16px;">合言葉を入力してください</div>
+    <input id="gate-input" type="password" inputmode="text" autocomplete="off" autofocus
+      style="font-size:16px;padding:11px 14px;border-radius:12px;border:none;text-align:center;width:100%;outline:none;">
+    <button id="gate-btn" style="margin-top:10px;font-size:15px;padding:10px 18px;border:none;border-radius:12px;background:#fff;color:#235577;font-weight:600;width:100%;">ひらく</button>
+    <div id="gate-msg" style="margin-top:10px;font-size:12px;opacity:.85;min-height:16px;"></div>
+  </div>
+</div>
+<div class="wrap">
+
+<header class="top">
+  <div class="top-inner">
+    <p class="kicker">家族ではじめてのディズニー</p>
+    <h1>ディズニー 1泊2日プラン<br>2026年7月6日(月) ランド ＋ 7日(火) シー</h1>
+    <p>パパが調べてまとめました。日程と、各アトラクションの楽しみ方をどうぞ。</p>
+    <div class="meta-row">
+      <span class="chip">パパ</span><span class="chip">ママ</span>
+      <span class="chip">上の子 5歳 / 108cm</span><span class="chip">下の子 3歳 / 94cm</span>
+    </div>
+    <div class="meta-row">
+      <span class="chip">ヒルトン東京ベイ 1泊</span><span class="chip">往復タクシー</span><span class="chip">夏イベント開催中</span>
+    </div>
+  </div>
+</header>
+
+<div class="card toc">
+  <strong>もくじ</strong>
+  <ul style="margin-top:6px;">
+    <li><a href="#flow">2日間のスケジュール（メイン）</a></li>
+    <li><a href="#guide">アトラクション図鑑（楽しみ方つき）</a></li>
+    <li><a href="#height">身長で乗れるもの早見</a></li>
+    <li><a href="#pass">パスの仕組み</a></li>
+    <li><a href="#pack">持ち物 / アプリ / 予習</a></li>
+    <li><a href="#cal">予約と段取りカレンダー</a></li>
+  </ul>
+</div>
+
+<!-- ===================== スケジュール ===================== -->
+<div class="h2row">
+  <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+  <h2 id="flow">2日間のスケジュール</h2>
+</div>
+<p class="small">基本は「待たない」。無料パスはアプリで瞬時に、人気どころはDPAで時間指定、食事はモバイルオーダー。ホテルが目の前なので1日目午後に一度戻って休みます。<span style="color:var(--meal);">■</span> が食事です。</p>
+
+<!-- DAY 1 -->
+<div class="day">
+  <div class="day-head land">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19"/></svg>
+    <div><div class="dnum">DAY 1 ・ 7月6日(月)</div><h3>東京ディズニーランド</h3></div>
+    <span class="park">ランド</span>
+  </div>
+  <div class="day-body">
+    <div class="tl-item"><div class="tl-time">8:30</div><div class="tl-body"><span class="phase">朝</span><div class="t-title">自宅をタクシーで出発（約30分）</div>ヒルトンに荷物を預けて身軽に。シャトル＋モノレールでランドへ</div></div>
+    <div class="tl-item"><div class="tl-time">9:30</div><div class="tl-body"><span class="phase">入園</span><div class="t-title">入った瞬間にアプリ操作</div>① プーさんの無料パス → ② モンスターズの無料パス → ③ ジャンボリミッキー抽選 → ④ 美女と野獣のDPA購入</div></div>
+    <div class="tl-item"><div class="tl-time">午前</div><div class="tl-body"><span class="phase">午前</span><div class="t-title">下の子向け中心に反時計回り</div>スモールワールド → プーさん（パス）→ ホーンテッド（下の子も）→ モンスターズ（パス）→ ジャングルクルーズ。美女と野獣はDPAの時間に</div></div>
+    <div class="meal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 3v8a2 2 0 0 0 4 0V3M7 11v10M19 3c-1.5 0-2.5 2-2.5 5s1 4 2.5 4v9"/></svg><div class="m-body"><b>11:00 昼食｜ハングリーベア・レストラン</b>（カレー）。モバイルオーダーで列に並ばず受け取り。混む前に早めに</div></div>
+    <div class="tl-item"><div class="tl-time">14:00</div><div class="tl-body"><span class="phase">午後</span><div class="t-title">ホテルへ戻って休憩</div>15:00チェックイン。部屋で昼寝、またはプール。17時まで休む</div></div>
+    <div class="tl-item"><div class="tl-time">17:00</div><div class="tl-body"><span class="phase">夕方</span><div class="t-title">再入園・びしょ濡れタイム</div>ベイマックスのびしょ濡れパレード、トゥーンタウンの水遊び、スプラッシュ。上の子の絶叫系（ビッグサンダー等）は交代利用で。濡れたらホテルでシャワー</div></div>
+    <div class="meal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 3v8a2 2 0 0 0 4 0V3M7 11v10M19 3c-1.5 0-2.5 2-2.5 5s1 4 2.5 4v9"/></svg><div class="m-body"><b>19:00 夕食｜クリスタルパレス・レストラン</b>（ビュッフェ）。プーさんの仲間が来る。<b>6月6日10:00に要予約</b></div></div>
+    <div class="tl-item"><div class="tl-time">20:00</div><div class="tl-body"><span class="phase">夜</span><div class="t-title">部屋へ。就寝</div></div></div>
+  </div>
+</div>
+
+<!-- DAY 2 -->
+<div class="day">
+  <div class="day-head sea">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14c1.5 0 1.5 1.5 3 1.5s1.5-1.5 3-1.5 1.5 1.5 3 1.5 1.5-1.5 3-1.5 1.5 1.5 3 1.5 1.5-1.5 3-1.5"/><path d="M3 19c1.5 0 1.5 1.5 3 1.5s1.5-1.5 3-1.5 1.5 1.5 3 1.5 1.5-1.5 3-1.5 1.5 1.5 3 1.5 1.5-1.5 3-1.5"/><path d="M12 3v6M9 6l3-3 3 3"/></svg>
+    <div><div class="dnum">DAY 2 ・ 7月7日(火)</div><h3>東京ディズニーシー</h3></div>
+    <span class="park">シー</span>
+  </div>
+  <div class="day-body">
+    <div class="tip"><span class="lead">2日目の要。</span>アナ雪（フローズンジャーニー）のDPAは平日でも開園後5〜15分で売り切れることがある。だから2日目だけは少し早めにゲート前へ。入園した瞬間に真っ先にこれを買う。</div>
+    <div class="tl-item"><div class="tl-time">朝</div><div class="tl-body"><span class="phase">朝</span><div class="t-title">朝食＆チェックアウト</div>ヒルトンの朝食ビュッフェ（ゴールドで親無料）。12:00チェックアウト。<span class="small">有料で15:00延長すると2日目午後も部屋で休める。3歳の連戦には推奨</span></div></div>
+    <div class="tl-item"><div class="tl-time">8:20</div><div class="tl-body"><span class="phase">入園待ち</span><div class="t-title">シー側ゲート前へ</div>アプリと支払い画面を開いて待機</div></div>
+    <div class="tl-item"><div class="tl-time">入園</div><div class="tl-body"><span class="phase">入園</span><div class="t-title">秒で操作</div>① フローズンジャーニーのDPA（最優先）→ ② ラプンツェルのDPA → ③ 余力でトイ・ストーリー・マニアのDPA</div></div>
+    <div class="tl-item"><div class="tl-time">午前</div><div class="tl-body"><span class="phase">午前</span><div class="t-title">最奥のファンタジースプリングスから</div>ティンカーベル（すいてる・並ぶ）→ ラプンツェル → フローズン（DPA時間）→ ピーターパン（上の子のみ・下の子は交代利用）。<span class="small">入場制限・スタンバイパスは廃止。エリアには自由に入れる</span></div></div>
+    <div class="meal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 3v8a2 2 0 0 0 4 0V3M7 11v10M19 3c-1.5 0-2.5 2-2.5 5s1 4 2.5 4v9"/></svg><div class="m-body"><b>11:00 昼食｜アレンデール・ロイヤルバンケット</b>（アナ雪の城のレストラン）。事前予約不可・当日モバイルオーダー・FS内にいる時に。または手軽にモバイルオーダー</div></div>
+    <div class="tl-item"><div class="tl-time">午後</div><div class="tl-body"><span class="phase">午後</span><div class="t-title">手前に戻りながら、下の子天国へ</div>アラビアンコースト（シンドバッド）→ マーメイドラグーン（屋内・涼しい・下の子の楽園で暑さ回避）→ トイ・ストーリー・マニア → ニモ&フレンズ・シーライダー。上の子の見せ場はソアリン（下の子は交代利用）</div></div>
+    <div class="tip"><span class="lead">乗らない判断。</span>インディ・ジョーンズ、レイジングスピリッツ、センター・オブ・ジ・アースは117cm以上。上の子（108）もまだ不可。最初から外す</div>
+    <div class="meal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 3v8a2 2 0 0 0 4 0V3M7 11v10M19 3c-1.5 0-2.5 2-2.5 5s1 4 2.5 4v9"/></svg><div class="m-body"><b>18:00 夕食｜S.S.コロンビア・ダイニングルーム</b>（上品な客船・子供セットあり、6/7 10:00に予約）。または手軽にモバイルオーダー</div></div>
+    <div class="tl-item"><div class="tl-time">19:00</div><div class="tl-body"><span class="phase">夜</span><div class="t-title">退園 → 帰宅</div>タクシー30分 → 20:00帰宅 → 風呂 → 21:00就寝。<span class="small">夜のハーバーショーは開始が遅め。下の子の就寝優先で今回は見ない判断</span></div></div>
+  </div>
+</div>
+
+<!-- ===================== アトラクション図鑑 ===================== -->
+<div class="h2row">
+  <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h5v18H6a2 2 0 0 0-2 2V5Z"/><path d="M20 5a2 2 0 0 0-2-2h-5v18h5a2 2 0 0 1 2 2V5Z"/></svg>
+  <h2 id="guide">アトラクション図鑑</h2>
+</div>
+<p class="small">どんな乗り物か、関連する映画、楽しみ方。予習しておくと現地の感動が段違いです。</p>
+
+<div class="seg"><span class="dot land"></span>ランド（1日目）</div>
+
+<div class="att">
+  <div class="media"><img src="disney-assets/att-beauty.jpg" alt="美女と野獣"></div>
+  <div class="body">
+    <h4>美女と野獣 “魔法のものがたり”</h4>
+    <div class="tags"><span class="tag">大型ライド</span><span class="tag">映画「美女と野獣」</span><span class="tag ok">身長制限なし</span><span class="tag ok">家族全員</span></div>
+    <p>魔法のカップに乗って、名曲とともに映画の名場面を巡る。最後の舞踏会シーンが圧巻の、ランド最新の目玉。</p>
+    <p class="enjoy">楽しみ方：事前に映画を観ておくと感動が倍。最人気なのでDPA推奨。</p>
+  </div>
+</div>
+
+<div class="att">
+  <div class="media icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15c2-1 4-1 6 0M14 15c2-1 4-1 6 0"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/><path d="M5 13l2-6h10l2 6"/></svg></div>
+  <div class="body">
+    <h4>プーさんのハニーハント</h4>
+    <div class="tags"><span class="tag">トラックレスライド</span><span class="tag">くまのプーさん</span><span class="tag ok">身長制限なし</span><span class="tag ok">家族全員</span></div>
+    <p>はちみつ壺に乗って絵本の世界を冒険。レールが見えず動きが読めない、優しくて可愛い乗り物。</p>
+    <p class="enjoy">楽しみ方：無料パスの最優先枠。午前で発券終了しがちなので入園直後に確保。</p>
+  </div>
+</div>
+
+<div class="att">
+  <div class="media icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20V11a6 6 0 0 1 12 0v9l-2-1.5L14 20l-2-1.5L10 20l-2-1.5L6 20Z"/><circle cx="9.5" cy="11" r="1"/><circle cx="14.5" cy="11" r="1"/></svg></div>
+  <div class="body">
+    <h4>ホーンテッドマンション</h4>
+    <div class="tags"><span class="tag">ダークライド</span><span class="tag">オリジナル</span><span class="tag ok">身長制限なし</span><span class="tag ok">下の子も一緒に</span></div>
+    <p>999人の陽気な幽霊が住む館を、専用ライドでめぐる。怖下の子いうより不思議で楽しい雰囲気。</p>
+    <p class="enjoy">楽しみ方：5歳なら平気な子が多い。暗いのが苦手なら「お化けは優しいよ」と先に説明を。</p>
+  </div>
+</div>
+
+<div class="att">
+  <div class="media"><img src="disney-assets/att-smallworld2.jpg" alt="イッツ・ア・スモールワールド"></div>
+  <div class="body">
+    <h4>イッツ・ア・スモールワールド</h4>
+    <div class="tags"><span class="tag">ボートライド</span><span class="tag">オリジナル</span><span class="tag ok">身長制限なし</span><span class="tag ok">下の子に最適</span></div>
+    <p>世界中の人形が「小さな世界」を歌う、色彩豊かな船の旅。ディズニーの古典的名作。</p>
+    <p class="enjoy">楽しみ方：下の子にぴったり。涼しい屋内なので夏の休憩も兼ねられる。</p>
+  </div>
+</div>
+
+<div class="att">
+  <div class="media icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2 4 4 .6-3 3 .7 4-3.7-2-3.7 2 .7-4-3-3 4-.6Z"/><circle cx="12" cy="12" r="9"/></svg></div>
+  <div class="body">
+    <h4>モンスターズ・インク “ライド＆ゴーシーク！”</h4>
+    <div class="tags"><span class="tag">インタラクティブ</span><span class="tag">モンスターズ・インク</span><span class="tag ok">身長制限なし</span><span class="tag ok">家族全員</span></div>
+    <p>懐中電灯でモンスターを探すかくれんぼ。光を当てると反応する、能動的に遊べるライド。</p>
+    <p class="enjoy">楽しみ方：無料パス対象。上の子が自分で探して楽しめる。</p>
+  </div>
+</div>
+
+<div class="att">
+  <div class="media"><img src="disney-assets/att-splash.jpg" alt="スプラッシュ・マウンテン"></div>
+  <div class="body">
+    <h4>スプラッシュ・マウンテン</h4>
+    <div class="tags"><span class="tag">ログコースター・水</span><span class="tag">南部の唄</span><span class="tag h">90cm〜</span><span class="tag">上の子向け</span></div>
+    <p>のどかな丸太ボートの旅から、最後に大きな滝つぼへダイブ。夏は「びしょ濡れMAX」でさらに濡れる。</p>
+    <p class="enjoy">楽しみ方：夏は濡れる前提で。上の子は確実、下の子（94cm）は乗れるが落下が怖いか様子を見て。DPA。</p>
+  </div>
+</div>
+
+<div class="att">
+  <div class="media"><img src="disney-assets/att-bigthunder.jpg" alt="ビッグサンダー・マウンテン"></div>
+  <div class="body">
+    <h4>ビッグサンダー・マウンテン</h4>
+    <div class="tags"><span class="tag">コースター</span><span class="tag">オリジナル（西部）</span><span class="tag h">102cm〜</span><span class="tag">上の子のみ</span></div>
+    <p>無人の鉱山列車が荒野を駆け抜ける。激しすぎない、コースター入門にちょうどいい1台。</p>
+    <p class="enjoy">楽しみ方：上の子の絶叫デビューに最適。下の子（94cm）は不可なので交代利用サービスで。</p>
+  </div>
+</div>
+
+<div class="seg"><span class="dot sea"></span>シー（2日目）</div>
+
+<div class="att">
+  <div class="media"><img src="disney-assets/att-frozen.jpg" alt="アナとエルサのフローズンジャーニー"></div>
+  <div class="body">
+    <h4>アナとエルサのフローズンジャーニー</h4>
+    <div class="tags"><span class="tag">ボートライド</span><span class="tag">アナと雪の女王</span><span class="tag ok">身長制限なし</span><span class="tag ok">家族全員</span></div>
+    <p>アレンデールの物語を、歌とともに水上の船でたどる。新エリア「ファンタジースプリングス」の主役。</p>
+    <p class="enjoy">楽しみ方：シーの最優先DPA（秒で完売）。途中に小さな落下があり、3歳が驚くことも。下の子は様子を見て。</p>
+  </div>
+</div>
+
+<div class="att">
+  <div class="media icon sea"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17c2 0 2 1.5 4 1.5S9 17 11 17s2 1.5 4 1.5 2-1.5 4-1.5"/><path d="M5 17l1-9h12l1 9"/><circle cx="12" cy="5" r="1.5"/></svg></div>
+  <div class="body">
+    <h4>ラプンツェルのランタンフェスティバル</h4>
+    <div class="tags"><span class="tag">ボートライド</span><span class="tag">塔の上のラプンツェル</span><span class="tag ok">身長制限なし</span><span class="tag ok">下の子に最適</span></div>
+    <p>無数のランタンが灯る幻想的な夜の湖を、ゴンドラで静かに進む。映画屈指の名シーンを体験できる。</p>
+    <p class="enjoy">楽しみ方：優しい乗り物で下の子にぴったり。2番人気でDPA狙い目。</p>
+  </div>
+</div>
+
+<div class="att">
+  <div class="media"><img src="disney-assets/att-peterpan.jpg" alt="ピーターパンのネバーランドアドベンチャー"></div>
+  <div class="body">
+    <h4>ピーターパンのネバーランドアドベンチャー</h4>
+    <div class="tags"><span class="tag">3Dフライングライド</span><span class="tag">ピーター・パン</span><span class="tag h">102cm〜</span><span class="tag">上の子のみ</span></div>
+    <p>空飛ぶ海賊船に乗り、3D映像でネバーランドの冒険へ。迫力ある最新ライド。</p>
+    <p class="enjoy">楽しみ方：上の子向け。下の子（94cm）は不可なので、ここは交代利用で。</p>
+  </div>
+</div>
+
+<div class="att">
+  <div class="media icon sea"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2 4 4 .6-3 3 .7 4-3.7-2-3.7 2 .7-4-3-3 4-.6Z"/><path d="M12 13v8M9 21h6"/></svg></div>
+  <div class="body">
+    <h4>フェアリー・ティンカーベルのビジーバギー</h4>
+    <div class="tags"><span class="tag">スピンライド</span><span class="tag">ティンカー・ベル</span><span class="tag ok">身長制限なし</span><span class="tag ok">下の子向け</span></div>
+    <p>妖精の道具を載せた小さな車で、くるくる回るゆるい乗り物。ファンタジースプリングスで一番すいている。</p>
+    <p class="enjoy">楽しみ方：DPA不要で並んで乗れることが多い。朝イチの足慣らしに。</p>
+  </div>
+</div>
+
+<div class="att">
+  <div class="media icon sea"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></div>
+  <div class="body">
+    <h4>トイ・ストーリー・マニア！</h4>
+    <div class="tags"><span class="tag">シューティング</span><span class="tag">トイ・ストーリー</span><span class="tag ok">座れればOK</span><span class="tag ok">家族全員</span></div>
+    <p>3Dメガネをかけて的を撃つ得点ゲーム。家族で点数を競って盛り上がれる。</p>
+    <p class="enjoy">楽しみ方：上の子・下の子どちらも夢中になる。人気なのでDPA推奨。</p>
+  </div>
+</div>
+
+<div class="att">
+  <div class="media icon sea"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17c2 0 2 1.5 4 1.5S9 17 11 17s2 1.5 4 1.5 2-1.5 4-1.5"/><path d="M4 17l2-8 4 2 4-3 4 4 1 5"/></svg></div>
+  <div class="body">
+    <h4>シンドバッド・ストーリーブック・ヴォヤッジ</h4>
+    <div class="tags"><span class="tag">ボートライド</span><span class="tag">アラビアンナイト</span><span class="tag ok">身長制限なし</span><span class="tag ok">下の子に最適</span></div>
+    <p>子トラのチャンドゥと旅する優しい船の物語。名曲「コンパス・オブ・ユア・ハート」が心地いい隠れた名作。</p>
+    <p class="enjoy">楽しみ方：すいていて何度でも乗れる。下の子の大のお気に入りになりやすい。</p>
+  </div>
+</div>
+
+<div class="att">
+  <div class="media"><img src="disney-assets/att-mermaid.jpg" alt="マーメイドラグーン"></div>
+  <div class="body">
+    <h4>マーメイドラグーン</h4>
+    <div class="tags"><span class="tag">屋内エリア</span><span class="tag">リトル・マーメイド</span><span class="tag ok">ほぼ身長制限なし</span><span class="tag ok">下の子天国</span></div>
+    <p>海の中を再現した屋内エリア。ゆるい小型ライドや遊び場が集まる、アリエルの世界。</p>
+    <p class="enjoy">楽しみ方：下の子の楽園。冷房が効いた屋内なので、夏の昼の暑さ回避の拠点として長めに使う。</p>
+  </div>
+</div>
+
+<div class="att">
+  <div class="media"><img src="disney-assets/att-portdiscovery.jpg" alt="ポートディスカバリー（ニモ&フレンズ）"></div>
+  <div class="body">
+    <h4>ニモ＆フレンズ・シーライダー</h4>
+    <div class="tags"><span class="tag">ライドシミュレーター</span><span class="tag">ファインディング・ニモ</span><span class="tag h">90cm〜</span><span class="tag ok">下の子も可</span></div>
+    <p>小さな潜水艇に乗り込み、ニモたちと海を冒険する動く映像体験。同じエリアにアクアトピアも。</p>
+    <p class="enjoy">楽しみ方：下の子（94cm）も乗れる数少ないシミュレーター。家族みんなで。</p>
+  </div>
+</div>
+
+<div class="att">
+  <div class="media icon sea"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c4-3 8-3 10 0 2-3 6-3 10 0"/><path d="M12 4c2 2 2 5 0 7-2-2-2-5 0-7Z"/></svg></div>
+  <div class="body">
+    <h4>ソアリン：ファンタスティック・フライト</h4>
+    <div class="tags"><span class="tag">フライングシミュレーター</span><span class="tag">オリジナル</span><span class="tag h">102cm〜</span><span class="tag">上の子向け</span></div>
+    <p>足が宙に浮いた状態で、世界中の空を風と香りとともに飛ぶ大人気体験。シーの新名物。</p>
+    <p class="enjoy">楽しみ方：上の子が大満足する1台。下の子（94cm）は不可なので交代利用で。DPA上位。</p>
+  </div>
+</div>
+
+<!-- ===================== 身長早見 ===================== -->
+<div class="h2row">
+  <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4M4 8h4M4 12h6M4 16h4"/><circle cx="16" cy="7" r="2.5"/><path d="M12 20v-3a4 4 0 0 1 8 0v3"/></svg>
+  <h2 id="height">身長で乗れるもの早見</h2>
+</div>
+<div class="card">
+  <svg class="fig" viewBox="0 0 640 250" aria-label="身長チャート">
+    <line x1="60" y1="215" x2="600" y2="215" stroke="#d7d9de" stroke-width="2"/>
+    <g stroke="#c4c7cd" stroke-width="1.5" stroke-dasharray="5 5">
+      <line x1="60" y1="178" x2="600" y2="178"/><line x1="60" y1="165" x2="600" y2="165"/><line x1="60" y1="138" x2="600" y2="138"/><line x1="60" y1="112" x2="600" y2="112"/>
+    </g>
+    <g font-size="11.5" fill="#70727a" font-family="sans-serif">
+      <text x="64" y="174">81cm  ベイマックス</text>
+      <text x="64" y="161">90cm  スプラッシュ / ガジェット / ニモ / フランダー</text>
+      <text x="64" y="134">102cm  ビッグサンダー / スター・ツアーズ / ソアリン / タワー / ピーターパン</text>
+      <text x="64" y="108">117cm  インディ / レイジング / センター・オブ・ジ・アース</text>
+    </g>
+    <g transform="translate(380,0)">
+      <line x1="0" y1="215" x2="0" y2="150" stroke="#7fb0cf" stroke-width="2"/>
+      <circle cx="0" cy="142" r="9" fill="#7fb0cf"/><rect x="-9" y="152" width="18" height="40" rx="9" fill="#7fb0cf"/>
+      <text x="0" y="238" text-anchor="middle" font-size="13" fill="#235577" font-weight="700">下の子 94cm</text>
+    </g>
+    <g transform="translate(520,0)">
+      <line x1="0" y1="215" x2="0" y2="120" stroke="#2f6f9f" stroke-width="2"/>
+      <circle cx="0" cy="112" r="10" fill="#2f6f9f"/><rect x="-10" y="123" width="20" height="70" rx="10" fill="#2f6f9f"/>
+      <text x="0" y="238" text-anchor="middle" font-size="13" fill="#235577" font-weight="700">上の子 108cm</text>
+    </g>
+  </svg>
+  <p class="figcap">下の子(94cm)は90cmまでOK・102cm以上は不可。上の子(108cm)は102cmまでOK・117cmのインディ系は不可。乗れない子は交代利用サービスで親が交代。</p>
+</div>
+
+<!-- ===================== パス ===================== -->
+<div class="h2row">
+  <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2 2 2 0 0 0 0 4 2 2 0 0 1-2 2H5a2 2 0 0 1-2-2 2 2 0 0 0 0-4Z"/><path d="M15 6v12" stroke-dasharray="2 2"/></svg>
+  <h2 id="pass">パスの仕組み</h2>
+</div>
+<div class="scroll"><table>
+  <tr><th>サービス</th><th>料金</th><th>内容</th></tr>
+  <tr><td>DPA（プレミアアクセス）</td><td>有料 1,500〜2,500円</td><td>時間指定で短い待ち。買って60分後か利用開始で次が買える。アトラクションとショーは別枠で同時保有可</td></tr>
+  <tr><td>プライオリティパス</td><td>無料</td><td>待ち時間短縮。取って120分後か利用開始で次が取れる。2026/8/31終了予定（7月はまだ使える）。ランドのみ</td></tr>
+  <tr><td>エントリー受付</td><td>無料・抽選</td><td>ジャンボリミッキー等。各施設1日1回</td></tr>
+  <tr><td>モバイルオーダー</td><td>無料</td><td>食事をアプリで注文し列に並ばず受取。席は別途確保</td></tr>
+</table></div>
+<p class="small">4つは独立。同時に併用できる。入園後すぐ、無料パス → 抽選 → 良いDPA、の順で押さえる。シーのファンタジースプリングスは入場自由（スタンバイパス廃止）で、各アトラクションは「並ぶ」か「DPA」。</p>
+
+<!-- ===================== 持ち物/アプリ/予習 ===================== -->
+<div class="h2row">
+  <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+  <h2 id="pack">持ち物 / アプリ / 予習</h2>
+</div>
+<div class="two">
+  <div class="card"><h4 style="margin-top:0;">持ち物（夏・びしょ濡れ・幼児）</h4>
+    <ul><li>着替え上下 ×4人＋予備（ジップロックに小分け）、下の子の水遊びパンツ、濡れてOKの靴、タオル、レインポンチョ</li><li>凍らせた飲み物＋保冷バッグ、水筒、塩分タブレット、帽子、子供用日焼け止め、ハンディファン</li><li>迷子シール（園内で無料）＋目立つ色の服、母子手帳・保険証・常備薬・下の子の塗り薬</li><li>モバイルバッテリー＋ケーブル（必須）、ウェットティッシュ、ぐずり対策スナック</li><li>ベビーカー（1人乗り＋アタッチメント。名前タグを付ける。2人乗り可否は念のため確認）</li></ul>
+  </div>
+  <div class="card"><h4 style="margin-top:0;">アプリで事前に</h4>
+    <ul><li>東京ディズニーリゾート・アプリを両方の端末に。MyDisney登録</li><li>チケットを紐付け、グループ作成（1台で全員分のパスが取れる）</li><li>支払い方法を登録（DPA用）、通知・位置情報を許可</li><li>パス・抽選・モバイルオーダーの画面を一度触って慣れておく</li></ul>
+    <h4>家で予習しておくと楽しい</h4>
+    <ul><li>映画：美女と野獣 / モンスターズ・インク / くまのプーさん / ベイマックス / アナと雪の女王 / ラプンツェル / トイ・ストーリー / ピーター・パン</li><li>ジャンボリミッキーのダンス（公式YouTubeで一緒に練習）</li></ul>
+  </div>
+</div>
+
+<!-- ===================== カレンダー ===================== -->
+<div class="h2row">
+  <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
+  <h2 id="cal">予約と段取りカレンダー</h2>
+</div>
+<div class="scroll"><table>
+  <tr><th>いつ</th><th>やること</th></tr>
+  <tr><td>今〜7/5</td><td>アプリ設定一式。チケット購入（1日目ランド：大人2＋小人1、下の子無料 ／ 2日目シー：同じ）。家で予習。持ち物を揃える。ベビーカーのタクシー積載テスト</td></tr>
+  <tr><td>6月6日(土) 10:00</td><td>クリスタルパレス（1日目夜）を予約</td></tr>
+  <tr><td>6月7日(日) 10:00</td><td>S.S.コロンビア（2日目夜）を予約（任意・無料キャンセル可）</td></tr>
+  <tr><td>来園1〜2週間前</td><td>7月のショー・パレード時刻を公式アプリで確認</td></tr>
+</table></div>
+<p class="small">チケットは1日券＝1パーク制・日付指定。1日目はランド用、2日目はシー用を別々に。下の子（3歳）は両日無料。</p>
+
+<footer>
+  作成：パパ　／　最終更新：2026年6月3日｜図解はオリジナル、写真は Wikimedia Commons（自由ライセンス）。来園前に公式アプリで最終確認を。
+</footer>
+
+</div>
+<script>
+(function(){
+  var PASS="oda0706";
+  var g=document.getElementById('gate'),i=document.getElementById('gate-input'),
+      b=document.getElementById('gate-btn'),m=document.getElementById('gate-msg');
+  function open(){ g.style.display='none'; try{sessionStorage.setItem('disney_ok','1');}catch(e){} }
+  function check(){ if(i.value.trim().toLowerCase()===PASS){ open(); } else { m.textContent='ちがうみたい。もう一度'; i.value=''; i.focus(); } }
+  try{ if(sessionStorage.getItem('disney_ok')==='1') open(); }catch(e){}
+  b.addEventListener('click',check);
+  i.addEventListener('keydown',function(e){ if(e.key==='Enter') check(); });
+})();
+</script>
+</body>
+</html>
