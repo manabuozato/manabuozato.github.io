@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>定常酩酊コントローラ — 血中アルコール濃度PID制御シミュレータ</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0d0f12;
+    --panel: #15181d;
+    --line: #262b33;
+    --ink: #e7e9ec;
+    --dim: #8a909a;
+    --accent: #d98c3f;
+    --danger: #d9433f;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    padding: 2rem 1.2rem 5rem;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 1.45rem; letter-spacing: .02em; margin-bottom: .4rem; }
+  .sub { color: var(--dim); font-size: .85rem; margin-bottom: 2rem; }
+  h2 { font-size: 1.05rem; margin: 2.4rem 0 .8rem; border-left: 3px solid var(--accent); padding-left: .6rem; }
+  p { margin-bottom: 1rem; color: #cfd3d9; }
+  .dim { color: var(--dim); }
+  a { color: var(--accent); }
+
+  /* --- simulator --- */
+  .sim {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  canvas { width: 100%; height: 280px; display: block; border-radius: 6px; background: #0a0c0f; }
+  .readout {
+    display: flex; flex-wrap: wrap; gap: 1.2rem 2rem;
+    margin: 1rem 0 .2rem; align-items: baseline;
+  }
+  .stat .v { font-size: 1.6rem; font-variant-numeric: tabular-nums; font-weight: 600; }
+  .stat .k { font-size: .72rem; color: var(--dim); display: block; letter-spacing: .04em; }
+  #status { font-weight: 700; }
+  .controls { margin-top: 1.1rem; display: grid; gap: 1rem; }
+  .ctl label { font-size: .8rem; color: var(--dim); display: flex; justify-content: space-between; margin-bottom: .35rem; }
+  .ctl label b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .row { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; }
+  button {
+    font: inherit; font-size: .85rem; padding: .5rem 1rem; border-radius: 6px;
+    border: 1px solid var(--line); background: #1d222a; color: var(--ink); cursor: pointer;
+  }
+  button:hover { border-color: var(--accent); }
+  button.on { background: var(--accent); color: #1a1206; border-color: var(--accent); }
+  .mode-note { font-size: .78rem; color: var(--dim); min-height: 1.2em; }
+  .legend { display: flex; gap: 1rem; flex-wrap: wrap; font-size: .72rem; color: var(--dim); margin-top: .6rem; }
+  .legend span::before { content: "■ "; }
+  .toggle { display: flex; gap: .4rem; }
+  .footnote { font-size: .78rem; color: var(--dim); border-top: 1px solid var(--line); margin-top: 3rem; padding-top: 1.2rem; }
+  code { background: #1d222a; padding: .1em .4em; border-radius: 4px; font-size: .85em; }
+</style>
+</head>
+<body>
+
+<h1>定常酩酊コントローラ</h1>
+<p class="sub">静脈に input / output の管を挿し、血中アルコール濃度（BAC）を「いい感じ」に保ち続けたら人生は幸せになるのか。<br>— まずは制御工学に怒られてください。</p>
+
+<div class="sim">
+  <canvas id="cv" width="1400" height="560"></canvas>
+  <div class="legend">
+    <span style="color:#3a7d44">素面〜ほろ酔い (〜0.08%)</span>
+    <span style="color:#d98c3f">酩酊 (0.08〜0.20%)</span>
+    <span style="color:#c7603a">泥酔・危険 (0.20〜0.40%)</span>
+    <span style="color:#d9433f">致死域 (0.40%〜)</span>
+  </div>
+
+  <div class="readout">
+    <div class="stat"><span class="v" id="bac">0.000</span><span class="k">血中アルコール濃度 %</span></div>
+    <div class="stat"><span class="v" id="clock">0:00</span><span class="k">経過時間 (体感)</span></div>
+    <div class="stat"><span class="v" id="status">素面</span><span class="k">状態</span></div>
+  </div>
+
+  <div class="controls">
+    <div class="toggle">
+      <button id="mManual" class="on">手動ドリップ</button>
+      <button id="mAuto">PID自動制御</button>
+    </div>
+
+    <div class="ctl" id="ctlDrip">
+      <label>点滴速度（アルコール投与）<b><span id="dripV">6.0</span> g/h</b></label>
+      <input type="range" id="drip" min="0" max="20" step="0.1" value="6.0">
+    </div>
+
+    <div class="ctl" id="ctlTarget" style="display:none">
+      <label>目標BAC（いい感じの設定値）<b><span id="tgtV">0.080</span> %</b></label>
+      <input type="range" id="tgt" min="0.02" max="0.20" step="0.005" value="0.080">
+      <label style="margin-top:.6rem">センサ遅延（脳が酔いを感じるまで）<b><span id="lagV">8</span> 分</b></label>
+      <input type="range" id="lag" min="0" max="20" step="1" value="8">
+    </div>
+
+    <div class="row">
+      <button id="reset">リセット（蘇生）</button>
+      <button id="pause">一時停止</button>
+      <span class="mode-note" id="note"></span>
+    </div>
+  </div>
+</div>
+
+<h2>なぜ「いい感じ」は維持できないのか</h2>
+
+<p><b>1. アルコール分解はゼロ次反応。</b> 肝臓のアルコール脱水素酵素はほぼ飽和して働くので、分解速度は<strong>血中濃度にほとんど依存せず一定</strong>（≒6〜7 g/h 相当）。つまりこのシステムには「投与＝分解で釣り合う安定平衡点」が存在しません。投与をこの一定値より少しでも上げれば BAC は<strong>際限なく上昇</strong>し、少しでも下げれば<strong>ゼロまで枯れる</strong>。安定点は線ではなく“ナイフの刃”の上にしかない。手動モードで <code>6.3 g/h</code> 付近をいじってみてください。どちらにも倒れます。</p>
+
+<p><b>2. センサに遅延がある。</b> 血中濃度が変わってから脳がそれを「酔い」として感じるまで数分〜十数分かかる。フィードバック制御はセンサ遅延に弱く、PIDモードでスライダーを上げると、制御器が遅れて反応 → 行き過ぎ → 揺り戻し、と<strong>振動（オーバーシュート）</strong>します。遅延を大きくすると発散して致死域に突っ込みます。</p>
+
+<p><b>3. そもそも脳は「一定」を幸福と見なさない。</b> 仮に完璧に一定値を保てたとしても、報酬系は数日で順応（耐性）し、ほろ酔いが新しいゼロ点になる。幸福は濃度という<em>絶対値</em>の関数ではなく、<strong>変化の勾配と意味</strong>の関数なので、フラットに保った瞬間にそれは背景ノイズに沈みます。ノージックの「経験機械」が満たしてくれないのと同じ理屈です。</p>
+
+<p class="dim">結論：制御理論的にも神経科学的にも「定常酩酊で幸福を保つ」は自己矛盾。安定して保てる量は気持ちよくなく、気持ちいい量は安定して保てない。</p>
+
+<p class="footnote">
+これはブラックジョークの思考実験シミュレータです。モデルは Widmark 式とゼロ次消去を大胆に簡略化したもので、医学的・薬理学的な正確性はありません。実際にこれをやると死にます。やめてください。お酒は飲める量を、飲める日に。
+</p>
+
+<p class="footnote" style="border:0;padding-top:.4rem">
+<a href="../">← 戻る</a>
+</p>
+
+<script>
+(() => {
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+
+  // --- model constants (simplified) ---
+  const Vd = 420;            // 1g alcohol -> 1/Vd %BAC  (≈70kg body water)
+  const ELIM = 0.36;         // zero-order elimination, %/h equivalent... expressed in g/h below
+  const ELIM_G = 6.3;        // g/h metabolized (constant, zero-order) — the knife edge
+  const SPEED = 60;          // sim minutes per real second
+  const WINDOW_MIN = 180;    // chart shows last 3h
+  const LETHAL = 0.40;
+
+  // zones [maxBAC, color]
+  const zones = [
+    [0.08, '#16321b'],
+    [0.20, '#3a2a12'],
+    [0.40, '#3a1714'],
+    [0.60, '#2a0f0e'],
+  ];
+
+  let state = {
+    bac: 0, t: 0, drip: 6.0, mode: 'manual',
+    target: 0.080, lag: 8, integ: 0, dead: false, paused: false,
+    sensed: 0, hist: []
+  };
+
+  const $ = id => document.getElementById(id);
+
+  function reset() {
+    state.bac = 0; state.t = 0; state.integ = 0; state.dead = false;
+    state.sensed = 0; state.hist = [];
+  }
+
+  // sensor: delayed BAC (simple first-order lag toward true bac)
+  function step(dtMin) {
+    const dtH = dtMin / 60;
+    // sensor lag
+    const tau = Math.max(0.1, state.lag); // minutes
+    state.sensed += (state.bac - state.sensed) * (1 - Math.exp(-dtMin / tau));
+
+    let drip = state.drip; // g/h
+    if (state.mode === 'auto') {
+      // PID on sensed value -> drip rate
+      const err = state.target - state.sensed;
+      state.integ += err * dtH;
+      state.integ = Math.max(-0.5, Math.min(0.5, state.integ));
+      const Kp = 900, Ki = 1200;
+      drip = ELIM_G + Kp * err + Ki * state.integ;
+      drip = Math.max(0, Math.min(40, drip));
+      $('dripV').textContent = drip.toFixed(1);
+    }
+
+    // BAC dynamics: + infusion, - zero-order elimination (only while bac>0)
+    const dIn = (drip / Vd) * dtH;          // %
+    const dOut = state.bac > 0 ? (ELIM_G / Vd) * dtH : 0;
+    state.bac = Math.max(0, state.bac + dIn - dOut);
+    state.t += dtMin;
+
+    if (state.bac >= LETHAL && !state.dead) state.dead = true;
+
+    state.hist.push({ t: state.t, b: state.bac });
+    const cutoff = state.t - WINDOW_MIN;
+    while (state.hist.length > 2 && state.hist[0].t < cutoff) state.hist.shift();
+  }
+
+  function statusText(b) {
+    if (state.dead) return ['☠ 死亡', '#d9433f'];
+    if (b < 0.02) return ['素面', '#7fae86'];
+    if (b < 0.08) return ['ほろ酔い（いい感じ）', '#9cc77f'];
+    if (b < 0.20) return ['酩酊', '#d98c3f'];
+    if (b < 0.40) return ['泥酔・危険', '#c7603a'];
+    return ['致死域', '#d9433f'];
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const padL = 70, padR = 20, padT = 16, padB = 30;
+    const plotW = W - padL - padR, plotH = H - padT - padB;
+    const maxY = 0.5;
+    const y = v => padT + plotH * (1 - v / maxY);
+
+    // zone bands
+    let prev = 0;
+    for (const [mx, col] of zones) {
+      ctx.fillStyle = col;
+      ctx.fillRect(padL, y(Math.min(mx, maxY)), plotW, y(prev) - y(Math.min(mx, maxY)));
+      prev = mx;
+    }
+    // gridlines + labels
+    ctx.fillStyle = '#8a909a'; ctx.font = '22px sans-serif'; ctx.textAlign = 'right';
+    ctx.strokeStyle = 'rgba(255,255,255,.06)'; ctx.lineWidth = 1;
+    for (let v = 0; v <= 0.5; v += 0.1) {
+      ctx.beginPath(); ctx.moveTo(padL, y(v)); ctx.lineTo(W - padR, y(v)); ctx.stroke();
+      ctx.fillText(v.toFixed(2) + '%', padL - 8, y(v) + 7);
+    }
+    // lethal line
+    ctx.strokeStyle = 'rgba(217,67,63,.5)'; ctx.setLineDash([6, 6]);
+    ctx.beginPath(); ctx.moveTo(padL, y(LETHAL)); ctx.lineTo(W - padR, y(LETHAL)); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // target line (auto)
+    if (state.mode === 'auto') {
+      ctx.strokeStyle = 'rgba(231,233,236,.35)'; ctx.setLineDash([3, 5]);
+      ctx.beginPath(); ctx.moveTo(padL, y(state.target)); ctx.lineTo(W - padR, y(state.target)); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // history curve
+    const h = state.hist;
+    if (h.length > 1) {
+      const t0 = state.t - WINDOW_MIN, tx = t => padL + plotW * Math.min(1, Math.max(0, (t - t0) / WINDOW_MIN));
+      ctx.beginPath();
+      ctx.moveTo(tx(h[0].t), y(Math.min(h[0].b, maxY)));
+      for (const p of h) ctx.lineTo(tx(p.t), y(Math.min(p.b, maxY)));
+      ctx.strokeStyle = state.dead ? '#d9433f' : '#e7e9ec';
+      ctx.lineWidth = 2.5; ctx.stroke();
+      // head dot
+      const last = h[h.length - 1];
+      ctx.fillStyle = state.dead ? '#d9433f' : '#fff';
+      ctx.beginPath(); ctx.arc(tx(last.t), y(Math.min(last.b, maxY)), 5, 0, 7); ctx.fill();
+    }
+  }
+
+  function ui() {
+    $('bac').textContent = state.bac.toFixed(3);
+    const m = Math.floor(state.t);
+    $('clock').textContent = Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0');
+    const [txt, col] = statusText(state.bac);
+    const s = $('status'); s.textContent = txt; s.style.color = col;
+  }
+
+  let acc = 0, lastTs = performance.now();
+  function loop(ts) {
+    const real = Math.min(0.1, (ts - lastTs) / 1000); lastTs = ts;
+    if (!state.paused && !state.dead) {
+      acc += real * SPEED;
+      while (acc > 0.5) { step(0.5); acc -= 0.5; }
+    }
+    draw(); ui();
+    requestAnimationFrame(loop);
+  }
+
+  // --- wiring ---
+  $('drip').addEventListener('input', e => { state.drip = +e.target.value; $('dripV').textContent = state.drip.toFixed(1); });
+  $('tgt').addEventListener('input', e => { state.target = +e.target.value; $('tgtV').textContent = state.target.toFixed(3); });
+  $('lag').addEventListener('input', e => { state.lag = +e.target.value; $('lagV').textContent = state.lag; });
+  $('reset').addEventListener('click', reset);
+  $('pause').addEventListener('click', e => { state.paused = !state.paused; e.target.textContent = state.paused ? '再開' : '一時停止'; });
+
+  function setMode(m) {
+    state.mode = m;
+    $('mManual').classList.toggle('on', m === 'manual');
+    $('mAuto').classList.toggle('on', m === 'auto');
+    $('ctlDrip').style.display = m === 'manual' ? '' : 'none';
+    $('ctlTarget').style.display = m === 'auto' ? '' : 'none';
+    $('note').textContent = m === 'auto'
+      ? '制御器が遅延と格闘して振動します。遅延を上げると発散。'
+      : '6.3 g/h 付近が分解とのつり合い。少しでもズレると上か下に倒れます。';
+    state.integ = 0;
+  }
+  $('mManual').addEventListener('click', () => setMode('manual'));
+  $('mAuto').addEventListener('click', () => setMode('auto'));
+  setMode('manual');
+
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
