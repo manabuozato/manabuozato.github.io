@@ -1,0 +1,94 @@
+<!-- design-source: N/A / units: none -- リダイレクト中継専用ページ。閲覧者の滞在時間2秒以下、EXM借用のスコープ外。スピナー+テキストのみの最小UIを意図的に採用。 -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UoC アーカイブ</title>
+  <meta http-equiv="refresh" content="2; url=https://absent-awarded-discovery-well.trycloudflare.com">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .container {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 40px 48px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #111;
+      margin-bottom: 8px;
+      letter-spacing: 0.02em;
+    }
+    .note {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 28px;
+    }
+    .spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 2px solid #e0e0e0;
+      border-top-color: #555;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .redirect-msg {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+    .manual-link {
+      font-size: 14px;
+      color: #555;
+    }
+    .manual-link a {
+      color: #444;
+      text-decoration: underline;
+      word-break: break-all;
+    }
+    .manual-link a:hover {
+      color: #111;
+    }
+    .updated {
+      font-size: 11px;
+      color: #bbb;
+      margin-top: 24px;
+    }
+  </style>
+  <script>
+    // JS リダイレクト（meta refresh のバックアップ）
+    window.location.replace("https://absent-awarded-discovery-well.trycloudflare.com");
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>UoC アーカイブ</h1>
+    <p class="note">閲覧には合言葉が必要です</p>
+    <div class="spinner"></div>
+    <p class="redirect-msg">アーカイブサイトへ移動中...</p>
+    <p class="manual-link">
+      自動で移動しない場合は<br>
+      <a href="https://absent-awarded-discovery-well.trycloudflare.com">こちらをクリック</a>
+    </p>
+    <p class="updated">最終更新: 2026-06-11 (初期設定)</p>
+  </div>
+</body>
+</html>
