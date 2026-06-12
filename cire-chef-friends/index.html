@@ -1,11 +1,13 @@
 <!DOCTYPE html>
+<!-- design-source: cire.or.jp 本体サイト (既存ブランド準拠、EXM借用なし) / units: ヘッダー構成・配色・タイポグラフィ -->
+<!-- design-rationale: cire.or.jp 本体サイトのデザインシステム（色・ヘッダー/フッター構成・タイポグラフィ）を踏襲する整合ページ。EXM借用ではなく既存ブランド準拠 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
-<title>シェフフレンズ募集 | 一般社団法人日本シェフ・イン・レジデンス応援協会</title>
+<title>旅するシェフフレンズ | 一般社団法人日本シェフ・イン・レジデンス応援協会</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
@@ -52,7 +54,7 @@
     text-decoration: none;
   }
   .logo:hover { color: var(--accent); }
-  .nav-links { display: none; gap: 24px; align-items: center; }
+  .nav-links { display: none; gap: 14px; align-items: center; flex-wrap: nowrap; }
   @media (min-width: 1100px) { .nav-links { display: flex; } }
   .nav-links a {
     font-weight: 700;
@@ -61,8 +63,13 @@
     color: var(--ink);
     text-decoration: none;
     transition: color 0.2s;
+    white-space: nowrap;
   }
   .nav-links a:hover { color: var(--accent); }
+  .nav-links .note-link { display: flex; align-items: center; margin-left: 8px; }
+  .nav-links .note-logo { width: 64px; min-width: 64px; height: auto; display: block; }
+  .nav-links .lang-switch { display: flex; align-items: center; gap: 8px; font-weight: 500; letter-spacing: normal; }
+  .nav-links .lang-switch svg { display: block; }
 
   /* Hero */
   .hero {
@@ -382,14 +389,6 @@
 </head>
 <body>
 
-<div role="status" aria-live="polite" style="background:#5a3729;color:#f7e489;text-align:center;padding:14px 24px;font-size:14px;font-weight:700;letter-spacing:0.4px;line-height:1.7;">
-  <div>このページは現在作成中です。表現や内容は今後変わる可能性があります。会話のきっかけとして先にお見せしています。</div>
-  <div style="margin-top:6px;opacity:0.85;font-size:13px;">Work in progress — this page is a draft we are still building. Some wording and details may change.</div>
-  <div style="margin-top:10px;font-size:13px;font-weight:700;">
-    <a href="/cire-chef-friends-en/" style="color:#f7e489;text-decoration:underline;">English version →</a>
-  </div>
-</div>
-
 <header>
   <div class="container">
     <nav>
@@ -401,7 +400,9 @@
         <a href="https://cire.or.jp/?section=news">NEWS</a>
         <a href="https://cire.or.jp/?section=support-us">SUPPORT</a>
         <a href="https://cire.or.jp/?section=contact">CONTACT</a>
-        <a href="https://note.com/cire" target="_blank" rel="noopener noreferrer">note</a>
+        <a href="https://note.com/cire" target="_blank" rel="noopener noreferrer" class="note-link"><img src="https://cire.or.jp/assets/note_big-CxRkhgAf.png" alt="Note" class="note-logo"></a>
+        <a href="/cire-chef-friends/">旅するシェフフレンズ</a>
+        <a href="/cire-chef-friends-en/" class="lang-switch" aria-label="Switch to English"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg><span>EN</span></a>
       </div>
     </nav>
   </div>
