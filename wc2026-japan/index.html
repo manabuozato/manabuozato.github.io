@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- design-source: studio-origin / units: html-design スキル適用済み(studio 側 guide-yukako-deep-v5.html として完成・EXM参照・design-rationale 宣言済み) -->
 <!-- guide-yukako-deep-v5 / 日本代表 観戦読本(別冊・深掘り読本) / v4 を激化(和と熱量を極限まで) -->
 <!-- design-rationale(v5 激化 = 案1 和と熱量を極限まで / CD確定):
      v4 の単一パレット骨格を継いだまま、章扉の容器だけ墨黒へ振り、特大タイポ・斜め帯・写真の斜めクロップで運動エネルギーを足した。
@@ -711,10 +710,23 @@
     .paradox{ grid-template-columns:1fr; }
     .paradox > div:first-child{ border-right:0; border-bottom:1px solid var(--rule); }
     .stage2{ grid-template-columns:1fr; }
+    /* 章扉: 英ラベル(white-space:nowrap)が grid トラックの min-content 幅を押し広げ、
+       .opener-text が viewport(390px)を超えて overflow:hidden に切られていた。
+       縦1カラムでは英ラベルを折り返し可にし、テキスト列を縮められるようにする(右端の文字切れを解消)。 */
+    .opener-text{ min-width:0; }
+    .opener-no{ flex-wrap:wrap; }
+    .opener-no .en{ white-space:normal; word-break:break-word; }
   }
   @media (max-width:720px){
-    .funnel-rail{ gap:0; }
-    .fn-step .fn-cap{ font-size:10px; }
+    /* THE FUNNEL: 横一列(flex rail)だと 390px 幅で 48/32/16/8 の特大数字が重なり
+       「4832168」と読めず、各数字下の縦組みラベルも1文字幅に潰れていた。
+       スマホでは2カラムのグリッドに畳み、数字とラベルを各セルに収める(矢印は非表示)。 */
+    .funnel{ padding:30px 22px 34px; }
+    .funnel-rail{ display:grid; grid-template-columns:1fr 1fr; gap:18px 16px; overflow:visible; }
+    .fn-arrow{ display:none; }
+    .fn-step{ flex:none; padding:0; flex-direction:row; align-items:baseline; gap:12px; text-align:left; border-top:1px solid rgba(255,255,255,.12); padding-top:13px; }
+    .fn-step .fn-num.big{ font-size:46px; flex:0 0 auto; min-width:1.5em; text-align:right; }
+    .fn-step .fn-cap{ margin-top:0; font-size:12px; line-height:1.45; text-align:left; }
     .move .mv-ghost{ display:none; }
     .move{ padding:18px 20px; }
     .doha-band .db-tx{ max-width:none; }
