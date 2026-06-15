@@ -371,6 +371,8 @@
   .fx.now .fx-main{ font-weight:600; }
   .fx.now .fx-when b{ color:var(--aka); -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   .fx-today{ font-size:11px; color:var(--aka); letter-spacing:.08em; font-weight:600; margin-top:4px; display:inline-block; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .fx.done{ opacity:.62; }
+  .fx.done .fx-main .fx-vs{ color:var(--ink); font-weight:600; font-feature-settings:"tnum" 1; }
 
   /* 勝ち点シナリオ */
   .scen{ margin:14px 0 0; }
@@ -646,6 +648,31 @@
   .doha-band .db-year .arw{ color:rgba(255,255,255,.5); margin:0 .18em; }
   .doha-band .db-tx{ position:relative; z-index:2; font-size:14.5px; color:#E3E6EE; line-height:1.85; max-width:34em; margin:14px 0 0; }
   .doha-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:14px 0 0; }
+  /* ------------------------------------------------------------
+     速報・第1戦オランダ戦レポート(既存 opener.hot / doha-band / timeline を流用。
+     固有スタイルは得点経過のスコアピル+章扉ゴーストの微調整だけ。色は撒かない。)
+     ------------------------------------------------------------ */
+  .report-open .opener-ghost{ font-size:clamp(120px,26vw,300px); letter-spacing:-.04em; }
+  .report-tl .tl-title{ display:flex; align-items:baseline; flex-wrap:wrap; gap:10px; }
+  .report-tl .tl-side{ font-family:var(--disp); font-weight:800; font-size:13px; letter-spacing:.04em; padding:2px 9px; line-height:1.3; color:#fff; white-space:nowrap; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .report-tl .tl-side.jpn{ background:var(--aka); }
+  .report-tl .tl-side.ned{ background:var(--kon-deep); }
+  /* ------------------------------------------------------------
+     グループF 第1節終了時点の順位表(第8章)。グレー罫の素の表。
+     ヘッダ=紺面 / 日本の行だけ朱赤の縦罫で位置を示す。色は撒かない。
+     ------------------------------------------------------------ */
+  .standtable{ width:100%; border-collapse:collapse; margin:14px 0 4px; font-size:13.5px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .standtable caption{ text-align:left; font-size:11px; letter-spacing:.12em; font-weight:700; color:var(--faint); text-transform:uppercase; padding:0 0 8px; }
+  .standtable thead th{ background:var(--kon-deep); color:#fff; font-weight:600; font-size:12px; letter-spacing:.04em; padding:8px 10px; text-align:center; }
+  .standtable thead th.team{ text-align:left; }
+  .standtable tbody td{ padding:9px 10px; text-align:center; border-bottom:1px solid var(--rule); color:var(--ink-2); }
+  .standtable tbody td.team{ text-align:left; font-weight:600; color:var(--ink); white-space:nowrap; }
+  .standtable tbody td.pts{ font-family:var(--disp); font-weight:800; color:var(--ink); }
+  .standtable tbody tr.jp td{ background:#FBF1F3; }
+  .standtable tbody tr.jp td.team{ box-shadow:inset 4px 0 0 var(--aka); }
+  .standtable .rk{ font-family:var(--disp); font-weight:700; color:var(--weak); }
+  .standtable tbody tr.up td.rk{ color:var(--aka-deep); }
+  .stand-note{ font-size:12px; color:var(--weak); line-height:1.75; margin:8px 0 0; }
   .gekiga{ position:relative; background:#fff; border:1px solid var(--ink); overflow:hidden; display:flex; flex-direction:column; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   .gekiga-top{ position:relative; background:var(--sumiblack); color:#fff; padding:20px 20px 16px; overflow:hidden; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   .gekiga-top .gk-no{ position:absolute; top:6px; right:14px; font-family:var(--disp); font-weight:900; font-size:78px; line-height:.8; color:rgba(255,255,255,.10); letter-spacing:-.05em; z-index:0; }
@@ -803,7 +830,7 @@
           <div class="cf-match"><span class="cf-team">日本</span><span class="cf-vs">第2戦 ／ VS</span><span class="cf-team">チュニジア</span></div>
           <div class="cf-when"><b>2026年6月21日（日）13:00</b> キックオフ<br>メキシコ・モンテレイ近郊　Estadio BBVA</div>
         </div>
-        <p class="cover-foot"><span>作成 2026年6月13日（初戦オランダ戦は未実施）</span><span>家族観戦会・私家版</span></p>
+        <p class="cover-foot"><span>初戦オランダ戦 2-2 引き分け（更新 2026-06-14）</span><span>家族観戦会・私家版</span></p>
       </div>
     </div>
   </div>
@@ -812,6 +839,7 @@
   <p class="toc-h">Contents<span class="jp">もくじ</span></p>
   <ol class="toc-list">
     <li><a href="#c1">3分で全体像</a><span class="tl-note">／ 誰と誰が、なぜ面白いか</span></li>
+    <li class="toc-report"><a href="#report-ned">速報・第1戦オランダ戦</a><span class="tl-note">／ 日本 2-2 オランダ（引き分け）</span></li>
     <li><a href="#c2">W杯のしくみ</a><span class="tl-note">／ 48から1への絞り込み</span></li>
     <li><a href="#c3">監督 森保一という人</a></li>
     <li><a href="#c4">システムと戦術</a><span class="tl-note">／ 3-4-2-1の可変</span></li>
@@ -872,10 +900,89 @@
         順番に読む必要はありません。試合前なら第7章（相手）と第4章（戦術）を。人に興味が湧いたら第5章（名鑑）と第6章（不在）を。試合中にスマートフォンで開くなら、最後の第13章（5つの瞬間）だけでも十分に効きます。
       </div>
       <p>この日の相手チュニジアは、北アフリカの堅守のチームです。予選を1点も取られずに勝ち抜けた、守りの集団。派手さはありませんが、崩しにくい。だからこそ、日本がどう我慢して、どこでこじ開けるのか。その駆け引きを見る試合になります。ここから先は、その駆け引きの中身を一つずつ開いていきます。</p>
+      <div class="aside">
+        <span class="aside-k">第1戦を終えて ／ いまの状況</span>
+        この読本は第2戦の前に作っていますが、第1戦オランダ戦はもう終わりました。6月14日、ダラスのAT&amp;Tスタジアムで、日本はオランダと2-2の引き分け。二度リードを許して、二度とも追いつく粘りの試合でした（次の速報ページにくわしく）。一方、同じ組のスウェーデンはチュニジアに5-1で大勝。つまりこの日の相手チュニジアは、初戦で大敗して勝ち点0からのスタートです。日本がこの第2戦で勝てば、決勝トーナメント進出へ大きく前進します。
+      </div>
     </div>
 <div class="pullquote">
   <blockquote>今大会の物語は、ひとことで言えば「<span class="em">初めてのベスト8へ</span>」。</blockquote>
   <cite>第1章 ── 3分で全体像</cite>
+</div>
+</section>
+<div class="sec-sep"><hr></div>
+<section class="chapter report" id="report-ned">
+<div class="opener hot report-open">
+  <div class="opener-tate" aria-hidden="true">速</div>
+  <div class="opener-text">
+    <div class="opener-ghost" aria-hidden="true">2-2</div>
+    <div class="opener-no">
+      <span class="kan">速報</span>
+      <span class="en">Match 01 Report ／ vs Netherlands</span>
+      <span class="akaline" aria-hidden="true"></span>
+    </div>
+    <p class="opener-eyebrow">第1戦・終了 ／ ダラス AT&amp;Tスタジアム</p>
+    <h2>オランダと、撃ち合った夜</h2>
+    <p class="opener-romaji">JAPAN 2 ─ 2 NETHERLANDS</p>
+    <p class="opener-lead">初戦は引き分けでした。前半は0-0の我慢比べ。動いたのは後半だけ。そこから4ゴールの撃ち合いになり、日本は二度ビハインドを背負って、二度とも追いつきました。組の最有力オランダ相手に、勝ち点1を持ち帰った夜です。</p>
+    <div class="opener-stat">
+      <div class="st"><div class="v">2<span class="u">-</span>2</div><div class="l">引き分け</div></div>
+      <div class="st"><div class="v">4</div><div class="l">後半だけのゴール</div></div>
+      <div class="st"><div class="v">2</div><div class="l">追いついた回数</div></div>
+    </div>
+    <div class="opener-pull"><p>二度遅れて、二度追いついた。粘りで奪った勝ち点1。</p></div>
+  </div>
+</div>
+<div class="doha wide">
+      <div class="doha-band">
+        <div class="db-year num">2<span class="arw">-</span>2</div>
+        <p class="db-tx">2026年6月14日、アメリカ・テキサス州アーリントンのAT&amp;Tスタジアム（ダラス近郊）。ワールドカップ2026 グループF 第1節、日本対オランダ。前半は両者ゆずらず0-0。試合が動いたのは後半に入ってからでした。50分にオランダの主将ファン・ダイクが先制すると、57分に中村敬斗がすぐ返す。63分から64分にかけてサマービルにもう一度勝ち越されても、88分ごろに鎌田大地が終盤に同点ゴールを決めて2-2。退場もPKもなし。後半だけで4点が入る、最後まで目の離せない撃ち合いでした。</p>
+      </div>
+    </div>
+<div class="body">
+      <h3>後半、45分の撃ち合い</h3>
+      <p>前半の0-0は、退屈な0-0ではありませんでした。組で最も強いとされるオランダ相手に、日本がまず崩れなかった。森保のチームが我慢の時間を作る、あの入り方です。均衡が破れたのは後半。そこからは、二度突き放され、二度食らいつく展開になりました。順に追います。</p>
+      <div class="timeline report-tl">
+        <div class="tl-item">
+          <span class="tl-year num">50'</span>
+          <div class="tl-content">
+            <p class="tl-title">ファン・ダイク、オランダ先制 <span class="tl-side ned">0-1</span></p>
+            <p class="tl-body">後半5分、均衡を破ったのはオランダの主将ファン・ダイクでした。世界屈指の守備者が、前に出て先に決める。日本がこの日はじめてビハインドを背負った瞬間です。</p>
+          </div>
+        </div>
+        <div class="tl-item key">
+          <span class="tl-year num">57'</span>
+          <div class="tl-content">
+            <p class="tl-title">中村敬斗、すぐに同点 <span class="tl-side jpn">1-1</span></p>
+            <p class="tl-body">しかし日本は、わずか7分で返します。57分、中村敬斗。三笘の不在で左の創造性をどう補うかが課題だった、その左サイドの一枚です（第6章）。失点に動じず、すぐに同点に追いついた。これで振り出しに戻りました。</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year num">63'</span>
+          <div class="tl-content">
+            <p class="tl-title">サマービル、オランダ勝ち越し <span class="tl-side ned">1-2</span></p>
+            <p class="tl-body">63分から64分にかけて、今度はサマービルがオランダを勝ち越させます。日本はこの日、二度目のビハインド。残り時間は30分を切り、相手は組の最有力。ここで折れてもおかしくない状況でした。</p>
+          </div>
+        </div>
+        <div class="tl-item key">
+          <span class="tl-year num">88'</span>
+          <div class="tl-content">
+            <p class="tl-title">鎌田大地、土壇場で追いつく <span class="tl-side jpn">2-2</span></p>
+            <p class="tl-body">それでも日本は、また追いつきました。88分ごろ、鎌田大地が終盤に同点ゴールを決めて2-2。試合終了間際の、執念の一点です。これで二度のビハインドを、二度とも帳消しにしました。スコアはこのまま動かず、ホイッスル。</p>
+          </div>
+        </div>
+      </div>
+      <h3>この引き分けの意味</h3>
+      <p>勝ち点でいえば1。引き分けは1点です（第8章のシナリオ図）。組の最有力オランダから勝ち点を取りこぼさなかった、と読むこともできれば、二度リードしながら勝ち切れなかった、と読むこともできます。どちらも本当です。ただ、二度遅れて二度追いついた粘りは、柱を何本も欠いたこのチーム（第6章）にとって、悪くない初戦だったと言えます。新しい主将のもと、若い世代が、世界の上位国と撃ち合って引き分けた。その事実が、まず残りました。</p>
+      <div class="aside">
+        <span class="aside-k">この一点に注意して読む</span>
+        鎌田の同点ゴールは、ゴール前の混戦から生まれました。誰の動きがどう絡んだのか、報道には細部のゆれがあります。この読本では確かなところだけ、「鎌田大地が終盤に同点ゴールを決めて2-2に追いついた」とだけ記しておきます。
+      </div>
+      <p>そして、この引き分けは第2戦チュニジア戦（第7章）の意味を、はっきりさせました。続く第8章で、その勝ち点の地図を見ていきます。</p>
+    </div>
+<div class="pullquote">
+  <blockquote><span class="em">二度遅れて、二度追いついた</span>。組の最有力から持ち帰った、勝ち点1。</blockquote>
+  <cite>速報 ── 第1戦 日本 2-2 オランダ</cite>
 </div>
 </section>
 <div class="sec-sep"><hr></div>
@@ -1010,7 +1117,7 @@
       <p>この日のチュニジア戦は、その中間にあたります。格下ではないが最強でもない、堅く守ってくる相手。どちらの顔で入るのか。そこが見どころのひとつです。戦い方の中身は次の第4章で開きます。</p>
       <h3>2022年の象徴 ── 番狂わせの可変</h3>
       <p>森保の戦術が世界に最も鮮烈に伝わったのは、2022年カタール大会でした。グループステージで、優勝経験国のドイツとスペインを、続けて破ったのです。コスタリカには敗れたものの、強豪2カ国を撃破して組を1位で通過しました。</p>
-      <p>このときの型が、今のチームの原型でもあります。前半は守備的な布陣で我慢し、後半に守り方を5バックへ組み替えながら、攻撃的な選手を一気に投入してギアを上げる。耐えて、変えて、刺す。この「前半我慢、後半に可変して仕留める」やり方は、今大会の対オランダ戦でも基本路線になりうると見られています<span class="hedge">（推定。初戦は未実施）</span>。</p>
+      <p>このときの型が、今のチームの原型でもあります。前半は守備的な布陣で我慢し、後半に守り方を5バックへ組み替えながら、攻撃的な選手を一気に投入してギアを上げる。耐えて、変えて、刺す。実際この大会の初戦オランダ戦も、前半は0-0の我慢比べで、得点はすべて後半に集中しました（くわしくは速報ページ）。前半我慢して後半に動く入り方そのものは、今回も出ています。</p>
       <h3>批判 ── 後手と「選手任せ」</h3>
       <p>ただ、森保には根強い批判もあります。フェアに両方を並べます。</p>
       <div class="twoside">
@@ -1401,7 +1508,7 @@
                     <div class="card-head"><span class="card-name">中村敬斗</span><span class="card-yomi">なかむら けいと</span></div>
                     <div class="card-club"><span class="card-club-name">スタッド・ランス</span><span class="card-club-ctry">フランス</span></div>
                     <div class="card-role">左の縦突破／25歳</div>
-                    <p class="card-text">左サイドを縦に切り裂くドリブラー。2023年のデビュー戦で衝撃の4得点を挙げました。前田大然とともに、三笘の抜けた左の候補です（人選は予想）。</p>
+                    <p class="card-text">左サイドを縦に切り裂くドリブラー。2023年のデビュー戦で衝撃の4得点を挙げました。前田大然とともに、三笘の抜けた左の候補です（人選は予想）。初戦オランダ戦では57分に同点ゴールを決め、いきなり結果を出しました。</p>
                   </div>
                 </article>
 <article class="card">
@@ -1421,7 +1528,7 @@
                     <div class="card-head"><span class="card-name">鎌田大地</span><span class="card-yomi">かまだ だいち</span></div>
                     <div class="card-club"><span class="card-club-name">クリスタル・パレス</span><span class="card-club-ctry">イングランド</span></div>
                     <div class="card-role">可変要員／29歳</div>
-                    <p class="card-text">ボランチにもシャドーにも立てる、戦術理解の高い選手。試合の流れを読む眼で、中盤に落ち着きをもたらします。</p>
+                    <p class="card-text">ボランチにもシャドーにも立てる、戦術理解の高い選手。試合の流れを読む眼で、中盤に落ち着きをもたらします。初戦オランダ戦では88分ごろに同点ゴールを決め、土壇場で2-2に追いつきました。</p>
                   </div>
                 </article>
 <article class="card">
@@ -1697,11 +1804,11 @@
     </div>
 <div class="body">
       <div class="fixtures">
-        <div class="fx">
-          <div class="fx-when num">6/15（月）<br>05:00</div>
+        <div class="fx done">
+          <div class="fx-when num">6/14（日）<br>済</div>
           <div>
-            <div class="fx-main">オランダ<span class="fx-vs">×</span>日本</div>
-            <div class="fx-sub">第1戦 ／ 米テキサス州アーリントン　AT&amp;Tスタジアム</div>
+            <div class="fx-main">オランダ<span class="fx-vs">2-2</span>日本</div>
+            <div class="fx-sub">第1戦・終了 ／ 米テキサス州アーリントン　AT&amp;Tスタジアム（引き分け）</div>
           </div>
         </div>
         <div class="fx now">
@@ -1721,34 +1828,50 @@
         </div>
       </div>
       <p class="small">時刻はすべて日本時間です。第3戦の相手スウェーデンは、もともと抽選の時点では未確定でした。2026年3月の欧州予選プレーオフで、スウェーデンが決勝でポーランドを破って勝ち上がり、正式に決まりました。なお、この日の第2戦は、ワールドカップ通算1000試合目という節目の試合にあたります。</p>
-      <h3>初戦オランダ戦（6/15）の含意</h3>
-      <p>この読本を読む時点で、初戦はもう終わっているはずです。相手は組の最有力オランダ。森保のチームが2022年のように、前半我慢して後半に可変で仕留める形を出せたか。それとも力負けしたか。その結果が、第2戦チュニジア戦の意味を変えます。だからこそ、初戦のスコアを思い出しながらこの章を読むと、チュニジア戦に懸かるものが見えてきます。</p>
-      <h3>勝ち点のシナリオ</h3>
-      <p>勝てば3、引き分けは1、負ければ0。これが勝ち点です。3試合の合計で、組の上位2チーム、あるいは各組3位のうち成績上位なら、決勝トーナメントへ進めます。初戦の結果別に、この日チュニジア戦の位置づけを整理します。</p>
+      <h3>第1節を終えて ── 順位表</h3>
+      <p>グループF第1節の2試合が終わりました。日本はオランダと2-2の引き分け。もう1試合では、スウェーデンがチュニジアを5-1で下しています。第1節終了時点の勝ち点は、次のとおりです。</p>
+      <table class="standtable">
+        <caption>グループF ／ 第1節終了時点</caption>
+        <thead>
+          <tr><th class="rk">順</th><th class="team">チーム</th><th>試</th><th>勝</th><th>分</th><th>敗</th><th>得</th><th>失</th><th>差</th><th>点</th></tr>
+        </thead>
+        <tbody>
+          <tr class="up"><td class="rk">1</td><td class="team">スウェーデン</td><td>1</td><td>1</td><td>0</td><td>0</td><td>5</td><td>1</td><td>+4</td><td class="pts">3</td></tr>
+          <tr class="jp"><td class="rk">2</td><td class="team">日本</td><td>1</td><td>0</td><td>1</td><td>0</td><td>2</td><td>2</td><td>0</td><td class="pts">1</td></tr>
+          <tr><td class="rk">3</td><td class="team">オランダ</td><td>1</td><td>0</td><td>1</td><td>0</td><td>2</td><td>2</td><td>0</td><td class="pts">1</td></tr>
+          <tr><td class="rk">4</td><td class="team">チュニジア</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>5</td><td>-4</td><td class="pts">0</td></tr>
+        </tbody>
+      </table>
+      <p class="stand-note">表の見方 ── 試＝試合数、勝分敗、得＝得点、失＝失点、差＝得失点差、点＝勝ち点（勝ち3・分け1・負け0）。スウェーデンが大量得点で首位。日本とオランダは勝ち点1・得失点差0で並んでおり、2位と3位はまだ暫定です。チュニジアは大敗して勝ち点0からのスタートになりました。<span class="hedge">（順位は第1節終了時点の暫定）</span></p>
+      <h3>初戦オランダ戦を終えて ── 含意</h3>
+      <p>初戦は引き分けでした。相手は組の最有力オランダ。日本は二度ビハインドを負いながら、二度とも追いついての2-2です（くわしくは前半の速報ページ）。負けなかった、と読むこともできれば、二度リードしながら勝ち切れなかった、と読むこともできます。いずれにせよ、勝ち点1からのスタート。ここからの第2戦・第3戦が、決勝トーナメント進出を左右します。</p>
+      <p>そして同じ第1節で、この日の相手チュニジアはスウェーデンに1-5で大敗しました。守備が堅いはずのチュニジアが、5失点しての黒星です。つまり日本は、初戦で大きくつまずいた相手と、第2戦で当たることになります。ここで日本が勝てば、突破へ大きく前進する。引き分け以下なら、最終のスウェーデン戦に重いものを残す。この第2戦の位置づけが、はっきりしました。</p>
+      <h3>勝ち点のシナリオ ── 引き分けスタートから</h3>
+      <p>勝てば3、引き分けは1、負ければ0。これが勝ち点です。3試合の合計で、組の上位2チーム、あるいは各組3位のうち成績上位なら、決勝トーナメントへ進めます。日本は初戦を引き分け、勝ち点1からのスタート。そこから、この第2戦チュニジア戦の結果別に、先がどう変わるかを整理します。</p>
       <div class="scen">
+        <div class="scen-item draw">
+          <span class="scen-mark">済</span>
+          <div>
+            <span class="scen-cond">現在地 ── 初戦オランダと2-2の引き分け</span>
+            <span class="scen-body">勝ち点1。組の最有力から取りこぼさなかった位置です。悪くないが、楽でもない。だからこのチュニジア戦が勝負どころになります。相手は初戦でスウェーデンに1-5と大敗しています。</span>
+          </div>
+        </div>
         <div class="scen-item win">
           <span class="scen-mark">勝</span>
           <div>
-            <span class="scen-cond">初戦オランダに勝っていたら</span>
-            <span class="scen-body">最高の入り。チュニジアにも勝てば、突破がほぼ見えます。引き分けでも上々。第3戦を楽な気持ちで迎えられます。</span>
-          </div>
-        </div>
-        <div class="scen-item draw">
-          <span class="scen-mark">分</span>
-          <div>
-            <span class="scen-cond">初戦が引き分けだったら</span>
-            <span class="scen-body">悪くない位置。このチュニジア戦が勝負どころになります。勝てば突破が大きく近づき、引き分けなら第3戦に持ち越し。</span>
+            <span class="scen-cond">この第2戦に勝てば</span>
+            <span class="scen-body">勝ち点は4。突破が大きく近づきます。最終のスウェーデン戦を、楽な気持ちで迎えられる。大敗したチュニジア相手に、ここはぜひ取りたい一戦です。</span>
           </div>
         </div>
         <div class="scen-item lose">
-          <span class="scen-mark">負</span>
+          <span class="scen-mark">分・負</span>
           <div>
-            <span class="scen-cond">初戦オランダに負けていたら</span>
-            <span class="scen-body">このチュニジア戦が、事実上の負けられない一戦になります。堅い相手から、何としても勝ち点3を取りに行く試合。ここでの結果が、大会に残れるかどうかを左右します。</span>
+            <span class="scen-cond">引き分け以下なら</span>
+            <span class="scen-body">勝ち点はそのまま伸び悩み、最終のスウェーデン戦に重いものを残します。堅守のチュニジアから取りこぼすと、突破はぐっと険しくなる。だからこそ、勝ち点3を取りに行く試合です。</span>
           </div>
         </div>
       </div>
-      <p>いずれの場合も、堅守のチュニジアから勝ち点を持ち帰れるかが、トーナメント進出の現実的な分岐点です。派手な相手ではないぶん、この試合の取りこぼしは後で重くのしかかります。だから、地味に見えてもこの一戦が大事なのです。</p>
+      <p>堅守のチュニジアから勝ち点を持ち帰れるかが、トーナメント進出の現実的な分岐点です。しかも相手は初戦で大敗し、立て直しを迫られている。派手な相手ではないぶん、この試合の取りこぼしは後で重くのしかかります。だから、地味に見えてもこの一戦が大事なのです。</p>
       <h3>その先 ── 初のベスト8へ</h3>
       <p>グループを2位以内（または上位の3位）で抜ければ、決勝トーナメント、つまり一発勝負のノックアウトが始まります。そこで待つのが、日本がまだ越えていない壁です。次の第9章で、その壁の歴史をたどります。</p>
     </div>
@@ -2181,11 +2304,12 @@
       <p>この5つを意識して見れば、たとえ点が入らない時間が続いても、ピッチの上では絶え間なく駆け引きが起きていることがわかります。サッカーは、点が入る瞬間だけのスポーツではありません。点が入るまでの、長い我慢と工夫の積み重ねです。その積み重ねが見えるようになると、観戦は何倍も面白くなります。</p>
       <div class="colophon">
         日本代表 観戦読本（別冊）／ FIFAワールドカップ2026 グループF 第2戦 日本×チュニジア用<br>
-        作成 2026年6月13日。初戦オランダ戦（6月15日）は未実施。<br>
+        作成 2026年6月13日／第1戦オランダ戦の結果を反映して更新 2026年6月14日（日本 2-2 オランダ、引き分け）。<br>
         この読本の事実は作成時点の公表情報にもとづきます。スタメン、相手の布陣、選手のコンディションなど、試合直前に変わりうる項目は「推定」「要確認」と明示しました。確定しきれない数値（通算対戦成績など）はあえて載せていません。<br>
         <span class="cc">写真は Wikimedia Commons 等より私的利用の範囲で使用しています。写っているのは各選手・監督本人、および試合会場のスタジアムです。日章・国旗・章扉の暫定アートは描画（インラインSVG）です。</span>
       </div>
     </div>
 </section>
-<div class="tailspace"></div></body>
+<div class="tailspace"></div>
+</body>
 </html>
