@@ -658,6 +658,40 @@
   .report-tl .tl-side.jpn{ background:var(--aka); }
   .report-tl .tl-side.ned{ background:var(--kon-deep); }
   /* ------------------------------------------------------------
+     特集・注目チームと、勝ち上がった先。番号なし special。
+     注目チーム=素のカードグリッド(紺の上罫、本命だけ朱赤上端) / ブラケット=墨黒地に白と朱赤(doha-band と同色語彙)。
+     色は面・罫・1段の強調にのみ置き、本文には撒かない(差し色1系統)。
+     ------------------------------------------------------------ */
+  .featgrid{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); margin:16px 0 4px; }
+  .featcard{ background:var(--bg); padding:16px 18px 18px; border-top:3px solid var(--kon); }
+  .featcard.top{ border-top-color:var(--aka); }
+  .fc-head{ display:flex; align-items:baseline; gap:11px; margin:0 0 7px; }
+  .fc-rank{ font-family:var(--disp); font-weight:800; font-size:14px; color:var(--kon); letter-spacing:.02em; flex:0 0 auto; min-width:1.6em; }
+  .featcard.top .fc-rank{ color:var(--aka); }
+  .fc-team{ font-size:18px; font-weight:700; color:var(--ink); letter-spacing:.02em; }
+  .fc-role{ font-size:11.5px; letter-spacing:.04em; color:var(--weak); font-weight:600; margin:0 0 8px; }
+  .featcard.top .fc-role{ color:var(--aka-deep); }
+  .fc-body{ font-size:13px; line-height:1.78; color:var(--ink-2); margin:0; }
+  .standtable th.rmk, .standtable td.rmk{ text-align:left; }
+  .standtable td.rmk{ color:var(--weak); font-size:12.5px; white-space:nowrap; }
+  /* ブラケット(墨黒地+白+朱赤)。左→右の勝ち上がり。太枠=確定構造 / それ以外=条件つき。 */
+  .bracket{ display:flex; align-items:stretch; gap:0; margin:18px 0 6px; padding:20px 18px; background:var(--sumiblack); overflow-x:auto; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .br-col{ flex:1 1 0; min-width:148px; display:flex; flex-direction:column; gap:9px; }
+  .br-tag{ font-size:10px; letter-spacing:.08em; color:rgba(255,255,255,.62); line-height:1.5; min-height:2.6em; }
+  .br-node{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16); padding:12px 13px; display:flex; flex-direction:column; gap:5px; flex:1 1 auto; }
+  .br-node .br-team{ font-size:15.5px; font-weight:700; color:#fff; letter-spacing:.02em; line-height:1.25; }
+  .br-node .br-note{ font-size:11px; color:rgba(255,255,255,.7); line-height:1.6; }
+  .br-node .br-note .hedge{ display:inline-block; margin-left:5px; font-size:9.5px; letter-spacing:.06em; color:rgba(255,255,255,.55); border:1px solid rgba(255,255,255,.28); border-radius:2px; padding:1px 5px; }
+  .br-node.jp{ border-color:var(--aka); box-shadow:inset 3px 0 0 var(--aka); }
+  .br-node.hot{ border-width:2px; border-color:var(--aka); background:rgba(188,0,45,.16); }
+  .br-node.hot .br-team{ color:#fff; }
+  .br-node.dim{ opacity:.72; }
+  .br-arrow{ flex:0 0 auto; align-self:center; padding:0 8px; font-family:var(--disp); font-weight:800; font-size:18px; color:var(--aka); -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .br-tag.br-start, .br-col.br-start .br-tag{ }
+  .br-col.br-start{ flex:0 0 auto; min-width:130px; }
+  .br-cap{ font-size:12px; line-height:1.8; color:var(--weak); margin:8px 0 0; }
+  .br-cap b{ color:var(--ink); font-weight:700; }
+  /* ------------------------------------------------------------
      グループF 第1節終了時点の順位表(第8章)。グレー罫の素の表。
      ヘッダ=紺面 / 日本の行だけ朱赤の縦罫で位置を示す。色は撒かない。
      ------------------------------------------------------------ */
@@ -744,6 +778,7 @@
     .opener-text{ min-width:0; }
     .opener-no{ flex-wrap:wrap; }
     .opener-no .en{ white-space:normal; word-break:break-word; }
+    .featgrid{ grid-template-columns:1fr; }
   }
   @media (max-width:720px){
     /* THE FUNNEL: 横一列(flex rail)だと 390px 幅で 48/32/16/8 の特大数字が重なり
@@ -758,6 +793,14 @@
     .move .mv-ghost{ display:none; }
     .move{ padding:18px 20px; }
     .doha-band .db-tx{ max-width:none; }
+    /* ブラケット: 横並び(flex rail)だと 390px 幅で4列が潰れて読めない。
+       スマホでは縦積みにし、列間の矢印を下向きに(funnel と同じ畳み方)。 */
+    .bracket{ flex-direction:column; align-items:stretch; gap:0; overflow-x:visible; padding:20px 18px 22px; }
+    .br-col{ min-width:0; }
+    .br-col.br-start{ min-width:0; }
+    .br-tag{ min-height:0; margin-top:2px; }
+    .br-arrow{ align-self:center; transform:rotate(90deg); padding:8px 0; font-size:16px; }
+    .br-node{ flex:none; }
   }
 
   /* ============================================================
@@ -780,6 +823,9 @@
     .gekiga,.voice,.stage-card,.move,.paradox{ break-inside:avoid; }
     .funnel,.doha-band,.doha-close{ break-inside:avoid; }
     .bleed{ page-break-inside:avoid; }
+    .bracket,.br-node,.br-arrow,.br-node.jp,.br-node.hot,.featcard,.featcard.top{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .featgrid{ grid-template-columns:1fr 1fr; }
+    .featcard,.bracket{ break-inside:avoid; }
   }
 </style>
 </head>
@@ -847,6 +893,7 @@
     <li><a href="#c6">不在の主役たち</a></li>
     <li><a href="#c7">相手チュニジア</a><span class="tl-note">／ カルタゴの鷲</span></li>
     <li><a href="#c8">グループFと、その先へ</a></li>
+    <li class="toc-report"><a href="#featured">特集・注目チームと、勝ち上がった先</a><span class="tl-note">／ 48カ国の地図と、日本のルート</span></li>
     <li><a href="#c9">日本代表 W杯小史</a></li>
     <li><a href="#c10">ドーハ世代の今</a><span class="tl-note">／ 1993 → 2026</span></li>
     <li><a href="#c11">キャプテン翼と日本サッカー</a></li>
@@ -1761,6 +1808,19 @@
       <p>相手が引いて守ってくる以上、日本はボールを持つ時間が長くなります。問題は、堅いブロックをどうこじ開けるか。鍵は3つあります。ひとつは、両端のウイングバックを使った幅。狭く守る相手の外側に幅を取り、横に揺さぶって中央に隙を作る。ふたつめは、フリーキックやコーナーといったセットプレー。中村俊輔が仕込んだ成果（第4章）が、こういう相手にこそ効きます。みっつめは、得点王・上田綺世の決定力。少ない好機を1回で仕留められるかどうか。</p>
       <p>逆に、警戒すべきは奪われた直後です。日本が攻めに人数をかけたところでボールを失うと、チュニジアの速攻が背後を突いてきます。堅守速攻のチームは、守りが堅いだけでなく、カウンターが鋭い。攻め急いでバランスを崩した瞬間が、最も危ない時間帯になります。我慢比べの色が濃い、簡単ではない一戦です。</p>
       <p class="small">なお、日本とチュニジアは過去にも対戦しています。確かな記録として、2002年のワールドカップでは日本が2-0で勝ち、グループステージ突破を決めました。2022年の親善試合（キリンカップ）では0-3で大敗。2023年の親善試合では2-0で勝っています。通算の対戦成績は資料によって数が割れるため、ここでは合計の数字は載せません。直近の2023年は日本が勝ち、2022年は完敗しました。その事実関係だけを押さえておきます。</p>
+
+      <h3>第2戦プレビュー ── 鉄壁は、初戦で崩れた</h3>
+      <p>ここまでは、予選の堅守を土台にチュニジアを紹介してきました。ところが、その鉄壁は初戦で崩れます。チュニジアは第1節でスウェーデンに1-5。10連続完封でワールドカップに乗り込んだチームが、いきなり5点を失っての大敗でした。守備が堅いはずのチームに、何が起きたのか。ここから先は、その崩壊を順に追います。</p>
+      <div class="aside">
+        <span class="aside-k">前提 ── 鉄壁を作った人と、5失点した人は別人</span>
+        ひとつ押さえておきたいことがあります。予選で失点ゼロの守備を築いた監督サミ・トラベルシは、本大会の前に退任しました。初戦スウェーデン戦を指揮したのは、2026年1月に就任したばかりのサブリ・ラムーシ。つまり「失点ゼロの鉄壁」と「5失点の初戦」は、別の監督のもとで起きた出来事です。予選の数字を、そのまま本大会のチームに当てはめないほうがよい、ということになります。
+      </div>
+      <h3>5失点は、ほぼ自滅だった</h3>
+      <p>スウェーデンに喫した5失点の中身は、相手にねじ伏せられたというより、自分たちのミスから生まれたものが多くを占めた、と報じられています<span class="hedge">（試合の見立て）</span>。具体的には、ゴールキーパーのチャマフの単独のミスから2失点、主将スキリが自陣エリアの外でボールを失ったところから1失点、そして終盤にこぼれ球の処理が崩れてさらに2失点、という流れだったとされます。退場者は出ておらず、致命的な負傷もなし。つまり、人数や大怪我で崩れたのではなく、ボールの扱いと管理で崩れた試合でした。直前のベルギーとの親善試合も0-5で、2試合あわせて10失点。守備の歯車が、いま狂っています。</p>
+      <p>この敗戦を受けて、ラムーシ監督は初戦のあとに解任されました。就任からわずか半年、本大会での指揮はこの1試合だけ。今大会で、大会期間中に解任された最初の監督になります。後任は暫定的にモンダー・ケバイエが務める、と報じられています<span class="hedge">（要確認。暫定体制）</span>。チュニジアは、監督を代えたばかりの状態で、この第2戦に臨んできます。</p>
+      <h3>日本は、どこを突けるか</h3>
+      <p>立て直しの中心は、ゴールキーパーの交代圧力（チャマフから、たとえばダーメンへ）と、守備全体の整理になると見られます<span class="hedge">（見立て。確定の布陣は不明）</span>。それを踏まえると、日本にとっての狙いどころは見えてきます。ゴールキーパーと、最後尾からボールをつなぐ局面（ビルドアップ）にプレスをかけ、奪ってからの切り替え（トランジション）で背後を突く。初戦のチュニジアは、まさにそこから崩れました。</p>
+      <p>ただし、割り引いて見るべき点もあります。初戦でチュニジアを沈めたスウェーデンは、イサクやヨケレスといった前線の個の質がとびぬけて高いチームでした。あの5失点には、相手の決定力が異常だった分も含まれています。日本が同じように崩せるとはかぎりません。そしてもうひとつ、チュニジアはもう負けられない立場で、大敗の屈辱を抱えてこの試合に来ます。手負いのチームの反発は、しばしば強い。攻めどころははっきりしている。けれど、簡単な相手とは思わないほうがよい一戦です。</p>
     </div>
 <div class="pullquote">
   <blockquote>攻撃の22得点よりも、この<span class="em">「0」</span>が彼らの性格を表す。</blockquote>
@@ -1873,8 +1933,162 @@
       </div>
       <p>堅守のチュニジアから勝ち点を持ち帰れるかが、トーナメント進出の現実的な分岐点です。しかも相手は初戦で大敗し、立て直しを迫られている。派手な相手ではないぶん、この試合の取りこぼしは後で重くのしかかります。だから、地味に見えてもこの一戦が大事なのです。</p>
       <h3>その先 ── 初のベスト8へ</h3>
-      <p>グループを2位以内（または上位の3位）で抜ければ、決勝トーナメント、つまり一発勝負のノックアウトが始まります。そこで待つのが、日本がまだ越えていない壁です。次の第9章で、その壁の歴史をたどります。</p>
+      <p>グループを2位以内（または上位の3位）で抜ければ、決勝トーナメント、つまり一発勝負のノックアウトが始まります。そこで待つのが、日本がまだ越えていない壁です。では、その先には具体的に誰が立っているのか。次の特集ページで、大会全体の注目チームと、日本が勝ち上がった先の組み合わせを地図にします。</p>
     </div>
+</section>
+<div class="sec-sep"><hr></div>
+<section class="chapter report" id="featured">
+<div class="opener hot report-open">
+  <div class="opener-tate" aria-hidden="true">特</div>
+  <div class="opener-text">
+    <div class="opener-ghost" aria-hidden="true">48</div>
+    <div class="opener-no">
+      <span class="kan">特集</span>
+      <span class="en">The Field ／ Who To Watch &amp; The Road Ahead</span>
+      <span class="akaline" aria-hidden="true"></span>
+    </div>
+    <p class="opener-eyebrow">この大会の全体像 ／ そして日本の行く先</p>
+    <h2>注目チームと、勝ち上がった先</h2>
+    <p class="opener-romaji">WHO TO WATCH ─ AND WHERE JAPAN GOES NEXT</p>
+    <p class="opener-lead">グループFの3試合の、その外側へ。この大会には、48カ国が出ています。誰が優勝候補で、日本がこの組を抜けたら、次に誰と当たるのか。少し引いて、大会全体の地図を見ておきます。</p>
+    <div class="opener-stat">
+      <div class="st"><div class="v">48</div><div class="l">出場国</div></div>
+      <div class="st"><div class="v">11<span class="u">位</span></div><div class="l">日本の評価（一例）</div></div>
+      <div class="st"><div class="v">1</div><div class="l">非伝統国の最上位</div></div>
+    </div>
+    <div class="opener-pull"><p>最初の大きな試金石は、ほぼブラジル。抜ければ、その先にフランスかドイツ。</p></div>
+  </div>
+</div>
+<div class="body">
+      <h3>優勝を争うとされる顔ぶれ</h3>
+      <p>まず、優勝に近いとされるチームです。どこが「本命」かは人によって見方が分かれます<span class="hedge">（本命評価は見立て）</span>。ただ、名前の挙がる常連はだいたい決まっています。中心選手と、初戦でどうだったかを、確定している事実だけで並べます。</p>
+    </div>
+<div class="featgrid">
+      <article class="featcard top">
+        <div class="fc-head"><span class="fc-rank num">★</span><span class="fc-team">フランス</span></div>
+        <p class="fc-role">単独の本命とされる<span class="hedge">（見立て）</span></p>
+        <p class="fc-body">監督デシャン、エースはムバッペ。前回大会の準優勝国で、層の厚さが図抜けています。多くの下馬評で、優勝の一番手に置かれています。</p>
+      </article>
+      <article class="featcard">
+        <div class="fc-head"><span class="fc-rank num">EU</span><span class="fc-team">スペイン</span></div>
+        <p class="fc-role">欧州王者</p>
+        <p class="fc-body">若き天才ラミン・ヤマルを擁する、現在の欧州チャンピオン。ただし初戦はカーボベルデと0-0のドロー。波乱の幕開けになりました。</p>
+      </article>
+      <article class="featcard">
+        <div class="fc-head"><span class="fc-rank num">前</span><span class="fc-team">アルゼンチン</span></div>
+        <p class="fc-role">前回王者</p>
+        <p class="fc-body">前回2022年の優勝国。メッシが、おそらく最後のワールドカップに臨みます。王者の貫禄をどこまで見せるかが注目です。</p>
+      </article>
+      <article class="featcard">
+        <div class="fc-head"><span class="fc-rank num">EN</span><span class="fc-team">イングランド</span></div>
+        <p class="fc-role">優勝候補の常連</p>
+        <p class="fc-body">監督はトゥヘル、得点源はケイン。実力者がそろう一方、大舞台で勝ち切れない歴史も背負う、毎回の有力候補です。</p>
+      </article>
+      <article class="featcard">
+        <div class="fc-head"><span class="fc-rank num">PT</span><span class="fc-team">ポルトガル</span></div>
+        <p class="fc-role">タレント集団</p>
+        <p class="fc-body">司令塔ブルーノ・フェルナンデス、そしてロナウド。個の力では引けを取らない、優勝を狙えるタレント集団です。</p>
+      </article>
+      <article class="featcard">
+        <div class="fc-head"><span class="fc-rank num">BR</span><span class="fc-team">ブラジル</span></div>
+        <p class="fc-role">日本の試金石になりうる相手</p>
+        <p class="fc-body">エースはヴィニシウス。優勝候補の常連です。初戦はモロッコと1-1のドロー。後述のとおり、日本が勝ち上がると早い段階で当たる可能性が高い相手です。</p>
+      </article>
+      <article class="featcard">
+        <div class="fc-head"><span class="fc-rank num">DE</span><span class="fc-team">ドイツ</span></div>
+        <p class="fc-role">移行期だが地力は健在</p>
+        <p class="fc-body">世代交代の途上とされますが、初戦はキュラソーを7-1と圧倒。爆発力は健在です。日本の山の先に控えうる相手です。</p>
+      </article>
+      <article class="featcard">
+        <div class="fc-head"><span class="fc-rank num">NL</span><span class="fc-team">オランダ</span></div>
+        <p class="fc-role">ダークホース ／ 日本の初戦相手</p>
+        <p class="fc-body">日本がグループ初戦で2-2と引き分けた、あの相手です。主将はファン・ダイク。優勝候補の一角に挙げる声もあります。</p>
+      </article>
+    </div>
+<div class="body">
+      <div class="aside">
+        <span class="aside-k">日本の立ち位置 ── 非伝統国の最上位</span>
+        各種のパワーランキングで、日本はおおむね11位前後に置かれています<span class="hedge">（評価の一例）</span>。これは、ヨーロッパや南米の伝統国を除けば、最も高い評価です。アジアの一国が、世界の上位グループのすぐ下まで来ている。それが、いまの日本の客観的な位置です。
+      </div>
+      <h3>第1節の、目立った結果</h3>
+      <p>大会全体の第1節で、とくに目を引いた試合を挙げておきます<span class="hedge">（いずれも確定）</span>。</p>
+      <table class="standtable">
+        <caption>第1節 ／ 注目の結果</caption>
+        <thead>
+          <tr><th class="team">対戦</th><th>結果</th><th class="rmk">ひとこと</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="team">ドイツ × キュラソー</td><td class="pts">7-1</td><td class="rmk">移行期でも爆発力</td></tr>
+          <tr><td class="team">スウェーデン × チュニジア</td><td class="pts">5-1</td><td class="rmk">日本の第2戦相手が大敗</td></tr>
+          <tr class="up"><td class="team">スペイン × カーボベルデ</td><td class="pts">0-0</td><td class="rmk">欧州王者まさかの波乱</td></tr>
+          <tr><td class="team">ブラジル × モロッコ</td><td class="pts">1-1</td><td class="rmk">優勝候補が取りこぼし</td></tr>
+        </tbody>
+      </table>
+      <p class="stand-note">表の見方 ── スコアは確定の結果です。「波乱」とは、強いとされたチームが引き分けや黒星を喫したことを指します。スペインの0-0は、この第1節で最も意外だった結果のひとつとされます。</p>
+    </div>
+<div class="doha wide">
+      <div class="doha-band">
+        <div class="db-year num">F<span class="arw">→</span>C</div>
+        <p class="db-tx">ここからは、日本がこのグループFを抜けた先の話です。決勝トーナメントの組み合わせには、決まっている部分（ブラケットの構造）と、まだ決まっていない部分（実際の相手国）があります。両方を、はっきり分けて説明します。</p>
+      </div>
+    </div>
+<div class="body">
+      <h3>決まっていること ── 相手はグループCから来る</h3>
+      <p>まず、確定している構造です。日本はグループF。このグループを1位で抜けても、2位で抜けても、決勝トーナメント最初の試合（ラウンド32、32チームによる一回戦）の相手は、グループC（ブラジル・モロッコ・ハイチ・スコットランド）から出てきます。これはトーナメント表が決めている、動かない事実です。</p>
+      <div class="bracket" aria-label="日本の勝ち上がりルート">
+        <div class="br-col br-start">
+          <span class="br-tag">いまここ</span>
+          <div class="br-node jp"><span class="br-team">日本</span><span class="br-note">グループF（3試合）</span></div>
+        </div>
+        <div class="br-arrow" aria-hidden="true">→</div>
+        <div class="br-col">
+          <span class="br-tag">ラウンド32 ／ 相手はグループCから</span>
+          <div class="br-node hot"><span class="br-team">ほぼ ブラジル</span><span class="br-note">日本2位なら濃厚／1位ならC2位（ブラジルかモロッコ）<span class="hedge">条件つき</span></span></div>
+        </div>
+        <div class="br-arrow" aria-hidden="true">→</div>
+        <div class="br-col">
+          <span class="br-tag">準々決勝 ／ ベスト8の先</span>
+          <div class="br-node"><span class="br-team">フランス または ドイツ</span><span class="br-note">勝ち上がった場合に当たりうる山<span class="hedge">条件つき</span></span></div>
+        </div>
+        <div class="br-arrow" aria-hidden="true">→</div>
+        <div class="br-col">
+          <span class="br-tag">準決勝 以降</span>
+          <div class="br-node dim"><span class="br-team">イングランド ほか</span><span class="br-note">当たるとすればこの段階＝別の山<span class="hedge">条件つき</span></span></div>
+        </div>
+      </div>
+      <p class="br-cap">図の見方 ── 左から右へ、勝ち上がりの順番です。<b>太枠の段（相手はグループCから）はトーナメント表が決めた確定の構造</b>。一方、<b>実際の相手国（ブラジル／フランス／ドイツ等）は、日本やほかの国が何位で抜けるかで変わる条件つき</b>です。両者を混同しないでください。</p>
+      <h3>変わること ── 日本が何位で抜けるか</h3>
+      <p>では、実際の相手は何で決まるのか。鍵は、日本がグループFを何位で抜けるか、です。順位ごとに、ラウンド32の相手が変わります<span class="hedge">（相手国は条件つき。グループCの順位確定が前提）</span>。</p>
+      <div class="scen">
+        <div class="scen-item win">
+          <span class="scen-mark">1位</span>
+          <div>
+            <span class="scen-cond">1位で抜けると</span>
+            <span class="scen-body">ラウンド32の相手はグループCの2位（ブラジルかモロッコのどちらか）。その先の準々決勝で、ドイツかフランスと当たりうる山に入ります。</span>
+          </div>
+        </div>
+        <div class="scen-item draw">
+          <span class="scen-mark">2位</span>
+          <div>
+            <span class="scen-cond">2位で抜けると</span>
+            <span class="scen-body">ラウンド32の相手はグループCの1位（濃厚なのはブラジル）。つまり、ブラジルとの対戦がより早い段階に来ます。</span>
+          </div>
+        </div>
+        <div class="scen-item lose">
+          <span class="scen-mark">3位</span>
+          <div>
+            <span class="scen-cond">3位で抜けると（成績上位での通過）</span>
+            <span class="scen-body">組み合わせ次第で、ラウンド32からいきなりドイツやフランスと当たる可能性もあります。抜け方によって、相手の重さが大きく変わります。</span>
+          </div>
+        </div>
+      </div>
+      <h3>まとめ ── 試金石はブラジル、山はフランスかドイツ</h3>
+      <p>整理します。日本がこのグループを抜けたとき、<b>最初の大きな試金石は、ほぼブラジル</b>です。そこを勝ち上がれば、<b>準々決勝の山にフランスかドイツ</b>が見えてきます。優勝候補の常連であるイングランドとは、当たるとすれば準決勝以降、別の山でのことになります。ベスト8、その先のベスト4へ。日本がまだ立ったことのない場所まで、この地図はつながっています。まずは目の前のチュニジア戦から、その一歩が始まります。</p>
+    </div>
+<div class="pullquote">
+  <blockquote>最初の大きな試金石は、<span class="em">ほぼブラジル</span>。勝ち上がれば、その先にフランスかドイツ。</blockquote>
+  <cite>特集 ── 注目チームと、勝ち上がった先</cite>
+</div>
 </section>
 <div class="sec-sep"><hr></div>
 <section class="chapter">
