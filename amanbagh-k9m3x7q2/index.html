@@ -224,7 +224,7 @@ function buildFig(e){
   return o+'</svg>';
 }
 function drawer(d){if(!d)return '';var g=d.gl.map(function(x){return '<div class="gl">'+x+'</div>';}).join('');
-  return '<details><summary>史実をひらく ＋</summary><div class="drawer"><div class="dh">'+d.dh+'</div>'+g+'<div class="src">'+d.src+'</div></div></details>';}
+  return '<details open><summary>用語・系図・異説</summary><div class="drawer"><div class="dh">'+d.dh+'</div>'+g+'<div class="src">'+d.src+'</div></div></details>';}
 
 var html='';
 ERAS.forEach(function(e){
