@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>世界一周、二つの設計図</title>
+<!-- design-source: 帯状に開いた地球（journey strip）で「一方向・一周」という運賃規則そのものを図にする / Minard式の並走レーンで時代の同時性を示す（amanbagh-k9m3x7q2 と同じ手法） -->
+<!-- design-rationale: 夜の空の近黒#0C1220。ワンワールド=琥珀、スターアライアンス=シアンで二案を色で分離。規則原文はドロワーに畳んで本文の速度を落とさない -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0C1220; --bg2:#111A2C; --ink:#E7EAF0; --dim:#93A0B5; --line:#25314A;
+  --ow:#E9A94B; --sa:#5FC7D6; --paper:#F3F1EA;
+  --g:'Zen Kaku Gothic New',sans-serif; --s:'Noto Serif JP',serif; --e:'Inter',sans-serif;
+}
+*{box-sizing:border-box;margin:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--ink);font-family:var(--s);line-height:1.95;-webkit-text-size-adjust:100%;}
+.wrap{max-width:680px;margin:0 auto;padding:0 22px;}
+.wide{max-width:940px;margin:0 auto;padding:0 22px;}
+
+/* cover */
+.cover{min-height:92svh;display:flex;flex-direction:column;justify-content:center;padding:10svh 22px;background:
+  radial-gradient(120% 80% at 70% 0%, #1A2540 0%, rgba(12,18,32,0) 60%),
+  radial-gradient(90% 60% at 10% 100%, #16203a 0%, rgba(12,18,32,0) 60%);}
+.cover .in{max-width:680px;margin:0 auto;width:100%;}
+.ki{font-family:var(--e);font-size:11px;letter-spacing:.34em;color:var(--dim);margin:0 0 18px;}
+.cover h1{font-family:var(--s);font-weight:600;font-size:33px;line-height:1.45;letter-spacing:.02em;margin:0 0 18px;}
+.cover .sub{font-size:15.5px;color:#B9C3D4;line-height:2.05;}
+.cover .meta{margin-top:34px;font-family:var(--e);font-size:11px;letter-spacing:.1em;color:#6D7C94;line-height:2;}
+
+/* section */
+.sec{padding:9svh 0;}
+.sec.alt{background:var(--bg2);}
+.sh{font-family:var(--e);font-size:11px;letter-spacing:.2em;margin:0 0 8px;color:var(--dim);}
+.sh.ow{color:var(--ow);} .sh.sa{color:var(--sa);}
+h2{font-family:var(--s);font-weight:600;font-size:24px;line-height:1.55;margin:0 0 22px;letter-spacing:.01em;}
+h3{font-family:var(--s);font-weight:600;font-size:17.5px;line-height:1.7;margin:38px 0 12px;}
+h4{font-family:var(--g);font-weight:700;font-size:14px;line-height:1.7;margin:26px 0 8px;color:#CBD4E2;letter-spacing:.04em;}
+p{font-size:15.5px;line-height:2.05;margin:0 0 16px;}
+p.lede{font-size:17px;line-height:2.1;color:#DCE3EE;}
+.em{color:var(--ow);font-weight:500;}
+.em2{color:var(--sa);font-weight:500;}
+ul,ol{margin:0 0 16px;padding-left:1.25em;font-size:15px;line-height:1.95;}
+li{margin-bottom:6px;}
+.cap{font-family:var(--g);font-size:12.5px;color:var(--dim);line-height:1.8;margin:10px 2px 0;}
+a{color:#9FC4E8;}
+
+/* figure */
+.fig{margin:26px 0 0;}
+.fig svg{width:100%;height:auto;display:block;}
+.scroller{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.scroller svg{min-width:560px;}
+
+/* callout */
+.note{border-left:2px solid var(--line);padding:2px 0 2px 16px;margin:22px 0;font-family:var(--g);font-size:14px;line-height:1.9;color:#BCC7D8;}
+.note b{color:var(--ink);font-weight:700;}
+.key{background:#141E33;border:1px solid var(--line);border-radius:5px;padding:18px 18px;margin:24px 0;font-family:var(--g);}
+.key .kh{font-family:var(--e);font-size:10.5px;letter-spacing:.16em;color:var(--dim);margin:0 0 8px;}
+.key p{font-size:14.5px;line-height:1.95;margin:0 0 10px;font-family:var(--g);}
+.key p:last-child{margin-bottom:0;}
+.key.ow{border-color:#4b3a1d;background:#181510;}
+.key.sa{border-color:#1E4048;background:#101c22;}
+
+/* table */
+table{width:100%;border-collapse:collapse;font-family:var(--g);font-size:13px;line-height:1.7;margin:18px 0 0;}
+th,td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;vertical-align:top;}
+th{font-family:var(--e);font-size:10.5px;letter-spacing:.08em;color:var(--dim);font-weight:600;white-space:nowrap;}
+td.n{font-family:var(--e);white-space:nowrap;color:#C6D0DF;}
+td.c{color:var(--dim);}
+tr.hi td{background:rgba(233,169,75,.07);}
+tr.hi2 td{background:rgba(95,199,214,.07);}
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tbl table{min-width:520px;}
+
+/* drawer */
+details{margin:18px 0;}
+summary{list-style:none;cursor:pointer;font-family:var(--e);font-size:10.5px;letter-spacing:.14em;color:var(--dim);padding:8px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+summary::-webkit-details-marker{display:none;}
+summary::before{content:"▸ ";}
+details[open] summary::before{content:"▾ ";}
+details[open] summary{color:#CBD4E2;}
+.drawer{background:var(--paper);color:#20242C;border-radius:4px;padding:16px 17px;margin-top:10px;font-family:var(--g);font-size:13px;line-height:1.8;}
+.drawer p{font-family:var(--g);font-size:13px;line-height:1.8;color:#20242C;margin:0 0 10px;}
+.drawer p:last-child{margin-bottom:0;}
+.drawer .gl{padding:8px 0;border-top:1px solid #DEDACF;}
+.drawer .gl:first-of-type{border-top:none;padding-top:0;}
+.drawer b{font-weight:700;}
+.drawer .src{font-size:11.5px;color:#6E6A60;border-top:1px dashed #DEDACF;padding-top:9px;margin-top:10px;}
+.drawer code{font-family:var(--e);font-size:11.5px;background:#E5E1D7;padding:1px 5px;border-radius:3px;}
+
+/* plan header */
+.planhead{border-top:1px solid var(--line);padding-top:34px;margin-top:10px;}
+.badge{display:inline-block;font-family:var(--e);font-size:10px;letter-spacing:.18em;padding:5px 10px;border-radius:3px;margin-bottom:14px;}
+.badge.ow{background:rgba(233,169,75,.14);color:var(--ow);border:1px solid rgba(233,169,75,.3);}
+.badge.sa{background:rgba(95,199,214,.13);color:var(--sa);border:1px solid rgba(95,199,214,.3);}
+
+/* nav */
+.topnav{position:fixed;top:0;left:0;right:0;z-index:20;background:rgba(12,18,32,.86);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+.topnav .in{max-width:940px;margin:0 auto;padding:9px 22px;display:flex;gap:16px;font-family:var(--e);font-size:10.5px;letter-spacing:.1em;overflow-x:auto;white-space:nowrap;}
+.topnav a{color:var(--dim);text-decoration:none;}
+.topnav a:hover{color:var(--ink);}
+body{padding-top:38px;}
+
+.end{text-align:center;padding:11svh 22px 14svh;border-top:1px solid var(--line);}
+.end .q{font-size:19px;line-height:2;color:#D3DBE7;max-width:560px;margin:0 auto;}
+.foot{max-width:680px;margin:0 auto;padding:0 22px 14svh;color:var(--dim);font-family:var(--g);font-size:12px;line-height:1.9;}
+.foot .fh{font-family:var(--e);font-size:10.5px;letter-spacing:.16em;color:#6D7C94;margin:26px 0 7px;}
+.back{text-align:center;padding:0 0 8svh;}
+.back a{color:#6D7C94;font-family:var(--e);font-size:11px;letter-spacing:.14em;text-decoration:none;}
+@media(min-width:720px){
+  .cover h1{font-size:42px;} h2{font-size:27px;} p{font-size:16px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav"><div class="in">
+  <a href="#top">序</a>
+  <a href="#alliance">Ⅰ 二つの連合</a>
+  <a href="#rules">Ⅱ 規則</a>
+  <a href="#plana">Ⅲ ワンワールド</a>
+  <a href="#planb">Ⅳ スターアライアンス</a>
+  <a href="#choose">Ⅴ 選ぶ</a>
+  <a href="#appendix">付録</a>
+</div></nav>
+
+<header class="cover" id="top">
+  <div class="in">
+    <p class="ki">ROUND THE WORLD — TWO BLUEPRINTS</p>
+    <h1>世界一周、二つの設計図。</h1>
+    <p class="sub">
+      ワンワールドで四大陸をビジネスで一筆書きにする案と、<br>
+      スターアライアンスで一週間ごとに日本へ三度帰ってくる案。<br>
+      どちらも、規則の原文を先に読んでから引いた線です。
+    </p>
+    <p class="meta">
+      2026-07-27 作成 ／ 家族4人（大人2・子2）想定<br>
+      運賃規則・加盟社は2026年7月時点の調べ
+    </p>
+  </div>
+</header>
+
+<!-- ============ 序 ============ -->
+<section class="sec">
+<div class="wrap">
+  <p class="sh">PROLOGUE</p>
+  <h2>先に規則を読んだ理由</h2>
+
+  <p class="lede">世界一周航空券は、行きたい場所を並べてから買うものではありません。<span class="em">運賃規則が先にあって、旅の形はその中でしか引けない。</span>だから今回は、ワンワールド・エクスプローラー（規則3015）とスターアライアンスRTW（RWSTAR）の条文を先に読みました。</p>
+
+  <p>読んでみると、二つの連合はまったく違う旅を許していました。ワンワールドは「日本を出るのは一度、戻るのも一度」と定めていて、途中で帰ってくることを許しません。スターアライアンスは「出発した都市を通過してはならない」としか書いていない。つまり羽田を出たら、<span class="em2">中部や関西になら途中で戻ってこられる</span>。</p>
+
+  <p>この一行の差が、二つの案を生みました。片方は一本の弧、もう片方は家に錨を下ろしたまま三度出ていく形になります。</p>
+
+  <div class="key">
+    <p class="kh">この設計が踏まえたもの</p>
+    <p><b>旅の北極星</b>　「世界にはいろんな人やものがあって、そこに自分もアクセスできる、関係がある」。それを弦・いとが直感で理解する旅にする。入口は二つ、<b>もの型</b>（サグラダ、チャンディーガル＝人類の壮大な創造物に自分が立つ）と<b>人型</b>（アマンバグの村、違う暮らしの人と関わる）。</p>
+    <p><b>夢リスト（2026-04時点）</b>　エジプト／モンゴル／バスク（スペイン再訪）／西カリブ海のマヤ文明。1歳ニューヨーク→2歳石見銀山→3歳バリ→4歳ロンドン→5歳地中海、の続き。</p>
+    <p><b>選好</b>　拠点は少なく、深く。移動日は減らす。到着初日は軟着陸。帰国便の前にはバッファ。衛生と高山は具体的に潰す。国内線・現地移動は別買いで組む。工芸の手を動かす体験を子に。</p>
+  </div>
+
+  <p>この四つを満たすように、二案とも組んであります。どちらも机上ではなく、区間ごとに実在する便で組み、規則に一つずつ照合しました。</p>
+</div>
+</section>
+
+<!-- ============ Ⅰ 二つの連合 ============ -->
+<section class="sec alt" id="alliance">
+<div class="wrap">
+  <p class="sh">Ⅰ</p>
+  <h2>二つの連合が、どこへ飛んでいるか</h2>
+  <p>世界一周航空券は、その連合に加盟している会社の路線しか使えません。だから加盟社一覧は、そのまま「行ける場所の地図」になります。2026年に入って両方に動きがありました。</p>
+
+  <h3>ワンワールド　16社</h3>
+  <p>2026年4月23日にハワイアン航空が加わって16社。日本航空が起点になります。</p>
+  <div class="tbl">
+  <table>
+    <tr><th>航空会社</th><th>略号</th><th>主な拠点</th><th>世界一周での役割</th></tr>
+    <tr class="hi"><td>日本航空</td><td class="n">JL</td><td class="c">羽田・成田</td><td class="c">起点。太平洋横断の帰路</td></tr>
+    <tr class="hi"><td>カタール航空</td><td class="n">QR</td><td class="c">ドーハ</td><td class="c">羽田直行。中東ハブ。Qsuiteは個室ドア付き</td></tr>
+    <tr class="hi"><td>イベリア</td><td class="n">IB</td><td class="c">マドリード</td><td class="c">中南米への大西洋線。スペイン国内も</td></tr>
+    <tr class="hi"><td>アメリカン航空</td><td class="n">AA</td><td class="c">ダラス・マイアミ・シカゴ</td><td class="c">南北アメリカの背骨</td></tr>
+    <tr><td>ブリティッシュ・エアウェイズ</td><td class="n">BA</td><td class="c">ロンドン</td><td class="c">欧州とアフリカ</td></tr>
+    <tr><td>キャセイパシフィック</td><td class="n">CX</td><td class="c">香港</td><td class="c">アジアの結節点</td></tr>
+    <tr><td>カンタス</td><td class="n">QF</td><td class="c">シドニー</td><td class="c">南西太平洋。豪州国内が強い</td></tr>
+    <tr><td>フィンエアー</td><td class="n">AY</td><td class="c">ヘルシンキ</td><td class="c">北欧</td></tr>
+    <tr><td>アラスカ航空</td><td class="n">AS</td><td class="c">シアトル</td><td class="c">米西海岸</td></tr>
+    <tr><td>ハワイアン航空</td><td class="n">HA</td><td class="c">ホノルル</td><td class="c">2026年4月加盟。太平洋の中継点</td></tr>
+    <tr><td>マレーシア航空</td><td class="n">MH</td><td class="c">クアラルンプール</td><td class="c">東南アジア・ボルネオ</td></tr>
+    <tr><td>スリランカ航空</td><td class="n">UL</td><td class="c">コロンボ</td><td class="c">南アジア</td></tr>
+    <tr><td>オマーン航空</td><td class="n">WY</td><td class="c">マスカット</td><td class="c">2025年加盟</td></tr>
+    <tr><td>ロイヤル・ヨルダン航空</td><td class="n">RJ</td><td class="c">アンマン</td><td class="c">中東・ペトラ</td></tr>
+    <tr><td>ロイヤル・エア・モロッコ</td><td class="n">AT</td><td class="c">カサブランカ</td><td class="c">アフリカへの入口</td></tr>
+    <tr><td>フィジー・エアウェイズ</td><td class="n">FJ</td><td class="c">ナンディ</td><td class="c">南太平洋</td></tr>
+  </table>
+  </div>
+  <p class="cap">S7航空（ロシア）は2022年4月19日から加盟停止中。フィリピン航空が加盟予定。</p>
+
+  <h3>スターアライアンス　26社</h3>
+  <p>2026年4月にITAエアウェイズが加わり、スカンジナビア航空は2024年8月末に脱退してスカイチームへ移りました。アシアナ航空はブランドが2026年12月17日に消えます（大韓航空へ統合）。</p>
+  <div class="tbl">
+  <table>
+    <tr><th>航空会社</th><th>略号</th><th>主な拠点</th><th>世界一周での役割</th></tr>
+    <tr class="hi2"><td>ANA</td><td class="n">NH</td><td class="c">羽田・成田</td><td class="c">起点。成田＝メキシコシティ直行を持つ</td></tr>
+    <tr class="hi2"><td>ターキッシュ エアラインズ</td><td class="n">TK</td><td class="c">イスタンブール</td><td class="c">就航国数が世界最多。この網の要</td></tr>
+    <tr class="hi2"><td>中国国際航空</td><td class="n">CA</td><td class="c">北京</td><td class="c">北京＝ウランバートル線を持つ唯一の実用経路</td></tr>
+    <tr class="hi2"><td>エバー航空</td><td class="n">BR</td><td class="c">台北</td><td class="c">台湾。日本の地方空港に厚い</td></tr>
+    <tr class="hi2"><td>TAPポルトガル航空</td><td class="n">TP</td><td class="c">リスボン</td><td class="c">大西洋横断の南ルート</td></tr>
+    <tr class="hi2"><td>ユナイテッド航空</td><td class="n">UA</td><td class="c">シカゴ・ニューアーク・ヒューストン</td><td class="c">北米の背骨。中米へも</td></tr>
+    <tr><td>ルフトハンザ</td><td class="n">LH</td><td class="c">フランクフルト・ミュンヘン</td><td class="c">欧州の中心</td></tr>
+    <tr><td>スイス インターナショナル</td><td class="n">LX</td><td class="c">チューリッヒ</td><td class="c">欧州</td></tr>
+    <tr><td>オーストリア航空</td><td class="n">OS</td><td class="c">ウィーン</td><td class="c">中欧</td></tr>
+    <tr><td>ブリュッセル航空</td><td class="n">SN</td><td class="c">ブリュッセル</td><td class="c">西アフリカに強い</td></tr>
+    <tr><td>ITAエアウェイズ</td><td class="n">AZ</td><td class="c">ローマ</td><td class="c">2026年4月加盟</td></tr>
+    <tr><td>LOTポーランド航空</td><td class="n">LO</td><td class="c">ワルシャワ</td><td class="c">中東欧</td></tr>
+    <tr><td>クロアチア航空</td><td class="n">OU</td><td class="c">ザグレブ</td><td class="c">アドリア海</td></tr>
+    <tr><td>エーゲ航空</td><td class="n">A3</td><td class="c">アテネ</td><td class="c">ギリシャの島々</td></tr>
+    <tr><td>エジプト航空</td><td class="n">MS</td><td class="c">カイロ</td><td class="c">北アフリカ。カイロ＝ニューヨーク直行も</td></tr>
+    <tr><td>エチオピア航空</td><td class="n">ET</td><td class="c">アディスアベバ</td><td class="c">サブサハラの要</td></tr>
+    <tr><td>南アフリカ航空</td><td class="n">SA</td><td class="c">ヨハネスブルク</td><td class="c">アフリカ南部</td></tr>
+    <tr><td>シンガポール航空</td><td class="n">SQ</td><td class="c">シンガポール</td><td class="c">東南アジア</td></tr>
+    <tr><td>タイ国際航空</td><td class="n">TG</td><td class="c">バンコク</td><td class="c">東南アジア</td></tr>
+    <tr><td>エア・インディア</td><td class="n">AI</td><td class="c">デリー</td><td class="c">南アジア</td></tr>
+    <tr><td>深圳航空</td><td class="n">ZH</td><td class="c">深圳</td><td class="c">中国国内</td></tr>
+    <tr><td>アシアナ航空</td><td class="n">OZ</td><td class="c">ソウル</td><td class="c">2026年12月17日で消滅</td></tr>
+    <tr><td>エア・カナダ</td><td class="n">AC</td><td class="c">トロント・バンクーバー</td><td class="c">北米北部</td></tr>
+    <tr><td>アビアンカ</td><td class="n">AV</td><td class="c">ボゴタ</td><td class="c">南米北部</td></tr>
+    <tr><td>コパ航空</td><td class="n">CM</td><td class="c">パナマ</td><td class="c">中米・カリブの結節点</td></tr>
+    <tr><td>ニュージーランド航空</td><td class="n">NZ</td><td class="c">オークランド</td><td class="c">南西太平洋</td></tr>
+  </table>
+  </div>
+
+  <h3>網の性格が違う</h3>
+  <p>加盟社を地図に落とすと、得意な場所がはっきり分かれます。</p>
+
+  <div class="key ow">
+    <p class="kh">ONEWORLD — 湾岸とオセアニアが厚い</p>
+    <p>カタール・オマーン・ロイヤルヨルダンで<b>中東が三重</b>。カンタスとフィジーで<b>南西太平洋</b>。イベリアとブリティッシュで<b>欧州から中南米</b>へ渡れる。弱点は<b>アフリカ</b>（モロッコとカタール経由しかない）と<b>中央アジア・モンゴル</b>で、ここは地図が白いままです。LATAMが2020年に抜けたので、南米も自社網ではなくイベリア・アメリカン経由になります。</p>
+  </div>
+
+  <div class="key sa">
+    <p class="kh">STAR ALLIANCE — 穴が最も少ない</p>
+    <p>ターキッシュが単独で世界最多の国に飛ぶので、<b>地図の白い部分がいちばん小さい</b>。エチオピア・南アフリカ・エジプト・ブリュッセルで<b>アフリカが四重</b>。コパとアビアンカで<b>中米カリブ</b>。中国国際航空の北京＝ウランバートル線が、<b>モンゴルへの唯一の実用的な入口</b>になります。弱点は湾岸（ドーハ・ドバイに強い会社がない）と豪州（ニュージーランド航空しかない）。</p>
+  </div>
+
+  <p>夢リストと突き合わせると、こうなります。<span class="em">エジプト・バスク・マヤはワンワールドで届く。モンゴルはスターアライアンスでしか届かない。</span>この時点で、二案の骨格はほぼ決まりました。</p>
+</div>
+</section>
+
+<!-- ============ Ⅱ 規則 ============ -->
+<section class="sec" id="rules">
+<div class="wrap">
+  <p class="sh">Ⅱ</p>
+  <h2>規則が、旅の形を決めている</h2>
+
+  <p>どちらの運賃も、共通して三つのことを要求します。<b>同じ国に戻ること</b>、<b>太平洋と大西洋をそれぞれ一度だけ渡ること</b>、<b>一方向に進みつづけること</b>。この三つが、世界一周を「本当に一周させる」装置です。</p>
+
+  <p>そして「一度だけ」が効いてきます。日本（アジア）を出て太平洋を渡ってしまうと、次に日本へ戻れるのは、大西洋を渡り、ヨーロッパから戻ってくる最後の一回だけ。<span class="em">途中で帰ってくるなら、まだ太平洋を渡っていないうち＝アジアの中を回っているうちしかない。</span></p>
+
+  <h3>決定的な差は、一行だけ</h3>
+
+  <div class="tbl">
+  <table>
+    <tr><th></th><th>ワンワールド・エクスプローラー</th><th>スターアライアンスRTW</th></tr>
+    <tr><td class="n">運賃の決まり方</td><td>訪れる<b>大陸の数</b>（3／4／5／6）</td><td>合計<b>マイル数</b>（29,000／34,000／39,000）</td></tr>
+    <tr><td class="n">起終点</td><td>同じ<b>都市</b>に戻る</td><td>同じ<b>国</b>に戻ればよい</td></tr>
+    <tr class="hi"><td class="n">出発国への出入り</td><td><b>国際線の出発1回・到着1回のみ</b></td><td><b>出発都市の通過は不可</b>／同一国内の途中降機は3回まで</td></tr>
+    <tr><td class="n">途中帰国</td><td>できない</td><td><b>できる（別の都市なら）</b></td></tr>
+    <tr><td class="n">区間数</td><td>3〜16区間</td><td>最大16クーポン</td></tr>
+    <tr><td class="n">大陸内の無料区間</td><td>北米6／他は各4</td><td>マイル数の枠内で自由</td></tr>
+    <tr><td class="n">途中降機</td><td>最低2回。出発大陸内は2回まで</td><td>2〜15回。1都市1回まで</td></tr>
+    <tr><td class="n">最低旅行日数</td><td>日本発は制限なし</td><td>ビジネスは10泊以上</td></tr>
+    <tr><td class="n">有効期間</td><td colspan="2">最初の出発から12か月</td></tr>
+    <tr class="hi"><td class="n">子ども運賃（2〜11歳）</td><td><b>全クラス75%</b></td><td>エコノミー／プレエコは75%、<b>ビジネス・ファーストは割引なし</b></td></tr>
+  </table>
+  </div>
+
+  <details>
+    <summary>規則の原文（要点）を開く</summary>
+    <div class="drawer">
+      <div class="gl"><b>ワンワールド・エクスプローラー（Rule 3015）</b><br>
+      「Only one international departure and one international arrival from/to the country of origin permitted.（出発国からの国際線出発と到着は各1回のみ）」<br>
+      「Travel may not be via the point of origin.（出発地点を経由してはならない）」<br>
+      「Travel must be via the Atlantic and Pacific Oceans and only one crossing of each ocean is permitted.」<br>
+      「A minimum of 3 and maximum of 16 segments... Free flight segments within each continent are limited as follows: Africa 4／Asia 4／Europe-Middle East 4／North America 6／South America 4／South West Pacific 4」<br>
+      「Maximum 2 stopovers permitted in the continent of origin.」<br>
+      「19. CHILDREN DISCOUNTS — Accompanied child 2-11: charge 75 percent of the fare.」</div>
+
+      <div class="gl"><b>大陸の定義（ワンワールド）</b><br>
+      ヨーロッパ・中東／アフリカ／アジア／南西太平洋／北米／南米の6つ。ただし内訳が独特です。<br>
+      ・<b>エジプト・リビア・スーダンは「中東」</b>＝ヨーロッパと同じ大陸に数えられる<br>
+      ・<b>モロッコ・アルジェリア・チュニジアは「ヨーロッパ」</b>（アフリカではない）<br>
+      ・<b>北米にはカリブ海・中米・パナマが含まれる</b>（メキシコもグアテマラも北米）<br>
+      この結果、カイロとビルバオとドーハは同じ1大陸、ユカタン半島とシカゴも同じ1大陸になります。</div>
+
+      <div class="gl"><b>スターアライアンスRTW（RWSTAR 1/2/3）</b><br>
+      「TRAVEL THROUGH THE CITY OF ORIGIN IS NOT PERMITTED.（出発都市の通過は認められない）」<br>
+      「NO MORE THAN 3 STOPOVERS PERMITTED IN ANY ONE COUNTRY WORLDWIDE（一国あたり途中降機3回まで）」<br>
+      「MAXIMUM OF ONE STOPOVER PERMITTED IN ANY ONE CITY.（1都市1回まで）」<br>
+      「TRAVEL MUST INCLUDE ONLY ONE TRANSATLANTIC ... AND ONLY ONE TRANSPACIFIC CROSSING. NOT MORE THAN ONE CROSSING MAY BE PERMITTED BETWEEN AREA 2 AND AREA 3.」<br>
+      「ITINERARY MAY REFLECT TRAVEL GREATER THAN ROUND THE WORLD PROVIDED IT IS NOT VIA THE POINT OF ORIGIN AND STILL TERMINATES IN THE COUNTRY OF ORIGIN.（出発地点を通らず出発国に戻るなら、一周を超える行程でもよい）」<br>
+      「FOR C- TYPE FARES: ACCOMPANIED CHILD 2-11 — NO DISCOUNT.（ビジネスに子ども割引なし）」<br>
+      「INTERMEDIATE SURFACE SECTORS PERMITTED AT PASSENGERS EXPENSE... NOT MORE THAN 5 SURFACE SECTORS ALLOWED.（陸路区間は自費で5回まで）」</div>
+
+      <p class="src">出典：oneworld Explorer Rule 3015（oneworld公開PDF）／STAR RTW 123 ASK6 Rule（Air New Zealand代理店向け公開PDF, Version 116）／Star Alliance公式の運賃説明ページ。運賃規則は改定されるため、発券時に最新版で再確認が必要。</p>
+    </div>
+  </details>
+
+  <h3>「羽田を出たら、羽田に戻るのは最後」は規則的に正しい</h3>
+
+  <p>スターアライアンスの条文は<b>都市</b>を禁じています。出発都市の通過は不可。だから羽田で始めたら、旅の途中で東京（羽田・成田は運賃上どちらも「東京」）に降りることはできません。</p>
+
+  <p>けれど<b>中部と関西は別の都市</b>です。名古屋に降り、一週間後に大阪から出る。これは規則上ふつうの途中降機で、一国あたり3回までの枠に収まります。名古屋から自宅へ帰る新幹線や国内線は<span class="em2">世界一周券の外側で別に買う</span>ので、券面の旅程が東京を通ることはありません。</p>
+
+  <div class="note">
+    <b>ここは白ではなく薄いグレー。</b>券面が東京を通らない以上、条文には触れていません。ただし「出発都市の通過禁止」の趣旨は、券を使って自宅へ帰ることの抑止にあります。実務上まず問題にならない組み方ですが、発券前にスターアライアンス加盟社の発券デスクで旅程を通しておくのが確実です。
+  </div>
+
+  <h3>大周回だけは、一週間にできない</h3>
+
+  <p>「一週間ごとに三度」という設計で、最後の一本だけがどうしても長くなります。理由は洋横断の回数制限です。</p>
+
+  <p>アメリカ大陸へ渡った瞬間に太平洋の1回を使い切ります。そこから日本へ戻るには、大西洋を渡ってヨーロッパへ行き、ヨーロッパ＝アジア間の1回を使って帰ってくるしかない。<span class="em2">つまり最後の一本は、必ずアメリカとヨーロッパの両方を含む</span>。これを一週間に押し込むのは、5歳と3歳を連れて現実的ではありません。</p>
+
+  <p>逆に言えば、<b>アジアの中を回っているうちは何度でも帰れる</b>。だから第1週と第2週をアジア・太平洋に置き、第3週以降を大周回にあてる。これが規則から導かれる唯一の形です。</p>
+</div>
+</section>
+
+<!-- ============ Ⅲ プランA ============ -->
+<section class="sec alt" id="plana">
+<div class="wide">
+  <div class="planhead">
+  <p class="sh ow">PLAN A ／ ONEWORLD EXPLORER</p>
+  <span class="badge ow">4大陸・ビジネス（DONE4）・西回り</span>
+  <h2>人はなぜ、積むのか。</h2>
+  </div>
+</div>
+<div class="wrap">
+  <p class="lede">ギザのピラミッド、チチェン・イッツァ、マチュピチュ、シカゴの高層ビル、ビルバオのグッゲンハイム。会ったこともない人たちが、四千五百年にわたって、それぞれの場所で石と鉄を積み上げました。<span class="em">その現物の前に、順番に立つ。</span></p>
+
+  <p>サグラダ・ファミリアで弦に効いた「もの型」の続きです。ひとつではなく五つ、しかも大陸をまたいで並べると、「人間はこういうことをする生き物だ」という一段上の理解に届く可能性があります。</p>
+
+  <h3>ルート</h3>
+  <p class="cap">地球を出発地の経度で切り開いて、西向きに一周ぶん伸ばした図。左端と右端がどちらも羽田で、線が一度も戻らないことが「一方向に進みつづける」規則そのものです。</p>
+
+  <div class="fig scroller">
+  <svg viewBox="0 0 1000 340" role="img" aria-label="プランAのルート図">
+    <defs>
+      <linearGradient id="owline" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#E9A94B" stop-opacity=".55"/>
+        <stop offset="100%" stop-color="#E9A94B" stop-opacity=".95"/>
+      </linearGradient>
+    </defs>
+    <!-- graticule -->
+    <rect x="30" y="30" width="940" height="240" fill="#0d1524" stroke="#25314A"/>
+    <line x1="30" y1="106" x2="970" y2="106" stroke="#1D2739" stroke-width="1"/>
+    <line x1="30" y1="206" x2="970" y2="206" stroke="#1D2739" stroke-width="1"/>
+    <text x="34" y="102" fill="#4E5C74" font-family="Inter" font-size="9">北緯30°</text>
+    <text x="34" y="202" fill="#4E5C74" font-family="Inter" font-size="9">赤道</text>
+    <!-- ocean bands -->
+    <rect x="404" y="30" width="192" height="240" fill="#12203a" opacity=".55"/>
+    <rect x="624" y="30" width="346" height="240" fill="#12203a" opacity=".55"/>
+    <text x="500" y="290" fill="#7E8DA6" font-family="Inter" font-size="10" text-anchor="middle">大西洋 — 1回だけ</text>
+    <text x="797" y="290" fill="#7E8DA6" font-family="Inter" font-size="10" text-anchor="middle">太平洋 — 1回だけ</text>
+    <!-- route -->
+    <path d="M30 92 L260 125 L313 110 L404 77 L403 67 L404 77 L596 245 L605 124 L622 139 L624 72 L970 92"
+      fill="none" stroke="url(#owline)" stroke-width="2.2" stroke-linejoin="round"/>
+    <!-- dots -->
+    <g fill="#E9A94B">
+      <circle cx="30" cy="92" r="5"/><circle cx="260" cy="125" r="4"/><circle cx="313" cy="110" r="5"/>
+      <circle cx="404" cy="77" r="3"/><circle cx="403" cy="67" r="5"/>
+      <circle cx="596" cy="245" r="5"/><circle cx="605" cy="124" r="3"/>
+      <circle cx="622" cy="139" r="5"/><circle cx="624" cy="72" r="5"/><circle cx="970" cy="92" r="5"/>
+    </g>
+    <g font-family="Zen Kaku Gothic New" font-size="11" fill="#DCE3EE">
+      <text x="30" y="78" text-anchor="start">羽田</text>
+      <text x="260" y="145" text-anchor="middle">ドーハ</text>
+      <text x="313" y="98" text-anchor="middle">カイロ</text>
+      <text x="399" y="54" text-anchor="middle">ビルバオ</text>
+      <text x="596" y="265" text-anchor="middle">リマ／クスコ</text>
+      <text x="600" y="112" text-anchor="end">マイアミ</text>
+      <text x="640" y="160" text-anchor="middle">ユカタン</text>
+      <text x="640" y="60" text-anchor="start">シカゴ</text>
+      <text x="970" y="78" text-anchor="end">羽田</text>
+    </g>
+    <text x="500" y="316" fill="#4E5C74" font-family="Inter" font-size="9.5" text-anchor="middle">← 西向き。横軸は経度360°ぶん（羽田を起点に一周）／縦軸は緯度</text>
+  </svg>
+  </div>
+
+  <h3>区間表　10区間</h3>
+  <div class="tbl">
+  <table>
+    <tr><th>#</th><th>区間</th><th>運航</th><th>目安</th><th>規則上の意味</th></tr>
+    <tr class="hi"><td class="n">1</td><td>羽田 → ドーハ</td><td class="n">QR</td><td class="n">11h30</td><td class="c">アジア→欧中東。<b>唯一の国際線出発</b></td></tr>
+    <tr><td class="n">2</td><td>ドーハ → カイロ</td><td class="n">QR</td><td class="n">3h30</td><td class="c">欧中東 内 1／4</td></tr>
+    <tr><td class="n">3</td><td>カイロ → マドリード</td><td class="n">IB</td><td class="n">5h30</td><td class="c">欧中東 内 2／4</td></tr>
+    <tr><td class="n">4</td><td>マドリード → ビルバオ</td><td class="n">IB</td><td class="n">1h10</td><td class="c">欧中東 内 3／4</td></tr>
+    <tr><td class="n">5</td><td>ビルバオ → マドリード</td><td class="n">IB</td><td class="n">1h10</td><td class="c">欧中東 内 4／4（上限）</td></tr>
+    <tr class="hi"><td class="n">6</td><td>マドリード → リマ</td><td class="n">IB</td><td class="n">12h20</td><td class="c"><b>大西洋横断・1回のみ</b></td></tr>
+    <tr><td class="n">7</td><td>リマ → マイアミ</td><td class="n">AA</td><td class="n">5h40</td><td class="c">南米→北米</td></tr>
+    <tr><td class="n">8</td><td>マイアミ → カンクン</td><td class="n">AA</td><td class="n">1h50</td><td class="c">北米 内 1／6</td></tr>
+    <tr><td class="n">9</td><td>カンクン → シカゴ</td><td class="n">AA</td><td class="n">3h50</td><td class="c">北米 内 2／6</td></tr>
+    <tr class="hi"><td class="n">10</td><td>シカゴ → 羽田</td><td class="n">JL</td><td class="n">13h00</td><td class="c"><b>太平洋横断・1回のみ／唯一の国際線到着</b></td></tr>
+  </table>
+  </div>
+
+  <div class="key ow">
+    <p class="kh">RULE CHECK</p>
+    <p><b>大陸＝4</b>　アジア（起点）／ヨーロッパ・中東（ドーハ＋カイロ＋スペイン）／南米（ペルー）／北米（メキシコ＋米国）。ドーハもカイロもスペインも規則上は同じ1大陸なので、三か国まわっても大陸数は増えません。</p>
+    <p><b>区間＝10／16</b>　余白6。<b>欧中東の無料区間＝4／4</b>（ここだけ上限ぴったり）。北米＝2／6。</p>
+    <p><b>洋横断</b>　大西洋1回（MAD-LIM）・太平洋1回（ORD-HND）。方向はTC3→TC2→TC1→TC3の連続西回りで、逆流なし。</p>
+    <p><b>出発国</b>　国際線の出発1回（羽田発）・到着1回（羽田着）。<b>途中で日本には戻れません。</b></p>
+    <p><b>アジア内の途中降機</b>　0回（上限2）。使わずに余らせています。</p>
+  </div>
+
+  <div class="note">
+    <b>唯一きついのが欧中東の4区間。</b>ここに余裕がないので、たとえばリスボンを足したくなったら、ビルバオ→マドリードを陸路（Renfe約5時間、または車）に振り替えて1枠を空けます。陸路区間は規則で認められていて、大陸内の無料フライト枠を消費しません。
+  </div>
+
+  <h3>日程　約31日</h3>
+  <div class="tbl">
+  <table>
+    <tr><th>泊</th><th>場所</th><th>中身</th></tr>
+    <tr><td class="n">2泊</td><td>ドーハ</td><td class="c">イスラーム美術館（I.M.ペイ）、カタール国立博物館（ジャン・ヌーヴェル、砂漠のバラ）、スーク・ワキーフ。羽田から11時間半、時差6時間の軟着陸として置く</td></tr>
+    <tr><td class="n">5泊</td><td>カイロ</td><td class="c">大エジプト博物館（ギザ台地の隣）、ギザ三大ピラミッド、サッカラの階段ピラミッド（前2650年・世界最古の石造建築）、ハン・ハリーリ。別買いのエジプト航空国内線でルクソール（王家の谷・カルナック）を2泊足せる</td></tr>
+    <tr><td class="n">5泊</td><td>ビルバオ／サン・セバスティアン</td><td class="c">グッゲンハイム（ゲーリー、1997）、ビルバオ旧市街、サン・セバスティアンのピンチョス（子が自分で皿を選べる）、ゲタリアの漁港、バスクの陶器と木工</td></tr>
+    <tr><td class="n">8泊</td><td>リマ ＋ 聖なる谷</td><td class="c">リマ2泊（ラルコ博物館・食）。別買いの国内線でクスコへ飛び、<b>クスコに泊まらずそのまま聖なる谷（ウルバンバ 約2,870m）へ下りる</b>。マチュピチュ、オリャンタイタンボ、ピサック</td></tr>
+    <tr><td class="n">1泊</td><td>マイアミ</td><td class="c">乗り継ぎ。時差調整だけ</td></tr>
+    <tr><td class="n">5泊</td><td>ユカタン（メリダ拠点）</td><td class="c">チチェン・イッツァ（ククルカンのピラミッド）、ウシュマル、セノーテ。メリダの市場と、現代のマヤ語話者の村</td></tr>
+    <tr><td class="n">3泊</td><td>シカゴ</td><td class="c">建築リバークルーズ（船から見上げる形式が子に効く）、ロビー邸（F.L.ライト）、シカゴ美術館、クラウド・ゲート</td></tr>
+  </table>
+  </div>
+
+  <h3>五つの「積む」を、同じ時間軸に置く</h3>
+  <p class="cap">アマンバグの副読本と同じやり方で、旅先の建造年と、そのとき日本で起きていたことを並走させた図。</p>
+
+  <div class="fig scroller">
+  <svg viewBox="0 0 1000 300" role="img" aria-label="建造年の並走図">
+    <rect x="0" y="0" width="1000" height="300" fill="none"/>
+    <!-- axis: broken scale -->
+    <line x1="40" y1="150" x2="960" y2="150" stroke="#25314A" stroke-width="1"/>
+    <g font-family="Inter" font-size="9" fill="#5D6B84" text-anchor="middle">
+      <text x="120" y="172">前2650</text><text x="230" y="172">前2500</text>
+      <text x="440" y="172">後850</text><text x="640" y="172">1450</text>
+      <text x="820" y="172">1885</text><text x="940" y="172">1997</text>
+    </g>
+    <!-- break marks -->
+    <g stroke="#25314A" stroke-width="1">
+      <path d="M330 143 l8 14 M338 143 l8 14" fill="none"/>
+    </g>
+    <!-- upper: monuments -->
+    <g>
+      <line x1="120" y1="150" x2="120" y2="96" stroke="#E9A94B" stroke-width="1"/><circle cx="120" cy="92" r="5" fill="#E9A94B"/>
+      <line x1="230" y1="150" x2="230" y2="70" stroke="#E9A94B" stroke-width="1"/><circle cx="230" cy="66" r="6" fill="#E9A94B"/>
+      <line x1="440" y1="150" x2="440" y2="96" stroke="#E9A94B" stroke-width="1"/><circle cx="440" cy="92" r="5" fill="#E9A94B"/>
+      <line x1="640" y1="150" x2="640" y2="70" stroke="#E9A94B" stroke-width="1"/><circle cx="640" cy="66" r="5" fill="#E9A94B"/>
+      <line x1="820" y1="150" x2="820" y2="96" stroke="#E9A94B" stroke-width="1"/><circle cx="820" cy="92" r="5" fill="#E9A94B"/>
+      <line x1="940" y1="150" x2="940" y2="70" stroke="#E9A94B" stroke-width="1"/><circle cx="940" cy="66" r="5" fill="#E9A94B"/>
+    </g>
+    <g font-family="Zen Kaku Gothic New" font-size="11" fill="#E7EAF0" text-anchor="middle">
+      <text x="120" y="80">サッカラ</text>
+      <text x="230" y="54">ギザ</text>
+      <text x="440" y="80">チチェン・イッツァ</text>
+      <text x="640" y="54">マチュピチュ</text>
+      <text x="820" y="80">シカゴ</text>
+      <text x="940" y="54">ビルバオ</text>
+    </g>
+    <g font-family="Zen Kaku Gothic New" font-size="9.5" fill="#8B98AE" text-anchor="middle">
+      <text x="120" y="30">階段ピラミッド</text>
+      <text x="230" y="38">大ピラミッド</text>
+      <text x="440" y="30">ククルカン</text>
+      <text x="640" y="38">インカの尾根</text>
+      <text x="820" y="30">初の鉄骨高層</text>
+      <text x="940" y="38">グッゲンハイム</text>
+    </g>
+    <!-- lower: Japan -->
+    <g stroke="#5D6B84" stroke-width="1">
+      <line x1="120" y1="150" x2="120" y2="204"/><line x1="230" y1="150" x2="230" y2="228"/>
+      <line x1="440" y1="150" x2="440" y2="204"/><line x1="640" y1="150" x2="640" y2="228"/>
+      <line x1="820" y1="150" x2="820" y2="204"/><line x1="940" y1="150" x2="940" y2="228"/>
+    </g>
+    <g fill="#7E8DA6">
+      <circle cx="120" cy="208" r="3.5"/><circle cx="230" cy="232" r="3.5"/><circle cx="440" cy="208" r="3.5"/>
+      <circle cx="640" cy="232" r="3.5"/><circle cx="820" cy="208" r="3.5"/><circle cx="940" cy="232" r="3.5"/>
+    </g>
+    <g font-family="Zen Kaku Gothic New" font-size="10" fill="#93A0B5" text-anchor="middle">
+      <text x="120" y="226">縄文早期</text>
+      <text x="230" y="250">縄文前期</text>
+      <text x="440" y="226">平安初期</text>
+      <text x="640" y="250">室町・応仁の直前</text>
+      <text x="820" y="226">明治18年</text>
+      <text x="940" y="250">平成9年</text>
+    </g>
+    <text x="40" y="285" font-family="Inter" font-size="9" fill="#5D6B84">上＝旅先で積まれたもの／下＝そのとき日本で起きていたこと。横軸は等間隔ではない（前2500年と1885年のあいだを圧縮している）</text>
+  </svg>
+  </div>
+
+  <details>
+    <summary>年代の根拠</summary>
+    <div class="drawer">
+      <div class="gl"><b>サッカラ 階段ピラミッド</b> 第3王朝ジェセル王、前2650年頃。イムホテプの設計とされ、現存する世界最古級の石造建造物。</div>
+      <div class="gl"><b>ギザ 大ピラミッド</b> 第4王朝クフ王、前2560年頃（前2500年前後とされる幅がある）。</div>
+      <div class="gl"><b>チチェン・イッツァ ククルカンの神殿</b> 9〜12世紀。マヤ後古典期。春分秋分に階段へ蛇の影が下りる設計で知られる。</div>
+      <div class="gl"><b>マチュピチュ</b> 15世紀半ば、インカのパチャクテク帝の時代。1450年前後の造営とされる。</div>
+      <div class="gl"><b>シカゴ ホーム・インシュアランス・ビル</b> 1885年。鉄骨のフレームで荷重を支えた最初期の高層建築とされ、「摩天楼の出発点」と呼ばれる（同時代に競合する主張もある）。現存せず1931年に解体。現地で見るのはウィリス・タワーやトリビューン・タワー、そしてF.L.ライトの住宅群。</div>
+      <div class="gl"><b>グッゲンハイム・ビルバオ</b> 1997年開館、フランク・ゲーリー設計。チタンの曲面。衰退した工業都市が美術館一つで再生した例として語られる。</div>
+      <p class="src">出典：各建造物の一般的な年代比定（ブリタニカ・ユネスコ世界遺産の記載等）。古代の年代には研究による幅がある。日本側の対応年代は通説。</p>
+    </div>
+  </details>
+
+  <h3>健康と衛生の手当て</h3>
+  <div class="tbl">
+  <table>
+    <tr><th>場所</th><th>懸念</th><th>手当て</th></tr>
+    <tr><td class="n">カイロ</td><td class="c">水系の下痢、砂塵とAQI</td><td class="c">インドで確立した装備がそのまま効く（飲料は封のあるボトルのみ、生野菜と氷を避ける、手指消毒）。砂塵はマスクと空気清浄機の宿手配。ゆか子さんと弦のアレルギーがあるので羽毛不使用の寝具依頼も同じ運用</td></tr>
+    <tr class="hi"><td class="n">聖なる谷</td><td class="c">高山病。ここが本件で最大のリスク</td><td class="c"><b>クスコ（3,400m）に泊まらない。</b>着いたその足で聖なる谷（ウルバンバ 約2,870m）まで下り、最初の48時間は動きを落とす。マチュピチュ（2,430m）はさらに低い。クスコ観光は帰りに、順応後の半日だけ。渡航前に小児科でアセタゾラミドの適否を相談。宿は酸素供給のある宿を選ぶ</td></tr>
+    <tr><td class="n">ユカタン</td><td class="c">暑熱、蚊媒介感染症</td><td class="c">11〜3月の乾季に当てる。虫除けと長袖、セノーテは午前に</td></tr>
+    <tr><td class="n">通し</td><td class="c">31日間の疲労蓄積</td><td class="c">拠点は7か所に絞り、平均4.4泊。移動日は10日。ビジネスは水平ベッドが取れるので、長距離の夜は睡眠に使える</td></tr>
+  </table>
+  </div>
+
+  <h3>時期</h3>
+  <p>ここが弱点です。エジプトとユカタンは<b>11〜3月</b>が快適で、ペルーの乾季は<b>5〜9月</b>。真逆です。全部を満点にする月はありません。</p>
+  <p>いちばん均す月は<span class="em">3月</span>。カイロ25℃、ユカタン乾季の終わり、ペルーは雨季の末（マチュピチュは行けるが雨は覚悟）、バスクは14℃で雨、シカゴはまだ寒い。次点が<span class="em">11月</span>で、ペルーが雨季の入り口になります。</p>
+  <div class="note">
+    ペルーを外して<b>南アフリカ（ケープタウン）</b>を4つめの大陸にすると、11〜3月が全部そろいます。カタール航空がドーハ＝ケープタウンを飛んでいるので接続も自然。ただしマチュピチュは消えます。<b>「積む」の系列を優先するか、季節の整合を優先するか</b>の選択です。
+  </div>
+
+  <h3>費用の目安</h3>
+  <div class="tbl">
+  <table>
+    <tr><th>項目</th><th>単価</th><th>4人合計</th></tr>
+    <tr><td>基本運賃 4大陸ビジネス（DONE4）大人</td><td class="n">¥936,500 × 2</td><td class="n">¥1,873,000</td></tr>
+    <tr class="hi"><td>同 子ども2〜11歳（<b>75%</b>）</td><td class="n">¥702,375 × 2</td><td class="n">¥1,404,750</td></tr>
+    <tr><td>燃油サーチャージ・諸税</td><td class="n">約¥18〜20万 × 4</td><td class="n">¥720,000〜810,000</td></tr>
+    <tr class="hi"><td><b>航空券 小計</b></td><td class="n"></td><td class="n"><b>約¥400万</b></td></tr>
+    <tr><td>別買いの国内線（クスコ往復・ルクソール往復）</td><td class="n">4人</td><td class="n">¥25〜40万</td></tr>
+    <tr><td>宿・地上・食（31泊）</td><td class="n">1日6〜12万</td><td class="n">¥190〜370万</td></tr>
+    <tr class="hi"><td><b>総額の見込み</b></td><td class="n"></td><td class="n"><b>約¥620〜810万</b></td></tr>
+  </table>
+  </div>
+  <p class="cap">基本運賃は2026年1月時点の公表値。燃油・諸税は変動が大きく、発券日に確定する。宿の幅は、アマン級を混ぜるか否かで倍近く動く。</p>
+</div>
+</section>
+
+<!-- ============ Ⅳ プランB ============ -->
+<section class="sec" id="planb">
+<div class="wide">
+  <div class="planhead">
+  <p class="sh sa">PLAN B ／ STAR ALLIANCE RTW</p>
+  <span class="badge sa">三度、日本に帰る・西回り・11区間</span>
+  <h2>人はなぜ、動くのか。</h2>
+  </div>
+</div>
+<div class="wrap">
+  <p class="lede">草原を移動しつづける人たち（モンゴル）、東と西の交差点に住みついた人たち（イスタンブール）、海へ出ていった人たち（リスボン）、海を渡ってきた人たち（ニューヨーク）、そして二つが混ざった街（メキシコシティ）。<span class="em2">移動そのものを主題にした一周です。</span></p>
+
+  <p>この案の本体は、行き先より<b>リズム</b>にあります。一週間出て、家に帰る。また一週間出て、帰る。そのあと大周回に出る。子どもは洗濯された服で次に出発でき、習い事も宿題も切れません。</p>
+
+  <h3>ルート</h3>
+  <p class="cap">同じ「開いた地球」の図法。左端に日本まわりの往復が密集し、そこから一気に西へ伸びる形が、この案の性格をそのまま表しています。</p>
+
+  <div class="fig scroller">
+  <svg viewBox="0 0 1000 340" role="img" aria-label="プランBのルート図">
+    <defs>
+      <linearGradient id="saline" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#5FC7D6" stop-opacity=".55"/>
+        <stop offset="100%" stop-color="#5FC7D6" stop-opacity=".95"/>
+      </linearGradient>
+    </defs>
+    <rect x="30" y="30" width="940" height="240" fill="#0d1524" stroke="#25314A"/>
+    <line x1="30" y1="110" x2="970" y2="110" stroke="#1D2739"/>
+    <line x1="30" y1="220" x2="970" y2="220" stroke="#1D2739"/>
+    <text x="34" y="106" fill="#4E5C74" font-family="Inter" font-size="9">北緯40°</text>
+    <text x="34" y="216" fill="#4E5C74" font-family="Inter" font-size="9">北緯20°</text>
+    <rect x="419" y="30" width="170" height="240" fill="#12203a" opacity=".55"/>
+    <rect x="654" y="30" width="316" height="240" fill="#12203a" opacity=".55"/>
+    <text x="504" y="290" fill="#7E8DA6" font-family="Inter" font-size="10" text-anchor="middle">大西洋 — 1回だけ</text>
+    <text x="812" y="290" fill="#7E8DA6" font-family="Inter" font-size="10" text-anchor="middle">太平洋 — 1回だけ</text>
+    <!-- home band -->
+    <rect x="30" y="30" width="120" height="240" fill="#5FC7D6" opacity=".05"/>
+    <text x="90" y="262" fill="#5FC7D6" font-family="Inter" font-size="9.5" text-anchor="middle" opacity=".75">HOME ORBIT</text>
+    <path d="M30 134 L78 190 L38 137 L91 110 L116 68 L91 110 L42 140 L320 103 L419 117 L589 106 L654 220 L968 133"
+      fill="none" stroke="url(#saline)" stroke-width="2.2" stroke-linejoin="round"/>
+    <g fill="#5FC7D6">
+      <circle cx="30" cy="134" r="5"/><circle cx="78" cy="190" r="5"/><circle cx="38" cy="137" r="5"/>
+      <circle cx="91" cy="110" r="5"/><circle cx="116" cy="68" r="5"/><circle cx="42" cy="140" r="5"/>
+      <circle cx="320" cy="103" r="5"/><circle cx="419" cy="117" r="5"/><circle cx="589" cy="106" r="5"/>
+      <circle cx="654" cy="220" r="5"/><circle cx="968" cy="133" r="5"/>
+    </g>
+    <g font-family="Zen Kaku Gothic New" font-size="11" fill="#DCE3EE">
+      <text x="30" y="122" text-anchor="start">羽田</text>
+      <text x="86" y="210" text-anchor="middle">台北</text>
+      <text x="128" y="54" text-anchor="middle">ウランバートル</text>
+      <text x="152" y="122" text-anchor="start">北京</text>
+      <text x="320" y="90" text-anchor="middle">イスタンブール</text>
+      <text x="419" y="138" text-anchor="middle">リスボン</text>
+      <text x="589" y="92" text-anchor="middle">ニューヨーク</text>
+      <text x="654" y="242" text-anchor="middle">メキシコシティ</text>
+      <text x="968" y="120" text-anchor="end">成田</text>
+    </g>
+    <text x="500" y="316" fill="#4E5C74" font-family="Inter" font-size="9.5" text-anchor="middle">← 西向き。左端の帯（HOME ORBIT）の中で、名古屋・関西に二度帰ってくる</text>
+  </svg>
+  </div>
+
+  <p class="cap" style="margin-top:22px">左端の密集部分を拡大すると、こうなっています。</p>
+  <div class="fig scroller">
+  <svg viewBox="0 0 1000 220" role="img" aria-label="日本まわりの拡大図">
+    <rect x="30" y="20" width="940" height="150" fill="#0d1524" stroke="#25314A"/>
+    <!-- week bands -->
+    <rect x="30" y="20" width="300" height="150" fill="#5FC7D6" opacity=".045"/>
+    <rect x="360" y="20" width="420" height="150" fill="#5FC7D6" opacity=".045"/>
+    <text x="42" y="164" fill="#5FC7D6" font-family="Zen Kaku Gothic New" font-size="10.5" opacity=".8">第1週</text>
+    <text x="372" y="164" fill="#5FC7D6" font-family="Zen Kaku Gothic New" font-size="10.5" opacity=".8">第2週</text>
+    <text x="792" y="164" fill="#5FC7D6" font-family="Zen Kaku Gothic New" font-size="10.5" opacity=".8">第3週〜</text>
+    <path d="M70 100 L200 140 L330 100 L470 78 L600 55 L720 78 L830 102 L950 96" fill="none" stroke="#5FC7D6" stroke-width="2.2" stroke-opacity=".85"/>
+    <g fill="#5FC7D6">
+      <circle cx="70" cy="100" r="5.5"/><circle cx="200" cy="140" r="5.5"/><circle cx="330" cy="100" r="6.5"/>
+      <circle cx="470" cy="78" r="5"/><circle cx="600" cy="55" r="5.5"/><circle cx="720" cy="78" r="5"/>
+      <circle cx="830" cy="102" r="6.5"/><circle cx="950" cy="96" r="4"/>
+    </g>
+    <g font-family="Zen Kaku Gothic New" font-size="12" fill="#E7EAF0" text-anchor="middle">
+      <text x="70" y="86">羽田</text><text x="200" y="162">台北</text><text x="330" y="86">中部</text>
+      <text x="470" y="64">北京</text><text x="600" y="41">ウランバートル</text><text x="720" y="64">北京</text>
+      <text x="830" y="88">関西</text><text x="962" y="82" text-anchor="end">イスタンブールへ</text>
+    </g>
+    <g font-family="Zen Kaku Gothic New" font-size="10" fill="#8B98AE" text-anchor="middle">
+      <text x="330" y="128">帰国① 家に一週間</text>
+      <text x="830" y="130">帰国② 家に一週間</text>
+    </g>
+    <text x="500" y="200" fill="#5D6B84" font-family="Inter" font-size="9.5" text-anchor="middle">中部と関西に降りるかぎり、券面は一度も「東京」を通らない。だから規則に触れない</text>
+  </svg>
+  </div>
+
+  <h3>区間表　11区間</h3>
+  <div class="tbl">
+  <table>
+    <tr><th>週</th><th>#</th><th>区間</th><th>運航</th><th>目安</th><th>規則上の意味</th></tr>
+    <tr class="hi2"><td class="n">1</td><td class="n">1</td><td>羽田 → 台北</td><td class="n">BR / NH</td><td class="n">3h50</td><td class="c">エリア3内</td></tr>
+    <tr class="hi2"><td class="n">1</td><td class="n">2</td><td>台北 → 中部</td><td class="n">BR</td><td class="n">3h00</td><td class="c"><b>帰国①</b>　日本の途中降機 1／3</td></tr>
+    <tr><td class="n">2</td><td class="n">3</td><td>中部 → 北京</td><td class="n">CA</td><td class="n">3h40</td><td class="c">乗継</td></tr>
+    <tr><td class="n">2</td><td class="n">4</td><td>北京 → ウランバートル</td><td class="n">CA</td><td class="n">2h10</td><td class="c">モンゴル</td></tr>
+    <tr><td class="n">2</td><td class="n">5</td><td>ウランバートル → 北京</td><td class="n">CA</td><td class="n">2h10</td><td class="c">北京で途中降機</td></tr>
+    <tr class="hi2"><td class="n">2</td><td class="n">6</td><td>北京 → 関西</td><td class="n">CA</td><td class="n">3h20</td><td class="c"><b>帰国②</b>　日本の途中降機 2／3</td></tr>
+    <tr class="hi2"><td class="n">3</td><td class="n">7</td><td>関西 → イスタンブール</td><td class="n">TK 87</td><td class="n">12h50</td><td class="c"><b>エリア3→2の唯一の横断</b></td></tr>
+    <tr><td class="n">4</td><td class="n">8</td><td>イスタンブール → リスボン</td><td class="n">TK</td><td class="n">4h50</td><td class="c">エリア2内</td></tr>
+    <tr class="hi2"><td class="n">5</td><td class="n">9</td><td>リスボン → ニューアーク</td><td class="n">TP</td><td class="n">8h00</td><td class="c"><b>大西洋横断・1回のみ</b></td></tr>
+    <tr><td class="n">6</td><td class="n">10</td><td>ニューアーク → メキシコシティ</td><td class="n">UA</td><td class="n">5h20</td><td class="c">エリア1内</td></tr>
+    <tr class="hi2"><td class="n">6</td><td class="n">11</td><td>メキシコシティ → 成田</td><td class="n">NH 179</td><td class="n">14h45</td><td class="c"><b>太平洋横断・1回のみ／帰国③</b></td></tr>
+  </table>
+  </div>
+
+  <div class="note">
+    <b>最後が成田になります。</b>ANAのメキシコシティ線は成田発着だからです。運賃規則では羽田と成田はどちらも「東京」なので、羽田を出て成田に帰るのは条件を満たします。羽田に着けたい場合は<b>メキシコシティ→サンフランシスコ（UA）→羽田（NH/UA）</b>にできますが、12区間になり、長旅の最終日に乗り継ぎが1回増えます。<b>ノンストップで帰れる価値のほうが大きい</b>と見て、成田着を本線にしました。<br>
+    NH179は<b>メキシコシティ深夜1時発、成田06:35着（翌日）</b>のANA最長路線。6週間の最後に、子どもが丸ごと眠って朝に着く便になります。
+  </div>
+
+  <div class="key sa">
+    <p class="kh">RULE CHECK</p>
+    <p><b>クーポン＝11／16</b>　余白5。<b>途中降機＝9／15</b>（台北・ウランバートル・北京・中部・関西・イスタンブール・リスボン・ニューヨーク・メキシコシティ）。</p>
+    <p><b>日本の途中降機＝2</b>（中部・関西）。上限は3なので、<b>あと1回帰ってこられる余白がある</b>。最終の成田は旅の終点なので途中降機に数えません。</p>
+    <p><b>1都市1回</b>　どの都市も途中降機は1回だけ。中部・関西・成田を別々に使うのはこの制約のためでもあります。</p>
+    <p><b>横断</b>　エリア3→2が1回（関西＝イスタンブール）、大西洋1回（リスボン＝ニューアーク）、太平洋1回（メキシコシティ＝成田）。規則の上限にそれぞれちょうど一致。</p>
+    <p><b>出発都市の通過</b>　なし。券面に東京が出るのは最初と最後だけ。</p>
+    <p><b>合計マイル＝約26,400</b>　RWSTAR1（29,000マイル）の枠内。余白が約2,600マイルあるので、発券後にパナマ（コパ航空）などを足す変更余地が残ります（変更手数料USD125）。</p>
+  </div>
+
+  <details>
+    <summary>マイル計算の内訳</summary>
+    <div class="drawer">
+      <p>大圏距離による概算（マイル）。実際の運賃計算はTPM（発行区間マイル）で行うため数%増えることがある。</p>
+      <div class="gl">羽田→台北 1,330／台北→中部 1,270／中部→北京 1,190／北京→ウランバートル 750／ウランバートル→北京 750／北京→関西 1,130</div>
+      <div class="gl">関西→イスタンブール 5,530／イスタンブール→リスボン 1,990／リスボン→ニューアーク 3,370／ニューアーク→メキシコシティ 2,090／メキシコシティ→成田 6,990</div>
+      <div class="gl"><b>合計 約26,390マイル。</b>RWSTAR1の上限29,000に対して約2,600の余裕。TPMが数%上振れしても枠内に収まる見込み。</div>
+      <p class="src">プランAでも参考までに計算すると約27,500マイルだが、ワンワールドは大陸数で運賃が決まるためマイルは運賃に影響しない。</p>
+    </div>
+  </details>
+
+  <h3>週ごとのかたち　通算約6週間</h3>
+  <div class="tbl">
+  <table>
+    <tr><th>期間</th><th>場所</th><th>中身</th></tr>
+    <tr class="hi2"><td class="n">第1週<br>5泊</td><td>台湾</td><td class="c">鶯歌で陶芸（自分たちのランキングで挙げていた工房の街）、平溪の天燈、故宮、九份。飛行時間3時間50分、衛生★★★★★。<b>この案が成立するかを最小コストで試す週</b>。うまくいかなければ、ここで組み替えられる</td></tr>
+    <tr><td class="n">中1週</td><td><b>東京の家</b></td><td class="c">洗濯、習い事、仕事。弦のお囃子も飛ばずに済む</td></tr>
+    <tr class="hi2"><td class="n">第2週<br>7泊</td><td>モンゴル ＋ 北京</td><td class="c">テレルジのゲルに4泊。遊牧民の家族と過ごす（馬、羊、乳製品、馬頭琴）。フェルト作り。北京に2泊して慕田峪の長城と故宮。<b>人型と、もの型の両極を一週で並べる</b></td></tr>
+    <tr><td class="n">中1週</td><td><b>東京の家</b></td><td class="c">同上。ここで大周回の荷物に詰め替える</td></tr>
+    <tr class="hi2"><td class="n">第3週<br>4泊</td><td>イスタンブール</td><td class="c">アヤソフィア、ブルーモスク、地下宮殿、グランドバザール。ボスポラス海峡のフェリーで<b>アジアからヨーロッパへ船で渡る</b>（境界を体で通る体験）</td></tr>
+    <tr class="hi2"><td class="n">第4週<br>4泊</td><td>リスボン</td><td class="c">ベレンの塔、発見のモニュメント、ジェロニモス修道院。<b>アズレージョの絵付け体験（3歳から）</b>はランキングに自分たちで書いていたもの。トラム28、シントラ</td></tr>
+    <tr class="hi2"><td class="n">第5週<br>4泊</td><td>ニューヨーク</td><td class="c">弦が1歳で来た街。自由の女神とエリス島（移民の入口）、アメリカ自然史博物館、セントラルパーク。<b>写真の中の自分と同じ場所に、覚えていられる歳で立つ</b></td></tr>
+    <tr class="hi2"><td class="n">第6週<br>5泊</td><td>メキシコシティ</td><td class="c">テオティワカン（太陽のピラミッド）、国立人類学博物館、ソチミルコの舟、コヨアカン。標高2,240mなので<b>到着日は動かさない</b></td></tr>
+  </table>
+  </div>
+
+  <div class="note">
+    <b>家を空けるのは通算30泊、暦の上では約6週間。</b>そのうち2週間は自宅にいます。小学校の夏休み（7月下旬〜8月末の約6週間）にちょうど収まる長さです。
+  </div>
+
+  <h3>時期</h3>
+  <p>モンゴルのゲル滞在が<b>6〜9月</b>しか成立しません。だから全体が夏になります。そして夏＝夏休み。<span class="em2">モンゴルの季節と小学校の暦が、たまたま一致します。</span></p>
+  <div class="tbl">
+  <table>
+    <tr><th>場所</th><th>7月下旬〜8月</th><th>備考</th></tr>
+    <tr><td class="n">モンゴル</td><td class="c">◎ 最良期</td><td class="c">草原が緑。ナーダム（7月中旬）に当てる手もある</td></tr>
+    <tr><td class="n">北京</td><td class="c">△ 暑い・雨</td><td class="c">35℃前後。長城は早朝に</td></tr>
+    <tr><td class="n">台湾</td><td class="c">△ 台風季</td><td class="c">8月は台風。<b>第1週と第2週を入れ替えて、台湾を8月末に置く手もある</b></td></tr>
+    <tr><td class="n">イスタンブール</td><td class="c">△ 32℃・混雑</td><td class="c">屋内主体に組む</td></tr>
+    <tr><td class="n">リスボン</td><td class="c">○ 30℃・乾燥</td><td class="c">夜が長く過ごしやすい</td></tr>
+    <tr><td class="n">ニューヨーク</td><td class="c">△ 蒸し暑い</td><td class="c">博物館と公園で凌げる</td></tr>
+    <tr class="hi2"><td class="n">メキシコシティ</td><td class="c">○ 24℃</td><td class="c">雨季だが午後の短時間。標高のおかげで涼しい</td></tr>
+  </table>
+  </div>
+
+  <h3>費用の目安</h3>
+  <p>ここで<b>子ども運賃の差</b>が効いてきます。スターアライアンスのビジネスには子ども割引がありません。</p>
+  <div class="tbl">
+  <table>
+    <tr><th>クラス</th><th>大人×2</th><th>子ども×2</th><th>基本運賃 計</th><th>燃油・諸税込</th></tr>
+    <tr class="hi2"><td>ビジネス（CRWSTAR1）</td><td class="n">¥705,500</td><td class="n">¥705,500<br><span style="color:#93A0B5">割引なし</span></td><td class="n">¥2,822,000</td><td class="n">約¥350万</td></tr>
+    <tr><td>プレミアムエコノミー</td><td class="n">¥553,800</td><td class="n">¥415,350<br><span style="color:#93A0B5">75%</span></td><td class="n">¥1,938,300</td><td class="n">約¥255万</td></tr>
+    <tr><td>エコノミー（YRWSTAR1）</td><td class="n">¥358,900</td><td class="n">¥269,175<br><span style="color:#93A0B5">75%</span></td><td class="n">¥1,256,150</td><td class="n">約¥185万</td></tr>
+  </table>
+  </div>
+  <div class="tbl">
+  <table>
+    <tr><th>項目</th><th>4人合計</th></tr>
+    <tr><td>航空券（ビジネス）</td><td class="n">約¥350万</td></tr>
+    <tr><td>別買いの国内移動（中部⇄東京、東京⇄関西）</td><td class="n">¥10〜16万</td></tr>
+    <tr><td>宿・地上・食（30泊）</td><td class="n">¥180〜360万</td></tr>
+    <tr class="hi2"><td><b>総額の見込み（ビジネス）</b></td><td class="n"><b>約¥540〜730万</b></td></tr>
+    <tr><td><b>同（プレミアムエコノミー）</b></td><td class="n"><b>約¥445〜635万</b></td></tr>
+  </table>
+  </div>
+  <p class="cap">ゲル滞在と台湾は1日あたりの単価が低いので、実際は下寄りに出る見込み。プレエコとの差は約95万で、これは「アジア内の短距離が6区間ある」この行程では、体感差より価格差のほうが大きい可能性がある。</p>
+</div>
+</section>
+
+<!-- ============ Ⅴ 選ぶ ============ -->
+<section class="sec alt" id="choose">
+<div class="wrap">
+  <p class="sh">Ⅴ</p>
+  <h2>並べて、決める</h2>
+
+  <div class="tbl">
+  <table>
+    <tr><th></th><th style="color:#E9A94B">A ワンワールド</th><th style="color:#5FC7D6">B スターアライアンス</th></tr>
+    <tr><td class="n">主題</td><td>人はなぜ積むのか</td><td>人はなぜ動くのか</td></tr>
+    <tr><td class="n">形</td><td>一筆書き。31日連続</td><td>1週・1週・大周回。通算6週で在宅2週</td></tr>
+    <tr><td class="n">途中帰国</td><td>不可</td><td><b>2回（中部・関西）＋余白1回</b></td></tr>
+    <tr><td class="n">夢リストの回収</td><td><b>エジプト・バスク・マヤ</b>（3つ）</td><td><b>モンゴル</b>（1つ）＋ポルトガル（ランキング ティア2）</td></tr>
+    <tr><td class="n">区間数</td><td>10</td><td>11</td></tr>
+    <tr><td class="n">最長の連続不在</td><td>31泊</td><td><b>18泊</b></td></tr>
+    <tr><td class="n">適した時期</td><td>3月 または 11月</td><td><b>7月下旬〜8月（夏休み）</b></td></tr>
+    <tr class="hi"><td class="n">子ども運賃</td><td><b>ビジネスでも75%</b></td><td>ビジネスは割引なし</td></tr>
+    <tr><td class="n">航空券（4人・ビジネス）</td><td>約¥400万</td><td>約¥350万</td></tr>
+    <tr><td class="n">総額の見込み</td><td>約¥620〜810万</td><td>約¥540〜730万</td></tr>
+    <tr><td class="n">最大のリスク</td><td>ペルーの高山病と、季節が全部そろわないこと</td><td>大周回18泊を子2人が持たせられるか</td></tr>
+    <tr><td class="n">失敗したときの逃げ</td><td>途中で帰れない</td><td><b>第1週で試して、駄目なら組み替えられる</b></td></tr>
+  </table>
+  </div>
+
+  <h3>小学校という締切</h3>
+  <p>弦は2027年4月に小学校に入ります。それ以降、4週間を超える不在は難しくなり、実質<b>夏休みしか窓がなくなる</b>。そして夏休みに成立するのはプランBのほうです（プランAはエジプトとユカタンが真夏に耐えない）。</p>
+  <p>逆に言えば、<span class="em">プランAを「連続31日」でやるなら、2027年3月までが最後の楽な窓</span>になります。ただしそこは9月のインドから半年しかなく、資金と準備の両方で厳しい。現実的には、プランAをやるなら小学校の長期欠席を織り込むことになります。</p>
+
+  <h3>子ども運賃の落とし穴</h3>
+  <div class="key">
+    <p class="kh">4人家族には、ここがいちばん効く</p>
+    <p>ワンワールド・エクスプローラーは<b>ビジネスでも子ども2〜11歳が75%</b>。スターアライアンスRTWは<b>ビジネス・ファーストに子ども割引がない</b>（プレエコとエコノミーだけ75%）。</p>
+    <p>つまり「ビジネスで世界一周する家族」にとっては、基本運賃の額面が高いワンワールドのほうが、割引が効くぶん差が縮みます。逆に<b>スターアライアンスでプレミアムエコノミーを選ぶと、子ども割引が復活して一気に安くなる</b>。プランBの現実解はここかもしれません。</p>
+  </div>
+
+  <h3>推し</h3>
+  <p><b>プランB（スターアライアンス）</b>を推します。理由は三つ。</p>
+  <ol>
+    <li>夏休みに収まる。2027年4月以降も実行可能な唯一の形です。</li>
+    <li>最長の連続不在が18泊にとどまる。3歳と5歳（実行時は6歳と8歳前後）にとって、31日連続とは負荷がまるで違います。</li>
+    <li>第1週の台湾が、事実上のリハーサルになる。この規模の旅を、5泊・往復7時間・費用も小さい状態で一度試してから本番に入れる設計は、ほかにありません。</li>
+  </ol>
+  <p>ただし<b>エジプトを諦める案</b>でもあります。夢リストの筆頭がエジプトなら、プランAを2027年3月までに前倒しするか、エジプトだけを単独の旅として切り出すほうが素直です。ワンワールド・エクスプローラーは3大陸でも成立するので（大人ビジネス¥787,600）、<b>エジプト＋バスク＋北米の3大陸版</b>という中間解もあります。</p>
+
+  <div class="note">
+    <b>決めるために要る情報は、いま一つだけです。</b>いつ行くか。<br>
+    2027年3月までなら A。2027年夏以降なら B。ここが決まれば、残りは全部その下に並びます。
+  </div>
+</div>
+</section>
+
+<!-- ============ 付録 ============ -->
+<section class="sec" id="appendix">
+<div class="wrap">
+  <p class="sh">APPENDIX</p>
+  <h2>発券の前に潰すこと</h2>
+
+  <h4>両案に共通</h4>
+  <ul>
+    <li>運賃規則は改定される。<b>発券時点の最新版</b>で、区間数・途中降機・大陸定義を再確認する</li>
+    <li>基本運賃と燃油・諸税は別。諸税は発券日で確定する（2026年1月時点で4人あたり¥72〜81万の見込み）</li>
+    <li>予約は<b>最初の国際線区間まで</b>を先に確定。以降の区間は後から日付を入れられる</li>
+    <li>子ども運賃の適用年齢は<b>旅程中に誕生日が来ると全行程が上の区分</b>になる。弦・いとの誕生日（2月・4月）と旅程の関係を必ず見る</li>
+    <li>Amexプラチナの携行品保険・FHR・プライオリティパスは、この規模の旅では年会費を確実に上回る。更新は継続前提で</li>
+  </ul>
+
+  <h4>プランA固有</h4>
+  <ul>
+    <li>欧中東の無料区間が4／4で上限。行き先を足すなら1区間を陸路に振り替える</li>
+    <li>クスコ往復とルクソール往復は<b>別買い</b>（LATAM／エジプト航空）。インドのIndiGoと同じ運用</li>
+    <li>聖なる谷の宿は<b>酸素供給の有無</b>で選ぶ。渡航前に小児科でアセタゾラミドの適否を相談</li>
+    <li>ペルーを南アフリカに差し替える案も見積もる（季節が全部そろう代わりにマチュピチュが消える）</li>
+  </ul>
+
+  <h4>プランB固有</h4>
+  <ul>
+    <li><b>中部・関西で途中降機する旅程を、発券デスクで先に通す。</b>規則上は問題ないが、事前に確認しておくのが確実</li>
+    <li>中部⇄東京・東京⇄関西の移動は別買い（新幹線か国内線）。世界一周券の外側に置く</li>
+    <li>TK87（関西＝イスタンブール）は22時台発。関西の宿を前日に取るか、当日夕方に入る</li>
+    <li>合計マイルがRWSTAR1（29,000）の枠内かを<b>実TPM</b>で確認。超えるならRWSTAR2（34,000、大人ビジネス¥822,000）へ</li>
+    <li>アシアナ航空は2026年12月17日で消滅。ソウル経由を含む案は組まない</li>
+    <li>モンゴルのゲルは<b>6〜9月のみ</b>。ここが全体の季節を決める</li>
+  </ul>
+
+  <h3>この文書の確度について</h3>
+  <p class="cap">運賃規則は公開されている条文（oneworld Explorer Rule 3015／STAR RTW 123 ASK6 Rule Version 116）から直接引いています。加盟社は2026年7月時点。運賃額は2026年1月時点の公表値で、燃油・諸税は含みません。便名・所要時間・季節の評価は同時点の調べで、実際の搭乗日のダイヤは各社で再確認が必要です。宿と地上費の幅は、宿のグレードでほぼ決まります。</p>
+</div>
+</section>
+
+<div class="end">
+  <p class="q">世界にはいろんな人やものがあって、<br>そこに自分もアクセスできる、関係がある。<br><br>そのことを、地球を一周して確かめる旅の、二つの引き方。</p>
+</div>
+
+<div class="foot">
+  <p class="fh">SOURCES</p>
+  <p>
+    oneworld Explorer Rule 3015（oneworld公開PDF）／
+    oneworld Members（oneworld.com）／
+    Star Alliance Round the World 運賃規則 RWSTAR 1-3（STAR RTW 123 ASK 6 Rule, Version 116）／
+    Star Alliance 加盟社および Round the World 条件（staralliance.com）／
+    世界一周堂・運賃表（2026年1月時点）
+  </p>
+  <p class="fh">NOTE</p>
+  <p>限定公開。検索エンジンには載せていません。</p>
+</div>
+
+<div class="back"><a href="../">← Index</a></div>
+
+</body>
+</html>
